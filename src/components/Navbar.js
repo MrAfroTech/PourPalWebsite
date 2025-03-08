@@ -26,7 +26,7 @@ const Navbar = ({ scrollPosition }) => {
           <div className="logo-container">
             <span className="logo-text">
               <span className="gradient-text">Pour</span>
-              <span className="accent-text">pal</span>
+              <span className="accent-text">Pal</span>
             </span>
           </div>
         </Link>
@@ -61,7 +61,7 @@ const Navbar = ({ scrollPosition }) => {
             </a>
           </li>
           <li className="nav-item">
-            <button className="nav-button primary-button">Get Started</button>
+            <button className="nav-button primary-button">Serve Faster, Earn More</button>
           </li>
         </ul>
       </div>

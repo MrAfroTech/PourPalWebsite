@@ -50,7 +50,7 @@ const App = () => {
         {showCTA && (
           <div className="floating-cta">
             <button className="cta-button" onClick={() => setShowPopup(true)}>
-              Get Started Free
+              Upgrade Your Bar
             </button>
           </div>
         )}

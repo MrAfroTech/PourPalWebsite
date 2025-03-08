@@ -10,7 +10,7 @@ const Footer = () => {
             <div className="footer-logo">
               <span className="logo-text">
                 <span className="gradient-text">Pour</span>
-                <span className="accent-text">pal</span>
+                <span className="accent-text">Pal</span>
               </span>
             </div>
             <p className="footer-tagline">
@@ -79,7 +79,7 @@ const Footer = () => {
         
         <div className="footer-bottom">
           <p className="copyright">
-            &copy; {new Date().getFullYear()} Pourpal. All rights reserved.
+            &copy; {new Date().getFullYear()} PourPal. All rights reserved.
           </p>
         </div>
       </div>

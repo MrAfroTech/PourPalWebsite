@@ -53,12 +53,9 @@ const LeadCapturePopup = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Final validation not needed for simplicity in this version
-    // Just show success message
-    setSubmitted(true);
-    
     // In a real app, you would send the data to your server here
-    console.log("Form data submitted:", formData);
+    // For now, just show the success message
+    setSubmitted(true);
   };
   
   if (!isOpen) return null;
@@ -71,7 +68,7 @@ const LeadCapturePopup = ({ isOpen, onClose }) => {
         {submitted ? (
           <div className="thank-you-message">
             <h3>Thank You!</h3>
-            <p>We'll be in touch soon with information on how Pourpal can help your business save time and increase revenue.</p>
+            <p>We'll be in touch soon with information on how PourPal can help your business save time and increase revenue.</p>
             <button className="primary-button" onClick={onClose}>Close</button>
           </div>
         ) : (
@@ -81,7 +78,7 @@ const LeadCapturePopup = ({ isOpen, onClose }) => {
                 Boost Your Bar's Revenue
               </h3>
               <p className="popup-subtitle">
-                Bars using Pourpal report:
+                Bars using PourPal report:
               </p>
               <div className="benefits-list">
                 <div className="benefit-item">
@@ -94,7 +91,7 @@ const LeadCapturePopup = ({ isOpen, onClose }) => {
                 </div>
                 <div className="benefit-item">
                   <span className="benefit-icon">🍹</span>
-                  <span className="benefit-text">Improved staff workflow efficiency</span>
+                  <span className="benefit-text">40% increase in staff efficiency</span>
                 </div>
               </div>
             </div>
@@ -138,7 +135,7 @@ const LeadCapturePopup = ({ isOpen, onClose }) => {
                   </button>
                   
                   <p className="form-disclaimer">
-                    By continuing, you agree to receive emails from Pourpal. 
+                    By continuing, you agree to receive emails from PourPal. 
                     You can unsubscribe at any time.
                   </p>
                 </div>

@@ -38,14 +38,14 @@ const HeroSection = ({ onOpenPopup }) => {
           <span className="gradient-text">Pour</span>
           <span className="accent-text">pal</span>
         </h1>
-        <h2 className="hero-subtitle fade-in">AI ORDERING ASSISTANT</h2>
+        <h2 className="hero-subtitle fade-in">YOUR FAVORITE BARTENDER'S FAVORITE BARTENDER</h2>
         <p className="hero-description fade-in">
           Revolutionize your bar experience with AI-powered ordering.
           Skip the lines. Boost your sales. Elevate the experience.
         </p>
         
         <div className="hero-cta fade-in">
-          <button className="primary-button" onClick={onOpenPopup}>Get Started Free</button>
+          <button className="primary-button">Upgrade Your Bar</button>
           <button className="secondary-button">See Demo</button>
         </div>
       </div>
@@ -87,7 +87,7 @@ const HeroSection = ({ onOpenPopup }) => {
             </div>
             <div className="stat-content">
               <h3 className="stat-value">40<span>%</span></h3>
-              <p className="stat-label">Staff Efficiency</p>
+              <p className="stat-label">Increase in Staff Efficiency</p>
             </div>
           </div>
         </div>
