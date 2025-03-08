@@ -10,10 +10,12 @@ import TestimonialSection from './components/TestimonialSection';
 import PricingSection from './components/PricingSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
+import LeadCapturePopup from './components/LeadCapturePopup';
 
 const App = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [showCTA, setShowCTA] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,7 +38,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={
             <>
-              <HeroSection />
+              <HeroSection onOpenPopup={() => setShowPopup(true)} />
               <FeatureSection />
               <TestimonialSection />
               <PricingSection />
@@ -47,11 +49,15 @@ const App = () => {
         
         {showCTA && (
           <div className="floating-cta">
-            <button className="cta-button">Get Started</button>
+            <button className="cta-button" onClick={() => setShowPopup(true)}>
+              Get Started Free
+            </button>
           </div>
         )}
         
         <Footer />
+        
+        {showPopup && <LeadCapturePopup isOpen={showPopup} onClose={() => setShowPopup(false)} />}
       </div>
     </Router>
   );

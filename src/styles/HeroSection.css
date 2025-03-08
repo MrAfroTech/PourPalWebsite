@@ -1,3 +1,4 @@
+/* Updated Hero Section Styles */
 .hero-section {
     min-height: 100vh;
     display: flex;
@@ -9,7 +10,7 @@
     padding-top: 80px;
     padding-bottom: 0;
   }
-  
+    
   .hero-background {
     position: absolute;
     top: 0;
@@ -18,15 +19,15 @@
     height: 100%;
     z-index: -1;
   }
-  
+    
   .gradient-overlay {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 30% 20%, rgba(123, 66, 246, 0.15), transparent 40%),
-                radial-gradient(circle at 70% 60%, rgba(42, 102, 255, 0.1), transparent 50%);
+    background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15), transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(184, 134, 11, 0.1), transparent 50%);
   }
-  
+    
   .grid-pattern {
     position: absolute;
     width: 100%;
@@ -36,15 +37,15 @@
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 40px 40px;
   }
-  
+    
   .hero-content {
     max-width: 600px;
     text-align: center;
     z-index: 2;
     padding: 0 20px;
-    margin-bottom: 80px;
+    margin-bottom: 60px;
   }
-  
+    
   .hero-title {
     font-family: var(--font-secondary);
     font-size: 84px;
@@ -52,7 +53,7 @@
     margin-bottom: 20px;
     letter-spacing: -1px;
   }
-  
+    
   .hero-subtitle {
     font-size: 28px;
     font-weight: 300;
@@ -61,7 +62,7 @@
     text-transform: uppercase;
     letter-spacing: 2px;
   }
-  
+    
   .hero-description {
     font-size: 18px;
     font-weight: 400;
@@ -69,225 +70,247 @@
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.7;
   }
-  
+    
   .hero-cta {
     display: flex;
     justify-content: center;
     gap: 20px;
   }
   
+  /* New Stats Section */
   .hero-visual {
     position: relative;
     width: 100%;
-    height: 400px;
+    max-width: 1200px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 50px;
+    padding: 0 20px;
   }
   
-  .glass-container {
-    position: relative;
-    height: 300px;
-    width: 180px;
-  }
-  
-  .glass {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px 10px 30px 30px;
-  }
-  
-  .glass-shine {
-    position: absolute;
-    top: 30px;
-    left: 20px;
-    width: 60%;
-    height: 60%;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.2) 0%,
-      rgba(255, 255, 255, 0) 50%
-    );
-    border-radius: 50%;
-  }
-  
-  .liquid {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 0;
-    background: linear-gradient(to bottom, var(--accent-purple), var(--accent-blue));
-    border-radius: 0 0 30px 30px;
-    transition: height 2s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-  
-  .liquid.animate-pour {
-    height: 75%;
-  }
-  
-  .floating-elements {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-  
-  .floating-icon {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    color: rgba(255, 255, 255, 0.4);
-    animation: float 6s infinite;
-    animation-timing-function: ease-in-out;
-  }
-  
-  .icon-1 {
-    top: 30%;
-    left: 20%;
-    animation-delay: 0s;
-  }
-  
-  .icon-2 {
-    top: 60%;
-    right: 25%;
-    animation-delay: 1s;
-  }
-  
-  .icon-3 {
-    top: 20%;
-    right: 15%;
-    animation-delay: 2s;
-  }
-  
-  .scroll-indicator {
-    position: absolute;
-    bottom: 50px;
-    left: 50%;
-    transform: translateX(-50%);
+  .stats-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.5);
-    animation: fadeInUp 2s ease;
-  }
-  
-  .scroll-indicator span {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-  }
-  
-  .scroll-indicator svg {
-    width: 24px;
-    height: 24px;
-    animation: bounce 2s infinite;
-  }
-  
-  .fade-in {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-right: 60px;
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   }
   
-  .fade-in.visible {
+  .stats-container.animate {
     opacity: 1;
     transform: translateY(0);
   }
   
-  @keyframes float {
+  .stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px;
+    width: 170px;
+    transition: all 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 0 20px rgba(212, 175, 55, 0.1);
+  }
+  
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(184, 134, 11, 0.1));
+    border-radius: 12px;
+    color: var(--accent-gold);
+  }
+  
+  .stat-icon svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.5;
+  }
+  
+  .stat-content {
+    text-align: left;
+  }
+  
+  .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: 5px;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .stat-value span {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  /* Device Mockup Styles */
+  .device-mockup {
+    position: relative;
+    transform: perspective(800px) rotateY(-15deg) rotateX(10deg) rotateZ(-3deg);
+    transition: all 0.5s ease;
+  }
+  
+  .device-mockup:hover {
+    transform: perspective(800px) rotateY(-10deg) rotateX(5deg) rotateZ(-1deg) translateY(-10px);
+  }
+  
+  .phone-frame {
+    width: 260px;
+    height: 520px;
+    background: #1a1a1a;
+    border-radius: 36px;
+    padding: 12px;
+    box-shadow: 
+      0 50px 100px rgba(0, 0, 0, 0.5),
+      0 0 0 2px rgba(212, 175, 55, 0.2),
+      inset 0 0 10px rgba(0, 0, 0, 0.6);
+    position: relative;
+  }
+  
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .app-screen {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .app-header {
+    padding: 20px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .app-logo {
+    font-weight: 700;
+    font-size: 18px;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .app-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    border-radius: 6px;
+  }
+  
+  .app-content {
+    flex: 1;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+  }
+  
+  .menu-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .menu-item.active {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.3);
+  }
+  
+  .menu-item-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .menu-item-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  
+  .menu-item-price {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .menu-item-action {
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+  }
+  
+  .app-footer {
+    padding: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .order-button {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end));
+    color: var(--text-dark);
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  /* Animation for the device */
+  @keyframes deviceFloat {
     0%, 100% {
-      transform: translateY(0);
+      transform: perspective(800px) rotateY(-15deg) rotateX(10deg) rotateZ(-3deg) translateY(0);
     }
     50% {
-      transform: translateY(-20px);
+      transform: perspective(800px) rotateY(-15deg) rotateX(10deg) rotateZ(-3deg) translateY(-15px);
     }
   }
   
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-      transform: translateY(0);
-    }
-    40% {
-      transform: translateY(-10px);
-    }
-    60% {
-      transform: translateY(-5px);
-    }
-  }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translate(-50%, 20px);
-    }
-    to {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-  }
-  
-  @media screen and (max-width: 992px) {
-    .hero-title {
-      font-size: 72px;
-    }
-    
-    .hero-subtitle {
-      font-size: 24px;
-    }
-  }
-  
-  @media screen and (max-width: 768px) {
-    .hero-content {
-      margin-bottom: 50px;
-    }
-    
-    .hero-title {
-      font-size: 60px;
-    }
-    
-    .hero-subtitle {
-      font-size: 20px;
-    }
-    
-    .hero-description {
-      font-size: 16px;
-    }
-    
-    .hero-visual {
-      height: 350px;
-    }
-    
-    .glass-container {
-      height: 250px;
-      width: 150px;
-    }
-  }
-  
-  @media screen and (max-width: 576px) {
-    .hero-title {
-      font-size: 48px;
-    }
-    
-    .hero-subtitle {
-      font-size: 18px;
-    }
-    
-    .hero-cta {
-      flex-direction: column;
-      gap: 15px;
-    }
-    
-    .hero-cta button {
-      width: 100%;
-    }
+  .device-mockup {
+    animation: deviceFloat 6s ease-in-out infinite;
   }
