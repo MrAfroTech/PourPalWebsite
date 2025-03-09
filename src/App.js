@@ -11,6 +11,7 @@ import PricingSection from './components/PricingSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import LeadCapturePopup from './components/LeadCapturePopup';
+import DemoPage from './components/DemoPage';
 
 const App = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -45,6 +46,7 @@ const App = () => {
               <ContactSection />
             </>
           } />
+          <Route path="/demo" element={<DemoPage />} />
         </Routes>
         
         {showCTA && (
