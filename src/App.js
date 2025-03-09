@@ -12,6 +12,8 @@ import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import LeadCapturePopup from './components/LeadCapturePopup';
 import DemoPage from './components/DemoPage';
+import IncreaseRevenue from './components/IncreaseRevenue';
+import ReduceExpenses from './components/ReduceExpenses';
 
 const App = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -41,12 +43,12 @@ const App = () => {
             <>
               <HeroSection onOpenPopup={() => setShowPopup(true)} />
               <FeatureSection />
-              <TestimonialSection />
-              <PricingSection />
               <ContactSection />
             </>
           } />
           <Route path="/demo" element={<DemoPage />} />
+          <Route path="/increase-revenue" element={<IncreaseRevenue />} />
+          <Route path="/reduce-expenses" element={<ReduceExpenses />} />
         </Routes>
         
         {showCTA && (

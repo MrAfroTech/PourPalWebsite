@@ -19,6 +19,16 @@ const Navbar = ({ scrollPosition }) => {
     setMenuOpen(!menuOpen);
   };
 
+  // Function to open Calendly popup
+  const openCalendly = () => {
+    if (window.Calendly) {
+      window.Calendly.initPopupWidget({
+        url: 'https://calendly.com/YOUR_USERNAME/YOUR_EVENT_TYPE'
+      });
+      return false;
+    }
+  };
+
   return (
     <nav className={`navbar ${navbarClass} ${menuOpen ? 'menu-open' : ''}`}>
       <div className="navbar-container">
@@ -41,19 +51,14 @@ const Navbar = ({ scrollPosition }) => {
 
         <ul className={`nav-menu ${menuOpen ? 'active' : ''}`}>
           <li className="nav-item">
-            <a href="#features" className="nav-link" onClick={() => setMenuOpen(false)}>
-              Features
-            </a>
+            <Link to="/increase-revenue" className="nav-link" onClick={() => setMenuOpen(false)}>
+              Increase Revenue
+            </Link>
           </li>
           <li className="nav-item">
-            <a href="#testimonials" className="nav-link" onClick={() => setMenuOpen(false)}>
-              Testimonials
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#pricing" className="nav-link" onClick={() => setMenuOpen(false)}>
-              Pricing
-            </a>
+            <Link to="/reduce-expenses" className="nav-link" onClick={() => setMenuOpen(false)}>
+              Reduce Expenses
+            </Link>
           </li>
           <li className="nav-item">
             <a href="#contact" className="nav-link" onClick={() => setMenuOpen(false)}>
@@ -61,7 +66,9 @@ const Navbar = ({ scrollPosition }) => {
             </a>
           </li>
           <li className="nav-item">
-            <button className="nav-button primary-button">Serve Faster, Earn More</button>
+            <button className="nav-button primary-button" onClick={openCalendly}>
+              See How Much You'll Earn → Book Now
+            </button>
           </li>
         </ul>
       </div>
