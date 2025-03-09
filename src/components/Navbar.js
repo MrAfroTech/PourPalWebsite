@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
 
-const Navbar = ({ scrollPosition }) => {
+const Navbar = ({ scrollPosition, onOpenFunnel }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [navbarClass, setNavbarClass] = useState('');
 
@@ -19,14 +19,15 @@ const Navbar = ({ scrollPosition }) => {
     setMenuOpen(!menuOpen);
   };
 
-  // Function to open Calendly popup
-  const openCalendly = () => {
-    if (window.Calendly) {
-      window.Calendly.initPopupWidget({
-        url: 'https://calendly.com/YOUR_USERNAME/YOUR_EVENT_TYPE'
-      });
-      return false;
+  // Make sure this handler is properly defined
+  const handleButtonClick = () => {
+    console.log("Button clicked, opening funnel");
+    if (typeof onOpenFunnel === 'function') {
+      onOpenFunnel();
+    } else {
+      console.error("onOpenFunnel is not a function");
     }
+    setMenuOpen(false);
   };
 
   return (
@@ -66,7 +67,10 @@ const Navbar = ({ scrollPosition }) => {
             </a>
           </li>
           <li className="nav-item">
-            <button className="nav-button primary-button" onClick={openCalendly}>
+            <button 
+              className="nav-button primary-button" 
+              onClick={handleButtonClick}
+            >
               See How Much You'll Earn → Book Now
             </button>
           </li>
