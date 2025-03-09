@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../styles/HeroSection.css';
+import StatsModal from './StatsModal';
 
 const HeroSection = ({ onOpenPopup }) => {
   const textRef = useRef(null);
   const statsRef = useRef(null);
+  const [activeModal, setActiveModal] = useState(null);
 
   useEffect(() => {
     // Fade in text elements with staggered timing
@@ -25,6 +27,34 @@ const HeroSection = ({ onOpenPopup }) => {
       }, 800);
     }
   }, []);
+  
+  const handleStatClick = (statType) => {
+    setActiveModal(statType);
+    
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+  };
+  
+  const closeModal = () => {
+    setActiveModal(null);
+    
+    // Re-enable body scrolling
+    document.body.style.overflow = 'auto';
+  };
+
+  // Close modal on escape key
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape' && activeModal) {
+        closeModal();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [activeModal]);
 
   return (
     <section className="hero-section">
@@ -52,7 +82,10 @@ const HeroSection = ({ onOpenPopup }) => {
       
       <div className="hero-visual">
         <div className="stats-container" ref={statsRef}>
-          <div className="stat-card">
+          <div 
+            className={`stat-card ${activeModal === 'wait-time' ? 'active' : ''}`}
+            onClick={() => handleStatClick('wait-time')}
+          >
             <div className="stat-icon">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 8V12L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -63,9 +96,13 @@ const HeroSection = ({ onOpenPopup }) => {
               <h3 className="stat-value">30<span>%</span></h3>
               <p className="stat-label">Less Wait Time</p>
             </div>
+            <div className="learn-more-hint">Click to see how</div>
           </div>
           
-          <div className="stat-card">
+          <div 
+            className={`stat-card ${activeModal === 'revenue' ? 'active' : ''}`}
+            onClick={() => handleStatClick('revenue')}
+          >
             <div className="stat-icon">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -75,9 +112,13 @@ const HeroSection = ({ onOpenPopup }) => {
               <h3 className="stat-value">25<span>%</span></h3>
               <p className="stat-label">Revenue Increase</p>
             </div>
+            <div className="learn-more-hint">Click to see how</div>
           </div>
           
-          <div className="stat-card">
+          <div 
+            className={`stat-card ${activeModal === 'efficiency' ? 'active' : ''}`}
+            onClick={() => handleStatClick('efficiency')}
+          >
             <div className="stat-icon">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -89,6 +130,7 @@ const HeroSection = ({ onOpenPopup }) => {
               <h3 className="stat-value">40<span>%</span></h3>
               <p className="stat-label">Increase in Staff Efficiency</p>
             </div>
+            <div className="learn-more-hint">Click to see how</div>
           </div>
         </div>
         
@@ -147,7 +189,12 @@ const HeroSection = ({ onOpenPopup }) => {
         </svg>
       </div>
       
-
+      {activeModal && (
+        <StatsModal 
+          statType={activeModal} 
+          onClose={closeModal}
+        />
+      )}
     </section>
   );
 };
