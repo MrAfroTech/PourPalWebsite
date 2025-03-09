@@ -71,7 +71,7 @@ const HeroSection = ({ onOpenPopup }) => {
         <h2 className="hero-subtitle fade-in">YOUR FAVORITE BARTENDER'S FAVORITE BARTENDER</h2>
         <p className="hero-description fade-in">
           Eliminate bar chaos. Eliminate long lines.
-          Happy customers. Relaxed staff. More profits. Everybody wins.
+          Happy customers. Efficient staff. More profits. Everybody wins.
         </p>
         
         <div className="hero-cta fade-in">
