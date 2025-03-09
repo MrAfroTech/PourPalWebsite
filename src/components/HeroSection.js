@@ -70,8 +70,8 @@ const HeroSection = ({ onOpenPopup }) => {
         </h1>
         <h2 className="hero-subtitle fade-in">YOUR FAVORITE BARTENDER'S FAVORITE BARTENDER</h2>
         <p className="hero-description fade-in">
-          Revolutionize your bar experience with AI-powered ordering.
-          Skip the lines. Boost your sales. Elevate the experience.
+          Eliminate bar chaos. Eliminate long lines.
+          Happy customers. Relaxed staff. More profits. Everybody wins.
         </p>
         
         <div className="hero-cta fade-in">
