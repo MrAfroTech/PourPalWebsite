@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../styles/LeadCaptureFunnel.css';
 
 const LeadCaptureFunnel = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,11 +10,6 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
     message: ''
   });
   const [errors, setErrors] = useState({});
-
-  // Debug rendering
-  useEffect(() => {
-    console.log("LeadCaptureFunnel rendered, isOpen:", isOpen);
-  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,7 +45,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
     }
     
     if (!formData.company.trim()) {
-      newErrors.company = 'Company name is required';
+      newErrors.company = 'Bar/Restaurant name is required';
     }
     
     setErrors(newErrors);
@@ -155,7 +149,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
               value={formData.message}
               onChange={handleChange}
               placeholder="Tell us about your current challenges or what you'd like to improve..."
-              rows="4"
+              rows="3"
             />
           </div>
           
@@ -168,7 +162,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
               </div>
               <div className="benefit-text">
                 <h4>Increased Revenue</h4>
-                <p>Average 25% boost in sales</p>
+                <p>Average 25% boost</p>
               </div>
             </div>
             
@@ -180,8 +174,8 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
                 </svg>
               </div>
               <div className="benefit-text">
-                <h4>Reduced Wait Times</h4>
-                <p>30% less customer wait time</p>
+                <h4>Reduced Wait</h4>
+                <p>30% less wait time</p>
               </div>
             </div>
             
@@ -195,7 +189,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
               </div>
               <div className="benefit-text">
                 <h4>Staff Efficiency</h4>
-                <p>40% boost in productivity</p>
+                <p>40% productivity</p>
               </div>
             </div>
           </div>
