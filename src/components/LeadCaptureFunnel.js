@@ -137,7 +137,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
             </div>
             
             <a 
-              href="https://calendly.com/pourpal/demo" 
+              href="https://calendly.com/team-pourpal" 
               target="_blank"
               rel="noopener noreferrer"
               className="primary-button calendar-button"
