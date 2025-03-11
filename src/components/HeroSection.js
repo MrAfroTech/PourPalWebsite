@@ -83,8 +83,8 @@ const HeroSection = ({ onOpenPopup }) => {
       
       <div className="hero-content" ref={textRef}>
         <h1 className="hero-title fade-in">
-          <span className="gradient-text">Pour</span>
-          <span className="accent-text">pal</span>
+          <span className="gradient-text">Ez</span>
+          <span className="accent-text">Drink</span>
         </h1>
         <h2 className="hero-subtitle fade-in">YOUR FAVORITE BARTENDER'S FAVORITE BARTENDER</h2>
         <p className="hero-description fade-in">
@@ -157,7 +157,7 @@ const HeroSection = ({ onOpenPopup }) => {
             <div className="phone-screen">
               <div className="app-screen">
                 <div className="app-header">
-                  <div className="app-logo">Pourpal</div>
+                  <div className="app-logo">EzDrink</div>
                   <div className="app-icon"></div>
                 </div>
                 <div className="app-content">
@@ -224,7 +224,7 @@ const HeroSection = ({ onOpenPopup }) => {
             
             <div className="popup-content">
               <h3>No More Menu Maintenance Headaches</h3>
-              <p>PourPal transforms your existing menu into a digital masterpiece with zero effort on your part. Our team handles the entire process, from initial setup to seasonal updates.</p>
+              <p>EzDrink transforms your existing menu into a digital masterpiece with zero effort on your part. Our team handles the entire process, from initial setup to seasonal updates.</p>
               
               <h3>Three Simple Steps to Digital Transformation</h3>
               <ol>

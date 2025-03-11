@@ -17,7 +17,7 @@ const DemoPage = () => {
       <div className="demo-hero">
         <div className="demo-overlay"></div>
         <div className="demo-content">
-          <h1 className="demo-title">See How PourPal Works</h1>
+          <h1 className="demo-title">See How EzDrink Works</h1>
           <p className="demo-subtitle">Experience the future of bar ordering in action</p>
         </div>
       </div>
@@ -37,20 +37,20 @@ const DemoPage = () => {
                 poster="/bar-background.svg"
                 className="demo-video"
             >
-                <source src="/pourPalDemo.mp4" type="video/mp4" />
-                <source src="/pourPalDemo.webm" type="video/webm" />
+                <source src="/EzDrinkDemo.mp4" type="video/mp4" />
+                <source src="/EzDrinkDemo.webm" type="video/webm" />
                 Your browser does not support the video tag.
             </video>
           </div>
           
           <div className="video-caption">
-            <h3>See how PourPal can transform your bar experience in just 2 minutes</h3>
+            <h3>See how EzDrink can transform your bar experience in just 2 minutes</h3>
           </div>
         </div>
         
         <div className="post-video-cta">
           <h2>Ready to revolutionize your bar?</h2>
-          <p>Join the hundreds of bar owners already seeing amazing results with PourPal</p>
+          <p>Join the hundreds of bar owners already seeing amazing results with EzDrink</p>
           <Link to="/" className="cta-button">Get Started Now - 30% Off</Link>
           <p className="hurry-text">Hurry! Special pricing ends soon.</p>
         </div>

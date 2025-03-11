@@ -67,7 +67,7 @@ const ContactSection = () => {
     <section id="contact" className="contact-section">
       <div className="section-header">
         <h2 className="section-title">Get In Touch</h2>
-        <p className="section-subtitle">Interested in Pourpal? Let's talk about how we can help your business.</p>
+        <p className="section-subtitle">Interested in EzDrink? Let's talk about how we can help your business.</p>
       </div>
       
       <div className="contact-container">
@@ -122,7 +122,7 @@ const ContactSection = () => {
             </div>
             <div className="contact-text">
               <h4>Email</h4>
-              <p>hello@pourpal.store</p>
+              <p>hello@EzDrink.store</p>
             </div>
           </div>
         </div>

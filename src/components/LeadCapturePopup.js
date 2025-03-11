@@ -68,7 +68,7 @@ const LeadCapturePopup = ({ isOpen, onClose }) => {
         {submitted ? (
           <div className="thank-you-message">
             <h3>Thank You!</h3>
-            <p>We'll be in touch soon with information on how PourPal can help your business save time and increase revenue.</p>
+            <p>We'll be in touch soon with information on how EzDrink can help your business save time and increase revenue.</p>
             <button className="primary-button" onClick={onClose}>Close</button>
           </div>
         ) : (
@@ -78,7 +78,7 @@ const LeadCapturePopup = ({ isOpen, onClose }) => {
                 Boost Your Bar's Revenue
               </h3>
               <p className="popup-subtitle">
-                Bars using PourPal report:
+                Bars using EzDrink report:
               </p>
               <div className="benefits-list">
                 <div className="benefit-item">
@@ -135,7 +135,7 @@ const LeadCapturePopup = ({ isOpen, onClose }) => {
                   </button>
                   
                   <p className="form-disclaimer">
-                    By continuing, you agree to receive emails from PourPal. 
+                    By continuing, you agree to receive emails from EzDrink. 
                     You can unsubscribe at any time.
                   </p>
                 </div>

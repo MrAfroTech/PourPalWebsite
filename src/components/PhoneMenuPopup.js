@@ -21,7 +21,7 @@ const PhoneMenuPopup = () => {
           <div className="phone-screen">
             <div className="app-screen">
               <div className="app-header">
-                <div className="app-logo">Pourpal</div>
+                <div className="app-logo">EzDrink</div>
                 <div className="app-icon"></div>
               </div>
               <div className="app-content">
@@ -71,7 +71,7 @@ const PhoneMenuPopup = () => {
             
             <div className="popup-content">
               <h3>No More Menu Maintenance Headaches</h3>
-              <p>PourPal transforms your existing menu into a digital masterpiece with zero effort on your part. Our team handles the entire process, from initial setup to seasonal updates.</p>
+              <p>EzDrink transforms your existing menu into a digital masterpiece with zero effort on your part. Our team handles the entire process, from initial setup to seasonal updates.</p>
               
               <h3>Three Simple Steps to Digital Transformation</h3>
               <ol>
@@ -89,7 +89,7 @@ const PhoneMenuPopup = () => {
               </ul>
               
               <blockquote>
-                "PourPal's menu integration was shockingly easy. We sent our menu on Monday and were fully digital by Wednesday."
+                "EzDrink's menu integration was shockingly easy. We sent our menu on Monday and were fully digital by Wednesday."
                 <cite>— James W., Owner, Copper & Oak Lounge</cite>
               </blockquote>
             </div>

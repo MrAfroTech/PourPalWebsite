@@ -36,8 +36,8 @@ const Navbar = ({ scrollPosition, onOpenFunnel }) => {
         <Link to="/" className="navbar-logo">
           <div className="logo-container">
             <span className="logo-text">
-              <span className="gradient-text">Pour</span>
-              <span className="accent-text">Pal</span>
+              <span className="gradient-text">Ez</span>
+              <span className="accent-text">Drink</span>
             </span>
           </div>
         </Link>

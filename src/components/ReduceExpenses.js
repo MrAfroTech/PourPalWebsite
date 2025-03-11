@@ -42,7 +42,7 @@ const ReduceExpenses = () => {
                 </svg>
               </div>
               <h3>Over-Staffing Bleeding Your Payroll</h3>
-              <p>Bars routinely over-staff &quot;just in case,&quot; adding 15-20% to labor costs. PourPal&apos;s efficiency means you need fewer staff to serve more customers, cutting labor costs by 22% on average.</p>
+              <p>Bars routinely over-staff &quot;just in case,&quot; adding 15-20% to labor costs. EzDrink&apos;s efficiency means you need fewer staff to serve more customers, cutting labor costs by 22% on average.</p>
             </div>
             
             <div className="grid-item">
@@ -54,7 +54,7 @@ const ReduceExpenses = () => {
                 </svg>
               </div>
               <h3>Inventory Shrinkage &amp; Waste</h3>
-              <p>The industry average for alcohol waste is 23% between overpouring, spills, and theft. PourPal&apos;s precise inventory management and digital ordering reduces waste to under 7%, saving thousands monthly.</p>
+              <p>The industry average for alcohol waste is 23% between overEzing, spills, and theft. EzDrink&apos;s precise inventory management and digital ordering reduces waste to under 7%, saving thousands monthly.</p>
             </div>
             
             <div className="grid-item">
@@ -64,7 +64,7 @@ const ReduceExpenses = () => {
                 </svg>
               </div>
               <h3>The Hidden Cost of Errors</h3>
-              <p>Incorrect orders waste product and create customer dissatisfaction. Digital ordering through PourPal eliminates these costly mistakes, saving 8-12% in remake expenses.</p>
+              <p>Incorrect orders waste product and create customer dissatisfaction. Digital ordering through EzDrink eliminates these costly mistakes, saving 8-12% in remake expenses.</p>
             </div>
           </div>
         </section>
@@ -90,18 +90,18 @@ const ReduceExpenses = () => {
           </div>
           
           <blockquote className="testimonial">
-            &quot;PourPal paid for itself in the first month just through reduced waste. We&apos;re saving about $5,000 monthly between labor optimization and inventory control, while actually improving our service quality.&quot;
+            &quot;EzDrink paid for itself in the first month just through reduced waste. We&apos;re saving about $5,000 monthly between labor optimization and inventory control, while actually improving our service quality.&quot;
             <cite>— Sarah K., Operations Manager, Urban Spirits</cite>
           </blockquote>
         </section>
         
         <section className="content-section fade-in">
-          <h2>How PourPal Transforms Expenses Into Profits</h2>
+          <h2>How EzDrink Transforms Expenses Into Profits</h2>
           
           <div className="feature-list">
             <div className="feature-item">
               <h3>Smart Staff Allocation</h3>
-              <p>PourPal&apos;s AI predicts busy periods with 94% accuracy, allowing precise staffing. No more paying 8 people when you only need 5.</p>
+              <p>EzDrink&apos;s AI predicts busy periods with 94% accuracy, allowing precise staffing. No more paying 8 people when you only need 5.</p>
             </div>
             
             <div className="feature-item">
@@ -116,7 +116,7 @@ const ReduceExpenses = () => {
             
             <div className="feature-item">
               <h3>Reduced Training Costs</h3>
-              <p>PourPal&apos;s intuitive system reduces training time by 60%. New staff become productive faster with less supervision required.</p>
+              <p>EzDrink&apos;s intuitive system reduces training time by 60%. New staff become productive faster with less supervision required.</p>
             </div>
             
             <div className="feature-item">
@@ -143,7 +143,7 @@ const ReduceExpenses = () => {
             <div className="calculator-row">
               <div className="calculation">
                 <h4>Inventory Waste Reduction</h4>
-                <p>Reduce pour waste by just 10% on $20,000 monthly alcohol inventory</p>
+                <p>Reduce Ez waste by just 10% on $20,000 monthly alcohol inventory</p>
               </div>
               <div className="calculation-result">
                 <p>$2,000 monthly savings</p>
@@ -169,7 +169,7 @@ const ReduceExpenses = () => {
         
         <section className="content-section cta-section fade-in">
           <h2>Stop Leaving Money on the Table</h2>
-          <p>Join the bar owners who&apos;ve transformed cost centers into profit centers with PourPal.</p>
+          <p>Join the bar owners who&apos;ve transformed cost centers into profit centers with EzDrink.</p>
           <div className="cta-buttons">
             <button className="primary-button large">Get Your Free Cost Analysis</button>
             <button className="secondary-button large">Schedule Demo</button>

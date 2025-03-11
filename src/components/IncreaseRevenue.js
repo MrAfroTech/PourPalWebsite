@@ -41,7 +41,7 @@ const IncreaseRevenue = () => {
                 </svg>
               </div>
               <h3>Line Abandonment = Lost Sales</h3>
-              <p>15% of potential customers leave without ordering when wait times exceed 7 minutes. PourPal eliminates the line entirely, capturing revenue that would otherwise walk out the door.</p>
+              <p>15% of potential customers leave without ordering when wait times exceed 7 minutes. EzDrink eliminates the line entirely, capturing revenue that would otherwise walk out the door.</p>
             </div>
             
             <div className="grid-item">
@@ -51,7 +51,7 @@ const IncreaseRevenue = () => {
                 </svg>
               </div>
               <h3>Upsell Every Customer, Every Time</h3>
-              <p>Bartenders can&apos;t consistently recommend premium spirits during rush hour. PourPal&apos;s AI never forgets to suggest that $4 upgrade to top-shelf, generating 22% higher average checks.</p>
+              <p>Bartenders can&apos;t consistently recommend premium spirits during rush hour. EzDrink&apos;s AI never forgets to suggest that $4 upgrade to top-shelf, generating 22% higher average checks.</p>
             </div>
             
             <div className="grid-item">
@@ -63,7 +63,7 @@ const IncreaseRevenue = () => {
                 </svg>
               </div>
               <h3>Turn One-Drink Customers Into Three-Drink Fans</h3>
-              <p>When reordering is effortless, customers order 1.8 more drinks per visit. PourPal&apos;s frictionless experience means guests keep ordering, not waiting.</p>
+              <p>When reordering is effortless, customers order 1.8 more drinks per visit. EzDrink&apos;s frictionless experience means guests keep ordering, not waiting.</p>
             </div>
           </div>
         </section>
@@ -74,7 +74,7 @@ const IncreaseRevenue = () => {
           <div className="stats-container">
             <div className="stat-box">
               <h3>$47,000+</h3>
-              <p>Average annual revenue increase for bars using PourPal</p>
+              <p>Average annual revenue increase for bars using EzDrink</p>
             </div>
             
             <div className="stat-box">
@@ -89,13 +89,13 @@ const IncreaseRevenue = () => {
           </div>
           
           <blockquote className="testimonial">
-            &quot;We implemented PourPal six months ago and our revenue is up 32%. The ROI was immediate—our customers love ordering from their phones and our bartenders can focus on making drinks rather than taking orders.&quot;
+            &quot;We implemented EzDrink six months ago and our revenue is up 32%. The ROI was immediate—our customers love ordering from their phones and our bartenders can focus on making drinks rather than taking orders.&quot;
             <cite>— Mike T., Owner, The Crafty Pint</cite>
           </blockquote>
         </section>
         
         <section className="content-section fade-in">
-          <h2>How PourPal Turns Efficiency Into Revenue</h2>
+          <h2>How EzDrink Turns Efficiency Into Revenue</h2>
           
           <div className="feature-list">
             <div className="feature-item">
@@ -110,7 +110,7 @@ const IncreaseRevenue = () => {
             
             <div className="feature-item">
               <h3>Strategic Bundle Offers</h3>
-              <p>Create irresistible packages that boost average check size by 30%. PourPal dynamically suggests bundles based on order history and inventory.</p>
+              <p>Create irresistible packages that boost average check size by 30%. EzDrink dynamically suggests bundles based on order history and inventory.</p>
             </div>
             
             <div className="feature-item">
@@ -120,14 +120,14 @@ const IncreaseRevenue = () => {
             
             <div className="feature-item">
               <h3>Customer Loyalty Integration</h3>
-              <p>Automatically track visits and purchases to reward regulars. Loyal customers spend 67% more than new customers—PourPal helps you build that loyalty.</p>
+              <p>Automatically track visits and purchases to reward regulars. Loyal customers spend 67% more than new customers—EzDrink helps you build that loyalty.</p>
             </div>
           </div>
         </section>
         
         <section className="content-section cta-section fade-in">
           <h2>Ready to Unlock Your Bar&apos;s Revenue Potential?</h2>
-          <p>Join hundreds of forward-thinking bar owners who&apos;ve transformed their businesses with PourPal.</p>
+          <p>Join hundreds of forward-thinking bar owners who&apos;ve transformed their businesses with EzDrink.</p>
           <div className="cta-buttons">
             <button className="primary-button large">Get Your Free Revenue Analysis</button>
             <button className="secondary-button large">Watch Demo</button>

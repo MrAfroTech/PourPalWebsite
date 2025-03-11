@@ -33,7 +33,7 @@ const FeatureSection = () => {
     <section id="features" className="features-section" ref={sectionRef}>
       <div className="section-header">
         <h2 className="section-title">Elevate Your Bar Experience</h2>
-        <p className="section-subtitle">Pourpal brings cutting-edge AI to revolutionize ordering</p>
+        <p className="section-subtitle">EzDrink brings cutting-edge AI to revolutionize ordering</p>
       </div>
       
       <div className="features-container">
