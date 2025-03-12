@@ -1,0 +1,34 @@
+import React, { useState } from 'react';
+import CashFinderForm from './CashFinderForm';
+import CashFinderReport from './CashFinderReport';
+
+const CashFinderSystem = () => {
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  
+  const handleFormSubmit = (data) => {
+    // Set the report data with calculated values
+    setReportData(data);
+    setFormSubmitted(true);
+    
+    // Optional: Send data to your backend or analytics
+    // saveDataToBackend(data);
+    
+    // Optional: Send the email report
+    // sendEmailReport(data);
+  };
+  
+  return (
+    <div className="cash-finder-system">
+      {!formSubmitted ? (
+        // Show the form to collect data
+        <CashFinderForm onSubmit={handleFormSubmit} />
+      ) : (
+        // Show the report with the calculated data
+        <CashFinderReport reportData={reportData} />
+      )}
+    </div>
+  );
+};
+
+export default CashFinderSystem;

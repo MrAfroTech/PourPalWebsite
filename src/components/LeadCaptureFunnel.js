@@ -156,7 +156,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
           <div className="funnel-step">
             <div className="funnel-header">
               <h2 className="funnel-title">
-                <span className="gradient-text">Get Your Free Bar Efficiency Scorecard</span>
+                <span className="gradient-text">Get Your Free Cash Finder Report</span>
               </h2>
               <p className="funnel-subtitle">
                 Discover exactly how much more revenue your bar could generate with the right systems in place.

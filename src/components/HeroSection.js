@@ -93,7 +93,7 @@ const HeroSection = ({ onOpenPopup }) => {
         </p>
         
         <div className="hero-cta fade-in">
-          <button className="primary-button" onClick={onOpenPopup}>Upgrade Your Bar</button>
+          <button className="primary-button" onClick={onOpenPopup}>Are You Ready?</button>
           <button className="secondary-button" onClick={() => window.location.href = '/demo'}>Watch It In Action →</button>
         </div>
       </div>
@@ -114,7 +114,7 @@ const HeroSection = ({ onOpenPopup }) => {
               <h3 className="stat-value">30<span>%</span></h3>
               <p className="stat-label">Less Wait Time</p>
             </div>
-            <div className="learn-more-hint">Click to see how</div>
+            <div className="learn-more-hint">Tap In</div>
           </div>
           
           <div 
@@ -130,7 +130,7 @@ const HeroSection = ({ onOpenPopup }) => {
               <h3 className="stat-value">25<span>%</span></h3>
               <p className="stat-label">Revenue Increase</p>
             </div>
-            <div className="learn-more-hint">Click to see how</div>
+            <div className="learn-more-hint">Tap in</div>
           </div>
           
           <div 
@@ -148,7 +148,7 @@ const HeroSection = ({ onOpenPopup }) => {
               <h3 className="stat-value">40<span>%</span></h3>
               <p className="stat-label">Increase in Staff Efficiency</p>
             </div>
-            <div className="learn-more-hint">Click to see how</div>
+            <div className="learn-more-hint">Tap in</div>
           </div>
         </div>
         
