@@ -1,5 +1,7 @@
 import React from 'react';
 import '../styles/AppDownloadSplash.css';
+// Import the SVG directly
+import ezLogoThin from '../styles/ez-logo-ultra-thin.svg';
 
 const AppDownloadSplash = () => {
   return (
@@ -11,7 +13,7 @@ const AppDownloadSplash = () => {
             <span className="accent-text">Drink</span>
           </h1>
           <p className="app-splash-subtitle">
-            The Smart Bar Management App That Increases Revenue by 25%
+            Your VIP Pass to the Perfect Night Out
           </p>
         </div>
 
@@ -19,8 +21,9 @@ const AppDownloadSplash = () => {
           <div className="phone-mockup">
             <div className="phone-frame">
               <div className="phone-screen">
+                {/* Replace placeholder with actual SVG */}
                 <img 
-                  src="/api/placeholder/280/550" 
+                  src={ezLogoThin} 
                   alt="EzDrink App Interface" 
                   className="app-screenshot"
                 />
@@ -29,52 +32,52 @@ const AppDownloadSplash = () => {
           </div>
 
           <div className="app-features">
-            <h2 className="features-title">Revolutionize Your Bar Operations</h2>
+            <h2 className="features-title">Elevate Your Night Out</h2>
             
             <div className="feature-item">
               <div className="feature-icon">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 8V12L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               <div className="feature-text">
-                <h3>30% Less Wait Time</h3>
-                <p>Speed up service and increase customer satisfaction</p>
+                <h3>Skip the Line, Live Divine</h3>
+                <p>Order and pay right from your phone. No more fighting through crowds – be the VIP you were born to be.</p>
               </div>
             </div>
 
             <div className="feature-item">
               <div className="feature-icon">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               <div className="feature-text">
-                <h3>25% Revenue Boost</h3>
-                <p>Optimize operations and maximize your profits</p>
+                <h3>Drink Memory™ – Never Repeat Yourself</h3>
+                <p>We remember your cosmic cocktail combinations so you don't have to. Your perfect libation, manifested at the tap of a button.</p>
               </div>
             </div>
 
             <div className="feature-item">
               <div className="feature-icon">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               <div className="feature-text">
-                <h3>40% Staff Efficiency</h3>
-                <p>Streamline workflows and empower your team</p>
+                <h3>Party Radar™ – Never Miss a Beat</h3>
+                <p>See where your tribe is gathering in real-time. Join the vibration of the hottest spots without the guesswork.</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="download-section">
-          <h2 className="download-title">Download <span className="gradient-text">Today</span></h2>
-          <p className="download-subtitle">Available for iOS and Android devices</p>
+          <h2 className="download-title">Unlock Your <span className="gradient-text">VIP Experience</span></h2>
+          <p className="download-subtitle">Download now and transform from ordinary patron to nightlife royalty</p>
           
           <div className="app-store-buttons">
             <a href="#" className="store-button app-store">
@@ -93,23 +96,53 @@ const AppDownloadSplash = () => {
           </div>
         </div>
 
+        <div className="perks-section">
+          <h2 className="perks-title">The Velvet Rope Treatment</h2>
+          
+          <div className="perks-grid">
+            <div className="perk-card">
+              <div className="perk-icon">🎭</div>
+              <h3>Behind-the-Bar Access</h3>
+              <p>Exclusive off-menu concoctions crafted just for app users. Drink what the uninitiated don't even know exists.</p>
+            </div>
+            
+            <div className="perk-card">
+              <div className="perk-icon">⚡</div>
+              <h3>Flash Drink Drops</h3>
+              <p>Limited-time offers that materialize like magic when you're near partner bars. Spontaneity, meet savings.</p>
+            </div>
+            
+            <div className="perk-card">
+              <div className="perk-icon">🎁</div>
+              <h3>Birthday Liberation</h3>
+              <p>Free signature cocktail at any partner bar on your birthday. Because your revolution around the sun deserves lubrication.</p>
+            </div>
+            
+            <div className="perk-card">
+              <div className="perk-icon">🔥</div>
+              <h3>Heat Map Access</h3>
+              <p>See which venues are buzzing in real-time. Never waste precious evening energy on a dead scene again.</p>
+            </div>
+          </div>
+        </div>
+
         <div className="testimonial-section">
           <div className="testimonial">
             <div className="testimonial-content">
-              "Technology doesn't replace hospitality—it enhances it. When systems work, people can focus on what matters most: creating memorable experiences."
-              <div className="testimonial-author">— Danny Meyer, Union Square Hospitality</div>
+              "I used to waste half my night trying to catch the bartender's eye. Now I step in, tap my phone, and my drink manifests while others languish in limbo. It's like having a VIP pass to existence itself."
+              <div className="testimonial-author">— Sofia M., Los Angeles</div>
             </div>
           </div>
         </div>
 
         <div className="cta-section">
-          <h2 className="cta-title">Ready to Transform Your Bar?</h2>
-          <p className="cta-text">Join hundreds of successful bars and restaurants already using EzDrink</p>
+          <h2 className="cta-title">Miss the Line, Not the Party</h2>
+          <p className="cta-text">Join the revolution of 100,000+ nightlife illuminati who've transcended the ordinary bar experience</p>
           <a href="#" className="cta-button">
-            Schedule a Demo →
+            Download Free — Ascend Tonight
           </a>
           <p className="guarantee-text">
-            30-day money-back guarantee. No long-term contracts.
+            No subscription fees. No cosmic complications. Just liquid transcendence.
           </p>
         </div>
 
@@ -117,7 +150,7 @@ const AppDownloadSplash = () => {
           <p className="footer-text">© 2025 EzDrink. All rights reserved.</p>
           <p className="footer-tagline">
             <span className="gradient-text">Ez</span>
-            <span className="accent-text">Drink</span> - YOUR FAVORITE BARTENDER'S FAVORITE BARTENDER
+            <span className="accent-text">Drink</span> - DRINK SMARTER, PARTY HARDER
           </p>
         </div>
       </div>
