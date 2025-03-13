@@ -1,19 +1,32 @@
-import React, { useState } from 'react';
-import './CashFinderForm.css';
+import React, { useState, useEffect } from 'react';
+import '../styles/CashFinderForm.css';
 
-const CashFinderForm = ({ onSubmit }) => {
+const CashFinderForm = ({ onSubmit, initialData = null }) => {
   const [formData, setFormData] = useState({
     averageRevenue: '',
     casesPurchased: '',
     bestNightRevenue: '',
-    name: '',
-    email: '',
-    phone: '',
-    barName: ''
+    name: initialData?.name || '',
+    email: initialData?.email || '',
+    phone: initialData?.phone || '',
+    barName: initialData?.company || '' // Map company from lead form to barName
   });
   
   const [errors, setErrors] = useState({});
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1); // Always start at step 1 (revenue questions)
+
+  useEffect(() => {
+    // If initial data is provided, update form data
+    if (initialData) {
+      setFormData(prevData => ({
+        ...prevData,
+        name: initialData.name || '',
+        email: initialData.email || '',
+        phone: initialData.phone || '',
+        barName: initialData.company || ''
+      }));
+    }
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,6 +67,39 @@ const CashFinderForm = ({ onSubmit }) => {
     return Object.keys(newErrors).length === 0;
   };
   
+  const handleContinue = (e) => {
+    e.preventDefault();
+    
+    if (validateStep1()) {
+      // Skip to submission if we already have user info
+      if (initialData) {
+        // Calculate opportunity values right away
+        const averageRevenue = parseFloat(formData.averageRevenue);
+        const bestNightRevenue = parseFloat(formData.bestNightRevenue);
+        const casesPurchased = parseInt(formData.casesPurchased);
+        
+        const peakOpportunity = (bestNightRevenue - averageRevenue) * 4.3;
+        const inventoryOpportunity = casesPurchased * 20 * 4.3; // Assuming $20 savings per case
+        const totalOpportunity = (peakOpportunity + inventoryOpportunity) * 12;
+        
+        const calculatedData = {
+          ...formData,
+          peakOpportunity,
+          inventoryOpportunity,
+          totalOpportunity
+        };
+        
+        // Pass data to parent component
+        if (onSubmit) {
+          onSubmit(calculatedData);
+        }
+      } else {
+        // If no initial data, proceed to step 2 to collect user info
+        setStep(2);
+      }
+    }
+  };
+  
   const validateStep2 = () => {
     const newErrors = {};
     
@@ -77,14 +123,6 @@ const CashFinderForm = ({ onSubmit }) => {
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const handleContinue = (e) => {
-    e.preventDefault();
-    
-    if (validateStep1()) {
-      setStep(2);
-    }
   };
   
   const handleSubmit = (e) => {
@@ -220,7 +258,7 @@ const CashFinderForm = ({ onSubmit }) => {
             
             <div className="funnel-footer">
               <button type="submit" className="primary-button submit-button">
-                Continue to Unlock Your Insights →
+                {initialData ? 'Tap In: Get Your Cash Finder Report' : 'Continue to Unlock Your Insights →'}
               </button>
             </div>
           </form>

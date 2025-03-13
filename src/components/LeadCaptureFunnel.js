@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/LeadCaptureFunnel.css';
+import CashFinderForm from './CashFinderForm';
 
-const LeadCaptureFunnel = ({ isOpen, onClose }) => {
+const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -10,7 +11,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
     message: ''
   });
   const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
+  const [showCashFinder, setShowCashFinder] = useState(false);
 
   useEffect(() => {
     // Disable body scroll when popup is open
@@ -84,9 +85,20 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
         console.error('Error storing lead data:', error);
       }
       
-      // Set submitted to true to show the success screen
-      setSubmitted(true);
+      // Show the CashFinderForm with pre-filled data
+      setShowCashFinder(true);
     }
+  };
+
+  // Handler for when the CashFinderForm is submitted
+  const handleCashFinderSubmit = (data) => {
+    // Pass the data to the parent component if a handler was provided
+    if (onCashFinderSubmit) {
+      onCashFinderSubmit(data);
+    }
+    
+    // Close the funnel
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -96,61 +108,13 @@ const LeadCaptureFunnel = ({ isOpen, onClose }) => {
       <div className="funnel-container">
         <button className="close-button" onClick={onClose}>×</button>
         
-        {submitted ? (
-          <div className="success-step">
-            <div className="success-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="#d4af37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M22 4L12 14.01l-3-3" stroke="#d4af37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            
-            <h3 className="funnel-title">
-              <span className="gradient-text">Your Bar Efficiency Scorecard is Ready</span>
-            </h3>
-            
-            <p className="funnel-subtitle">
-              We'll email your personalized 5-Point Action Plan for immediate revenue growth.
-            </p>
-            
-            <div className="callout-box">
-              <h3>Transform Your Bar's Performance</h3>
-              <ul className="benefit-list">
-                <li>Cut wait times & recapture lost revenue</li>
-                <li>Remove payment barriers costing you sales</li>
-                <li>Turn casual customers into high-value regulars</li>
-              </ul>
-            </div>
-            
-            <div className="testimonial">
-              <div className="quote-mark">"</div>
-              <p className="quote-text">
-                "Technology doesn't replace hospitality—it enhances it. When systems work, people can focus on what matters most: creating memorable experiences."
-              </p>
-              <p className="quote-author">— Danny Meyer, Union Square Hospitality</p>
-            </div>
-            
-            <div className="guarantee-box">
-              <p className="guarantee-text">
-                <strong>🔒 No risk:</strong> 30-day money-back guarantee, cancel anytime.
-              </p>
-            </div>
-            
-            <a 
-              href="https://calendly.com/team-pourpal" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="primary-button calendar-button"
-            >
-              Book Your 15-Min Demo → Limited Slots
-            </a>
-            
-            <button 
-              className="close-text-button"
-              onClick={onClose}
-            >
-              Close
-            </button>
+        {showCashFinder ? (
+          <div className="cash-finder-wrapper">
+            {/* Pass the lead form data to pre-fill the CashFinderForm */}
+            <CashFinderForm 
+              onSubmit={handleCashFinderSubmit} 
+              initialData={formData}
+            />
           </div>
         ) : (
           <div className="funnel-step">
