@@ -21,12 +21,20 @@ const AppDownloadSplash = () => {
           <div className="phone-mockup">
             <div className="phone-frame">
               <div className="phone-screen">
-                {/* Replace placeholder with actual SVG */}
-                <img 
-                  src={ezLogoThin} 
-                  alt="EzDrink App Interface" 
-                  className="app-screenshot"
-                />
+                {/* Only this part is changed - the phone mockup content */}
+                <div className="mockup-content">
+                  <div className="mockup-logo-container">
+                    <img src={ezLogoThin} alt="EZ" className="mockup-logo" />
+                  </div>
+                  <div className="mockup-welcome">
+                    <p className="welcome-text">Welcome back Maurice.</p>
+                    <p className="drink-text">Would you like your usual Angel's Envy Smoked Old Fashioned?</p>
+                  </div>
+                  <div className="mockup-buttons">
+                    <button className="mockup-button yes-button">Yes, Please</button>
+                    <button className="mockup-button browse-button">Browse Menu</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

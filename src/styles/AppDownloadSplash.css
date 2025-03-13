@@ -390,3 +390,78 @@
     width: 100%;
   }
 }
+
+/* New styles for the phone mockup */
+.mockup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  background-color: #0a0a0a;
+  padding: 20px;
+  text-align: center;
+}
+
+.mockup-logo-container {
+  margin-bottom: 20px;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.mockup-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.mockup-welcome {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.welcome-text {
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.drink-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 200px;
+}
+
+.mockup-buttons {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+  margin-top: auto;
+  margin-bottom: 20px;
+}
+
+.mockup-button {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.yes-button {
+  background: linear-gradient(135deg, #d4af37, #f5d76e, #926f34);
+  color: #0a0a0a;
+}
+
+.browse-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
