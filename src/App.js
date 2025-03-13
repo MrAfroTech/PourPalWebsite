@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
+// In your App.js or routing configuration
+import AppDownloadSplash from './components/AppDownloadSplash';
 
 // Components
 import Navbar from './components/Navbar';
@@ -62,6 +64,7 @@ const App = () => {
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/increase-revenue" element={<IncreaseRevenue />} />
           <Route path="/reduce-expenses" element={<ReduceExpenses />} />
+          <Route path="/download" element={<AppDownloadSplash />} />
         </Routes>
         
         {showCTA && (
