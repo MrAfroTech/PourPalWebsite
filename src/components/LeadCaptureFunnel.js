@@ -11,7 +11,12 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     message: ''
   });
   const [errors, setErrors] = useState({});
-  const [showCashFinder, setShowCashFinder] = useState(false);
+  const [currentStep, setCurrentStep] = useState('leadForm'); // leadForm, cashFinder, delivery, success
+  const [cashFinderData, setCashFinderData] = useState(null);
+  const [deliveryMethod, setDeliveryMethod] = useState('email');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Add state to track if Cash Finder Plus email has been triggered
+  const [cashFinderPlusTriggered, setCashFinderPlusTriggered] = useState(false);
 
   useEffect(() => {
     // Disable body scroll when popup is open
@@ -67,11 +72,11 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleLeadFormSubmit = (e) => {
     e.preventDefault();
     
     if (validate()) {
-      // Store data in localStorage for demonstration purposes
+      // Store data in localStorage
       try {
         const existingLeads = JSON.parse(localStorage.getItem('pourpal_leads') || '[]');
         localStorage.setItem('pourpal_leads', JSON.stringify([
@@ -85,38 +90,109 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
         console.error('Error storing lead data:', error);
       }
       
-      // Show the CashFinderForm with pre-filled data
-      setShowCashFinder(true);
+      // Move to the CashFinderForm
+      setCurrentStep('cashFinder');
     }
   };
 
   // Handler for when the CashFinderForm is submitted
   const handleCashFinderSubmit = (data) => {
-    // Pass the data to the parent component if a handler was provided
-    if (onCashFinderSubmit) {
-      onCashFinderSubmit(data);
-    }
+    // Save the Cash Finder data
+    setCashFinderData(data);
     
-    // Close the funnel
-    onClose();
+    // Move to delivery method selection
+    setCurrentStep('delivery');
   };
 
-  if (!isOpen) return null;
+  const handleDeliveryMethodChange = (e) => {
+    setDeliveryMethod(e.target.value);
+  };
 
-  return (
-    <div className="funnel-overlay">
-      <div className="funnel-container">
-        <button className="close-button" onClick={onClose}>×</button>
-        
-        {showCashFinder ? (
-          <div className="cash-finder-wrapper">
-            {/* Pass the lead form data to pre-fill the CashFinderForm */}
-            <CashFinderForm 
-              onSubmit={handleCashFinderSubmit} 
-              initialData={formData}
-            />
-          </div>
-        ) : (
+  // Function to store Cash Finder Plus data for future email
+  const triggerCashFinderPlusEmail = (userData) => {
+    // Don't trigger if already triggered
+    if (cashFinderPlusTriggered) return;
+    
+    try {
+      // Since we're not using an API, we'll store the data in localStorage
+      // that another part of your application can use to trigger emails
+      const cashFinderPlusQueue = JSON.parse(localStorage.getItem('cash_finder_plus_queue') || '[]');
+      
+      // Add this user to the queue with a scheduled time (24 hours from now)
+      const scheduledTime = new Date();
+      scheduledTime.setHours(scheduledTime.getHours() + 24);
+      
+      localStorage.setItem('cash_finder_plus_queue', JSON.stringify([
+        ...cashFinderPlusQueue,
+        {
+          name: userData.name,
+          firstName: userData.name.split(' ')[0],
+          email: userData.email,
+          phone: userData.phone,
+          company: userData.company,
+          cashFinderData: userData.cashFinderResults,
+          scheduledFor: scheduledTime.toISOString(),
+          createdAt: new Date().toISOString(),
+          status: 'pending'
+        }
+      ]));
+      
+      // Mark as triggered so we don't queue multiple times
+      setCashFinderPlusTriggered(true);
+      
+      console.log('Cash Finder Plus email queued for future delivery');
+    } catch (error) {
+      console.error('Error queueing Cash Finder Plus email:', error);
+    }
+  };
+
+  const handleSendResults = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Combine all data
+    const completeData = {
+      ...formData,
+      cashFinderResults: cashFinderData,
+      deliveryMethod
+    };
+    
+    try {
+      // Here you would make an API call to your backend service
+      // For demonstration purposes, we'll simulate a successful API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      console.log('Sending results via', deliveryMethod, ':', completeData);
+      
+      // Store in localStorage for demonstration
+      localStorage.setItem('pourpal_submission', JSON.stringify({
+        ...completeData,
+        deliveredAt: new Date().toISOString()
+      }));
+      
+      // Queue Cash Finder Plus email for future sending
+      triggerCashFinderPlusEmail(completeData);
+      
+      // Move to success screen
+      setCurrentStep('success');
+      
+      // After delay, notify parent component and/or close
+      setTimeout(() => {
+        if (onCashFinderSubmit) {
+          onCashFinderSubmit(completeData);
+        }
+      }, 3000);
+    } catch (error) {
+      console.error('Error sending results:', error);
+      setIsSubmitting(false);
+      // You could add error handling here
+    }
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 'leadForm':
+        return (
           <div className="funnel-step">
             <div className="funnel-header">
               <h2 className="funnel-title">
@@ -127,7 +203,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
               </p>
             </div>
             
-            <form className="funnel-form" onSubmit={handleSubmit}>
+            <form className="funnel-form" onSubmit={handleLeadFormSubmit}>
               <div className="form-group">
                 <label htmlFor="name">Your Name *</label>
                 <input
@@ -247,7 +323,125 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
               </div>
             </form>
           </div>
-        )}
+        );
+        
+      case 'cashFinder':
+        return (
+          <div className="cash-finder-wrapper">
+            <CashFinderForm 
+              onSubmit={handleCashFinderSubmit} 
+              initialData={formData}
+            />
+          </div>
+        );
+        
+      case 'delivery':
+        return (
+          <div className="delivery-wrapper">
+            <div className="funnel-header">
+              <h2 className="funnel-title">
+                <span className="gradient-text">Your Cash Finder Report is Ready!</span>
+              </h2>
+              <p className="funnel-subtitle">
+                How would you like to receive your personalized report?
+              </p>
+            </div>
+            
+            <form onSubmit={handleSendResults} className="delivery-form">
+              <div className="delivery-options">
+                <div className="option">
+                  <input 
+                    type="radio" 
+                    id="email-option" 
+                    name="deliveryMethod" 
+                    value="email"
+                    checked={deliveryMethod === 'email'}
+                    onChange={handleDeliveryMethodChange}
+                  />
+                  <label htmlFor="email-option">
+                    Send to my email ({formData.email})
+                  </label>
+                </div>
+                
+                <div className="option">
+                  <input 
+                    type="radio" 
+                    id="sms-option" 
+                    name="deliveryMethod" 
+                    value="sms"
+                    checked={deliveryMethod === 'sms'}
+                    onChange={handleDeliveryMethodChange}
+                  />
+                  <label htmlFor="sms-option">
+                    Send to my phone ({formData.phone})
+                  </label>
+                </div>
+              </div>
+              
+              <div className="funnel-footer">
+                <button 
+                  type="submit" 
+                  className="primary-button submit-button"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Sending...' : 'Send My Report →'}
+                </button>
+                <p className="privacy-note">
+                  We respect your privacy. Your information will never be sold or shared.
+                </p>
+              </div>
+            </form>
+          </div>
+        );
+        
+      case 'success':
+        return (
+          <div className="success-wrapper">
+            <div className="funnel-header">
+              <h2 className="funnel-title">
+                <span className="gradient-text">Success!</span>
+              </h2>
+              <p className="funnel-subtitle">
+                Your Cash Finder Report has been sent to your {deliveryMethod === 'email' ? 'email' : 'phone'}.
+              </p>
+            </div>
+            
+            <div className="success-message">
+              <p>Thank you for using our Cash Finder tool. We've sent your personalized report to:</p>
+              <p className="delivery-destination">
+                {deliveryMethod === 'email' ? formData.email : formData.phone}
+              </p>
+              <p>If you don't see it within the next few minutes, please check your spam folder or contact our support team.</p>
+              
+              {/* Add Cash Finder Plus teaser */}
+              <p style={{ marginTop: '20px', fontWeight: '500' }}>
+                <span style={{ color: '#d4af37' }}>COMING SOON:</span> Keep an eye on your inbox for our exclusive Cash Finder Plus analysis to unlock even more profits through expense reduction!
+              </p>
+            </div>
+            
+            <div className="funnel-footer">
+              <button 
+                onClick={onClose} 
+                className="primary-button"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        );
+        
+      default:
+        return null;
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="funnel-overlay">
+      <div className="funnel-container">
+        <button className="close-button" onClick={onClose}>×</button>
+        {renderStep()}
       </div>
     </div>
   );

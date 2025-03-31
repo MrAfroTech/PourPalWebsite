@@ -352,3 +352,94 @@
     margin-top: 5px;
   }
 }
+
+/* Delivery Options Styles */
+.delivery-wrapper {
+  padding: 1.5rem 1rem;
+}
+
+.delivery-options {
+  margin: 1.5rem 0;
+}
+
+.option {
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.option input[type="radio"] {
+  margin-right: 10px;
+  accent-color: #d4af37;
+}
+
+.option label {
+  cursor: pointer;
+  font-size: 15px;
+  color: white;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Success Page Styles */
+.success-wrapper {
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.success-message {
+  margin: 1.5rem 0;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.success-message p {
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.delivery-destination {
+  font-weight: 600;
+  color: #d4af37 !important;
+  font-size: 16px !important;
+  margin: 0.8rem 0 !important;
+}
+
+/* Button state for loading */
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .delivery-wrapper {
+    padding: 1rem 0.5rem;
+  }
+  
+  .option {
+    padding: 0.8rem;
+  }
+  
+  .option label {
+    font-size: 14px;
+  }
+  
+  .delivery-destination {
+    font-size: 15px !important;
+  }
+}
+
+/* Cash Finder Form wrapper spacing */
+.cash-finder-wrapper {
+  padding: 0.5rem;
+}

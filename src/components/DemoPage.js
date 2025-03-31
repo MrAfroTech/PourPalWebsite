@@ -37,8 +37,7 @@ const DemoPage = () => {
                 poster="/bar-background.svg"
                 className="demo-video"
             >
-                <source src="/EzDrinkDemo.mp4" type="video/mp4" />
-                <source src="/EzDrinkDemo.webm" type="video/webm" />
+                <source src="/demoMarch2025.mov" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
           </div>
