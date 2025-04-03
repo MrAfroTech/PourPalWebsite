@@ -17,6 +17,7 @@ import LeadCaptureFunnel from './components/LeadCaptureFunnel';
 import DemoPage from './components/DemoPage';
 import IncreaseRevenue from './components/IncreaseRevenue';
 import ReduceExpenses from './components/ReduceExpenses';
+import CashFinderPage from './components/CashFinderPage';
 
 // A wrapper component that conditionally renders the navbar
 const AppContent = () => {
@@ -26,8 +27,10 @@ const AppContent = () => {
   const [showFunnel, setShowFunnel] = useState(false);
   const location = useLocation();
   
-  // Check if the current path is the download page
+  // Check if the current path is a standalone page without navbar or footer
   const isDownloadPage = location.pathname === '/download';
+  const isCashFinderPage = location.pathname === '/cash-finder';
+  const hideNavbar = isDownloadPage || isCashFinderPage;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,8 +55,8 @@ const AppContent = () => {
 
   return (
     <div className="app-container">
-      {/* Only show Navbar if not on download page */}
-      {!isDownloadPage && (
+      {/* Only show Navbar if not on standalone pages */}
+      {!hideNavbar && (
         <Navbar 
           scrollPosition={scrollPosition} 
           onOpenFunnel={openFunnel}
@@ -72,9 +75,10 @@ const AppContent = () => {
         <Route path="/increase-revenue" element={<IncreaseRevenue />} />
         <Route path="/reduce-expenses" element={<ReduceExpenses />} />
         <Route path="/download" element={<AppDownloadSplash />} />
+        <Route path="/cash-finder" element={<CashFinderPage />} />
       </Routes>
       
-      {showCTA && !isDownloadPage && (
+      {showCTA && !hideNavbar && (
         <div className="floating-cta">
           <button className="cta-button" onClick={openFunnel}>
             See How Much You'll Earn → Book Now
@@ -82,7 +86,8 @@ const AppContent = () => {
         </div>
       )}
       
-      <Footer />
+      {/* Only show Footer if not on standalone pages */}
+      {!hideNavbar && <Footer />}
       
       {showPopup && <LeadCapturePopup isOpen={showPopup} onClose={() => setShowPopup(false)} />}
       
