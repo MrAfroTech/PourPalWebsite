@@ -5,8 +5,160 @@ import StatsModal from './StatsModal';
 const HeroSection = ({ onOpenPopup }) => {
   const textRef = useRef(null);
   const statsRef = useRef(null);
+  const videoRefs = useRef([]);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [activeModal, setActiveModal] = useState(null);
   const [showMenuPopup, setShowMenuPopup] = useState(false);
+  const videoTimerRef = useRef(null);
+  const transitionInProgress = useRef(false);
+  
+  // Fixed video duration
+  const VIDEO_DURATION = 3000; // 3 seconds
+
+  // Your video sources - updated list with 22 videos
+  const videoSources = [
+    '/1899147-hd_1920_1080_30fps.mp4',
+    '/2022396_segment1.mp4',
+    '/2022396-hd_1920_1080_30fps.mp4',
+    '/3402517-uhd_4096_2160_25fps.mp4',
+    '/3403452-hd_1920_1080_25fps.mp4',
+    '/3772392-hd_1920_1080_25fps (1).mp4',
+    '/4667118-uhd_4096_2160_25fps.mp4',
+    '/4667157-uhd_4096_2160_25fps.mp4',
+    '/4694603-uhd_4096_2160_25fps (1).mp4',
+    '/4774631-hd_1920_1080_25fps (1).mp4',
+    '/5816530-hd_1920_1080_25fps.mp4',
+    '/5974777-uhd_4096_2160_30fps.mp4',
+    '/6174384-hd_1920_1080_30fps.mp4',
+    '/6174435-hd_1920_1080_30fps.mp4',
+    '/6396313-hd_1920_1080_25fps.mp4',
+    '/6396314-hd_1920_1080_25fps.mp4',
+    '/7219895-uhd_3840_2160_24fps.mp4',
+    '/7269151-uhd_3840_2160_25fps.mp4',
+    '/7269643-uhd_3840_2160_25fps.mp4',
+    '/7722221-uhd_3840_2160_25fps.mp4',
+    '/8935798-uhd_3840_2160_25fps.mp4',
+    '/9003399-hd_1920_1080_25fps.mp4',
+    '/9419423-uhd_4096_2160_25fps.mp4',
+    '/14058819-uhd_2732_1440_24fps.mp4'
+  ];
+
+  // Initialize videos and start the sequence
+  useEffect(() => {
+    // Initialize video refs array
+    videoRefs.current = Array(videoSources.length).fill(null);
+    
+    // Preload all videos to improve performance
+    videoSources.forEach((src, index) => {
+      const video = document.createElement('video');
+      video.src = src;
+      video.preload = 'auto';
+      video.muted = true;
+    });
+    
+    // Start with the first video
+    startVideoSequence();
+    
+    // Cleanup function to clear any timers
+    return () => {
+      if (videoTimerRef.current) {
+        clearTimeout(videoTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Initial sequence start
+  const startVideoSequence = () => {
+    console.log("Starting video sequence with video 0");
+    playVideo(0);
+  };
+  
+  // Main function to play a specific video
+  const playVideo = (index) => {
+    // Prevent multiple simultaneous transitions
+    if (transitionInProgress.current) {
+      console.log("Transition already in progress, skipping");
+      return;
+    }
+    
+    transitionInProgress.current = true;
+    
+    // Clear any existing timers
+    if (videoTimerRef.current) {
+      clearTimeout(videoTimerRef.current);
+    }
+    
+    console.log(`Playing video ${index}`);
+    
+    // Update the current video index
+    setCurrentVideoIndex(index);
+    
+    // Make sure all other videos are paused
+    videoRefs.current.forEach((videoRef, i) => {
+      if (videoRef && i !== index) {
+        videoRef.pause();
+      }
+    });
+    
+    // Play the current video
+    const videoRef = videoRefs.current[index];
+    if (videoRef) {
+      // Reset to beginning
+      videoRef.currentTime = 0;
+      
+      // Disable looping explicitly
+      videoRef.loop = false;
+      
+      // Play the video
+      videoRef.play()
+        .then(() => {
+          console.log(`Video ${index} started playing`);
+          
+          // Schedule next video after fixed duration
+          videoTimerRef.current = setTimeout(() => {
+            const nextIndex = (index + 1) % videoSources.length;
+            console.log(`Moving from video ${index} to ${nextIndex}`);
+            transitionInProgress.current = false;
+            playVideo(nextIndex);
+          }, VIDEO_DURATION);
+        })
+        .catch(error => {
+          console.error(`Error playing video ${index}:`, error);
+          
+          // If there's an error, try the next video
+          const nextIndex = (index + 1) % videoSources.length;
+          console.log(`Error with video ${index}, moving to ${nextIndex}`);
+          transitionInProgress.current = false;
+          
+          // Small delay before trying next video
+          setTimeout(() => {
+            playVideo(nextIndex);
+          }, 100);
+        });
+    } else {
+      console.error(`Video ref ${index} not available`);
+      
+      // If video ref is not available, move to next video
+      const nextIndex = (index + 1) % videoSources.length;
+      transitionInProgress.current = false;
+      setTimeout(() => {
+        playVideo(nextIndex);
+      }, 100);
+    }
+  };
+  
+  // Handle video ended event as backup (in case the timer fails)
+  const handleVideoEnded = (index) => {
+    console.log(`Video ${index} ended naturally`);
+    
+    // If this is the current video, move to the next one
+    if (index === currentVideoIndex) {
+      const nextIndex = (index + 1) % videoSources.length;
+      console.log(`Video ${index} ended, moving to ${nextIndex}`);
+      transitionInProgress.current = false;
+      playVideo(nextIndex);
+    }
+  };
 
   useEffect(() => {
     // Fade in text elements with staggered timing
@@ -76,9 +228,25 @@ const HeroSection = ({ onOpenPopup }) => {
 
   return (
     <section className="hero-section">
+      {/* Video Background */}
       <div className="hero-background">
-        <div className="gradient-overlay"></div>
-        <div className="grid-pattern"></div>
+        <div className="video-background">
+          {videoSources.map((src, index) => (
+            <video
+              key={`video-${index}-${src}`}
+              ref={el => videoRefs.current[index] = el}
+              src={src}
+              muted
+              playsInline
+              loop={false}
+              onEnded={() => handleVideoEnded(index)}
+              className={`video-element ${index === currentVideoIndex ? 'active' : ''}`}
+            />
+          ))}
+          <div className="video-overlay"></div>
+          <div className="gradient-overlay"></div>
+          <div className="grid-pattern"></div>
+        </div>
       </div>
       
       <div className="hero-content" ref={textRef}>

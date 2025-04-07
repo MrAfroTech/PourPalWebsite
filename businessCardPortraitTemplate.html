@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzDrink Portrait Business Card Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .card-label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .card-front, .card-back {
+            width: 200px;
+            height: 350px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .card-front {
+            background-color: #121212;
+            padding: 20px;
+        }
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15), transparent 40%), 
+                        radial-gradient(circle at 70% 60%, rgba(184, 134, 11, 0.1), transparent 50%);
+            z-index: 1;
+        }
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 2;
+        }
+        .logo {
+            position: relative;
+            z-index: 3;
+            margin-bottom: 25px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .logo h2 {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .gold-text {
+            color: #d4af37;
+        }
+        .white-text {
+            color: white;
+        }
+        .contact-info {
+            position: relative;
+            z-index: 3;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .name {
+            color: #d4af37;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .title {
+            color: #d4af37;
+            font-size: 14px;
+            margin-bottom: 24px;
+            opacity: 0.9;
+        }
+        .contact-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            justify-content: center;
+        }
+        .icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        .contact-text {
+            font-size: 13px;
+            color: #d4af37;
+            opacity: 0.9;
+        }
+        .patent {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            z-index: 3;
+            font-size: 10px;
+            font-style: italic;
+            color: rgba(212, 175, 55, 0.9);
+            text-align: center;
+        }
+        .qr-code {
+            margin: 0 auto;
+            width: 100px;
+            height: 100px;
+            z-index: 3;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .card-back {
+            background-color: #d4af37;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .back-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .tagline {
+            font-size: 16px;
+            font-weight: bold;
+            color: #121212;
+            max-width: 160px;
+            margin-bottom: 20px;
+        }
+        .description {
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.8);
+            max-width: 160px;
+            line-height: 1.4;
+        }
+        .website {
+            font-size: 16px;
+            font-weight: bold;
+            color: #121212;
+            margin-top: 20px;
+            position: absolute;
+            bottom: 30px;
+        }
+        .download-btn {
+            display: block;
+            background-color: #d4af37;
+            color: #121212;
+            padding: 10px 20px;
+            margin: 20px 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .download-btn:hover {
+            background-color: #e0b841;
+        }
+        .download-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .instructions {
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .resolution-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .resolution-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px 15px;
+            cursor: pointer;
+        }
+        .resolution-btn.active {
+            background-color: #d4af37;
+            color: white;
+            border-color: #b8860b;
+        }
+        .status-message {
+            text-align: center;
+            margin: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            display: none;
+        }
+        .status-message.success {
+            background-color: #e6f7e6;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        .status-message.error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        .status-message.loading {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EzDrink Portrait Business Card Generator</h1>
+        
+        <div class="resolution-options">
+            <button class="resolution-btn" data-dpi="300">300 DPI</button>
+            <button class="resolution-btn active" data-dpi="600">600 DPI</button>
+            <button class="resolution-btn" data-dpi="900">900 DPI</button>
+        </div>
+        
+        <div id="status-message" class="status-message"></div>
+        
+        <div class="card-container">
+            <div>
+                <div class="card-label">Front</div>
+                <div class="card-front" id="card-front">
+                    <div class="gradient-overlay"></div>
+                    <div class="grid-pattern"></div>
+                    
+                    <div class="logo">
+                        <h2><span class="gold-text">Ez</span><span class="white-text">Drink</span></h2>
+                    </div>
+                    
+                    <div class="qr-code">
+                        <svg viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg" style="width: 90%; height: 90%;">
+                            <rect width="29" height="29" fill="white"/>
+                            <!-- QR code pattern using gold color -->
+                            <rect x="2" y="2" width="3" height="3" fill="#d4af37" />
+                            <rect x="5" y="2" width="3" height="3" fill="#d4af37" />
+                            <rect x="8" y="2" width="3" height="3" fill="#d4af37" />
+                            <rect x="11" y="2" width="3" height="3" fill="#d4af37" />
+                            <rect x="14" y="2" width="3" height="3" fill="#d4af37" />
+                            <rect x="17" y="2" width="3" height="3" fill="#d4af37" />
+                            <rect x="20" y="2" width="3" height="3" fill="#d4af37" />
+                            <rect x="23" y="2" width="3" height="3" fill="#d4af37" />
+
+                            <rect x="2" y="5" width="3" height="3" fill="#d4af37" />
+                            <rect x="8" y="5" width="3" height="3" fill="#d4af37" />
+                            <rect x="14" y="5" width="3" height="3" fill="#d4af37" />
+                            <rect x="20" y="5" width="3" height="3" fill="#d4af37" />
+                            <rect x="23" y="5" width="3" height="3" fill="#d4af37" />
+
+                            <rect x="2" y="8" width="3" height="3" fill="#d4af37" />
+                            <rect x="5" y="8" width="3" height="3" fill="#d4af37" />
+                            <rect x="8" y="8" width="3" height="3" fill="#d4af37" />
+                            <rect x="14" y="8" width="3" height="3" fill="#d4af37" />
+                            <rect x="17" y="8" width="3" height="3" fill="#d4af37" />
+                            <rect x="20" y="8" width="3" height="3" fill="#d4af37" />
+                            <rect x="23" y="8" width="3" height="3" fill="#d4af37" />
+
+                            <rect x="2" y="11" width="3" height="3" fill="#d4af37" />
+                            <rect x="11" y="11" width="3" height="3" fill="#d4af37" />
+                            <rect x="17" y="11" width="3" height="3" fill="#d4af37" />
+                            <rect x="20" y="11" width="3" height="3" fill="#d4af37" />
+                            <rect x="23" y="11" width="3" height="3" fill="#d4af37" />
+
+                            <rect x="2" y="14" width="3" height="3" fill="#d4af37" />
+                            <rect x="5" y="14" width="3" height="3" fill="#d4af37" />
+                            <rect x="8" y="14" width="3" height="3" fill="#d4af37" />
+                            <rect x="14" y="14" width="3" height="3" fill="#d4af37" />
+                            <rect x="17" y="14" width="3" height="3" fill="#d4af37" />
+                            <rect x="23" y="14" width="3" height="3" fill="#d4af37" />
+
+                            <rect x="2" y="17" width="3" height="3" fill="#d4af37" />
+                            <rect x="14" y="17" width="3" height="3" fill="#d4af37" />
+                            <rect x="17" y="17" width="3" height="3" fill="#d4af37" />
+                            <rect x="20" y="17" width="3" height="3" fill="#d4af37" />
+                            <rect x="23" y="17" width="3" height="3" fill="#d4af37" />
+
+                            <rect x="2" y="20" width="3" height="3" fill="#d4af37" />
+                            <rect x="8" y="20" width="3" height="3" fill="#d4af37" />
+                            <rect x="11" y="20" width="3" height="3" fill="#d4af37" />
+                            <rect x="14" y="20" width="3" height="3" fill="#d4af37" />
+                            <rect x="17" y="20" width="3" height="3" fill="#d4af37" />
+                            <rect x="20" y="20" width="3" height="3" fill="#d4af37" />
+                            <rect x="23" y="20" width="3" height="3" fill="#d4af37" />
+
+                            <rect x="2" y="23" width="3" height="3" fill="#d4af37" />
+                            <rect x="5" y="23" width="3" height="3" fill="#d4af37" />
+                            <rect x="8" y="23" width="3" height="3" fill="#d4af37" />
+                            <rect x="11" y="23" width="3" height="3" fill="#d4af37" />
+                            <rect x="17" y="23" width="3" height="3" fill="#d4af37" />
+                            <rect x="20" y="23" width="3" height="3" fill="#d4af37" />
+                            <rect x="23" y="23" width="3" height="3" fill="#d4af37" />
+                        </svg>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <div class="name">Arthur Young</div>
+                        <div class="title">Profit Engineer - Chicago Metro</div>
+                        
+                        <div class="contact-row">
+                            <div class="icon">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.1.96.54 1.88 1 2.8a2 2 0 01-.45 2.11l-1.27 1.27a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.92.46 1.84.79 2.8 1a2 2 0 011.72 2.03z" 
+                                      stroke="#d4af37"
+                                      stroke-width="2" 
+                                      stroke-linecap="round" 
+                                      stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="contact-text">(757) 670-8595</div>
+                        </div>
+                        
+                        <div class="contact-row">
+                            <div class="icon">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" 
+                                      stroke="#d4af37"
+                                      stroke-width="2" 
+                                      stroke-linecap="round" 
+                                      stroke-linejoin="round"/>
+                                    <path d="M22 6l-10 7L2 6" 
+                                      stroke="#d4af37"
+                                      stroke-width="2" 
+                                      stroke-linecap="round" 
+                                      stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="contact-text">team@ezdrink.us</div>
+                        </div>
+                        
+                        <div class="contact-row">
+                            <div class="icon">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" 
+                                      stroke="#d4af37"
+                                      stroke-width="2" 
+                                      stroke-linecap="round" 
+                                      stroke-linejoin="round"/>
+                                    <circle cx="12" cy="10" r="3" 
+                                      stroke="#d4af37"
+                                      stroke-width="2" 
+                                      stroke-linecap="round" 
+                                      stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="contact-text">Chicago, IL</div>
+                        </div>
+                    </div>
+                    
+                    <div class="patent">Patent Pending</div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="card-label">Back</div>
+                <div class="card-back" id="card-back">
+                    <div class="back-content">
+                        <div class="tagline">
+                            YOUR FAVORITE BARTENDER'S FAVORITE BARTENDER
+                        </div>
+                        
+                        <div class="description">
+                            Eliminate chaos. Eliminate long lines.
+                            Happy customers. Efficient staff. More profits. EVERYBODY WINS!
+                        </div>
+                        
+                        <div class="website">ezdrink.us</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <p>Click the buttons below to download high-resolution business card images.</p>
+            <p>These cards are generated at 600 DPI by default - perfect for professional printing.</p>
+        </div>
+        
+        <div class="download-container">
+            <button class="download-btn" id="download-front">Download Front</button>
+            <button class="download-btn" id="download-back">Download Back</button>
+        </div>
+    </div>
+
+    <!-- Include html2canvas library for downloading the cards as images -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // Current resolution setting
+        let currentDPI = 600;
+        const statusMessage = document.getElementById('status-message');
+        
+        // Update resolution based on button clicks
+        document.querySelectorAll('.resolution-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.resolution-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Set the DPI
+                currentDPI = parseInt(this.getAttribute('data-dpi'));
+                
+                // Show confirmation message
+                showStatus(`Resolution set to ${currentDPI} DPI`, 'success');
+            });
+        });
+        
+        // Download functions
+        document.getElementById('download-front').addEventListener('click', function() {
+            downloadCard('card-front', `ezdrink-business-card-front-${currentDPI}dpi.png`);
+        });
+        
+        document.getElementById('download-back').addEventListener('click', function() {
+            downloadCard('card-back', `ezdrink-business-card-back-${currentDPI}dpi.png`);
+        });
+        
+        function downloadCard(elementId, filename) {
+            // Show loading message
+            showStatus(`Generating ${currentDPI} DPI image...`, 'loading');
+            
+            // Business card dimensions in pixels at the selected DPI
+            // Standard size is 2" x 3.5" (portrait)
+            const width = Math.round(2 * currentDPI);
+            const height = Math.round(3.5 * currentDPI);
+            
+            // Options for html2canvas
+            const options = {
+                scale: currentDPI / 100, // Scale up for higher quality
+                backgroundColor: elementId === 'card-back' ? '#d4af37' : '#121212',
+                logging: false, // Disable logs
+                useCORS: true, // Allow cross-origin images
+                allowTaint: true
+            };
+            
+            // Generate the canvas
+            html2canvas(document.getElementById(elementId), options).then(function(canvas) {
+                // Create a new canvas with the right dimensions
+                const finalCanvas = document.createElement('canvas');
+                finalCanvas.width = width;
+                finalCanvas.height = height;
+                const ctx = finalCanvas.getContext('2d');
+                
+                // Draw the image to the canvas, filling the entire dimensions
+                ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, width, height);
+                
+                try {
+                    // Create download link
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = finalCanvas.toDataURL('image/png');
+                    document.body.appendChild(link);
+                    
+                    // Trigger click
+                    link.click();
+                    
+                    // Remove link
+                    document.body.removeChild(link);
+                    
+                    // Show success message
+                    showStatus(`Downloaded ${filename} at ${currentDPI} DPI`, 'success');
+                } catch (error) {
+                    console.error('Error generating download:', error);
+                    showStatus('Error generating image. Try a lower DPI setting.', 'error');
+                }
+            }).catch(function(error) {
+                console.error('Error with html2canvas:', error);
+                showStatus('Error generating image. Please try again.', 'error');
+            });
+        }
+        
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type;
+            statusMessage.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
