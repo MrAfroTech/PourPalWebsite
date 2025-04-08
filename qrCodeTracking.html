@@ -490,6 +490,7 @@
                 </div>
                 <div class="controls">
                     <button id="export-btn" class="btn btn-outline">Export Data</button>
+                    <button id="clear-all-data" class="btn btn-outline" style="background-color: #f44336; color: white; border: none; margin-right: 10px;">Clear All Data</button>
                     <button id="new-campaign-btn" class="btn">New Campaign</button>
                 </div>
             </div>
@@ -699,76 +700,135 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Sample data - in a real app, this would come from a database
-            let campaigns = [
-                {
-                    id: 1,
-                    name: "Bar Owners Postcard",
-                    description: "Direct mail campaign targeting bar owners in Miami area",
-                    type: "postcard",
-                    startDate: "2023-04-15",
-                    endDate: "2023-06-15",
-                    status: "active",
-                    targetUrl: "https://ezdrink.us/bar-owners",
-                    qrCodeImage: null,
-                    scans: 324,
-                    scanHistory: [
-                        { date: "2023-04-15", count: 5 },
-                        { date: "2023-04-16", count: 12 },
-                        { date: "2023-04-17", count: 8 },
-                        { date: "2023-04-18", count: 15 },
-                        // ... more data
-                    ],
-                    conversionRate: 4.2
-                },
-                {
-                    id: 2,
-                    name: "Restaurant Managers Campaign",
-                    description: "Flyers distributed to restaurant managers",
-                    type: "flyer",
-                    startDate: "2023-05-01",
-                    endDate: "2023-07-01",
-                    status: "active",
-                    targetUrl: "https://ezdrink.us/restaurant",
-                    qrCodeImage: null,
-                    scans: 216,
-                    scanHistory: [
-                        { date: "2023-05-01", count: 3 },
-                        { date: "2023-05-02", count: 7 },
-                        { date: "2023-05-03", count: 9 },
-                        // ... more data
-                    ],
-                    conversionRate: 3.8
-                },
-                {
-                    id: 3,
-                    name: "Business Card QR",
-                    description: "QR code on business cards",
-                    type: "business-card",
-                    startDate: "2023-03-10",
-                    endDate: null,
-                    status: "active",
-                    targetUrl: "https://ezdrink.us/contact",
-                    qrCodeImage: null,
-                    scans: 152,
-                    scanHistory: [
-                        { date: "2023-03-10", count: 2 },
-                        { date: "2023-03-11", count: 4 },
-                        { date: "2023-03-12", count: 3 },
-                        // ... more data
-                    ],
-                    conversionRate: 5.6
+            // Initialize with empty campaigns array instead of sample data
+            let campaigns = [];
+
+            // Function to load existing campaigns - needed for compatibility
+            function loadExistingCampaigns() {
+                // In the tracking dashboard, we're primarily using loadRealData()
+                // but we need this function defined for compatibility
+                console.log("loadExistingCampaigns called in tracking dashboard");
+                
+                // Just call the real data loading function
+                loadRealData();
+            }
+            loadExistingCampaigns();
+
+            // Function to load QR code data and scan data from localStorage
+            function loadRealData() {
+                console.log("Loading real QR code tracking data...");
+                
+                // Get QR codes data from localStorage
+                const savedCodes = localStorage.getItem('ezdrink-qr-codes');
+                
+                // Get manually created campaigns
+                const savedManualCampaigns = localStorage.getItem('ezdrink-manual-campaigns');
+                
+                // Get scan data from localStorage
+                const savedScans = localStorage.getItem('ezdrink-qr-scans');
+                
+                // Initialize campaigns array
+                campaigns = [];
+                
+                // Load QR code-generated campaigns
+                if (savedCodes) {
+                    try {
+                        const qrCodes = JSON.parse(savedCodes);
+                        console.log(`Found ${qrCodes.length} QR codes in localStorage`);
+                        
+                        // Parse scan data if available
+                        const scans = savedScans ? JSON.parse(savedScans) : [];
+                        console.log(`Found ${scans.length} scans in localStorage`);
+                        
+                        // Group scans by tracking ID
+                        const scansByTrackingId = {};
+                        scans.forEach(scan => {
+                            if (!scansByTrackingId[scan.trackingId]) {
+                                scansByTrackingId[scan.trackingId] = [];
+                            }
+                            scansByTrackingId[scan.trackingId].push(scan);
+                        });
+                        
+                        // Create campaign objects from QR codes
+                        const qrCodeCampaigns = qrCodes.map(code => {
+                            const trackingId = code.trackingId;
+                            const campaignScans = scansByTrackingId[trackingId] || [];
+                            
+                            return {
+                                id: trackingId,
+                                name: code.campaign,
+                                description: `${code.type.charAt(0).toUpperCase() + code.type.slice(1)} - ${code.variant}`,
+                                type: code.type,
+                                startDate: new Date(code.created).toISOString().split('T')[0],
+                                endDate: null,
+                                status: 'active',
+                                targetUrl: code.url,
+                                qrCodeImage: null,
+                                scans: campaignScans.length,
+                                scanHistory: createScanHistory(campaignScans),
+                                conversionRate: calculateConversionRate(campaignScans.length)
+                            };
+                        });
+                        
+                        // Add QR code campaigns to the campaigns array
+                        campaigns.push(...qrCodeCampaigns);
+                    } catch (error) {
+                        console.error("Error processing QR code data:", error);
+                    }
                 }
-            ];
+                
+                // Load manually created campaigns
+                if (savedManualCampaigns) {
+                    try {
+                        const manualCampaigns = JSON.parse(savedManualCampaigns);
+                        console.log(`Found ${manualCampaigns.length} manually created campaigns`);
+                        
+                        // Add manual campaigns to the campaigns array
+                        campaigns.push(...manualCampaigns);
+                    } catch (error) {
+                        console.error("Error processing manual campaign data:", error);
+                    }
+                }
+                
+                // Update UI with loaded campaigns
+                updateDashboardStats();
+                updateActiveCampaigns();
+                updateCampaignsTable();
+            }
+            // Helper function to create scan history from scan data
+            function createScanHistory(scans) {
+                if (scans.length === 0) return [];
+                
+                // Group scans by date
+                const scansByDate = {};
+                
+                scans.forEach(scan => {
+                    const date = new Date(scan.timestamp).toISOString().split('T')[0];
+                    if (!scansByDate[date]) {
+                        scansByDate[date] = 0;
+                    }
+                    scansByDate[date]++;
+                });
+                
+                // Convert to array format for the dashboard
+                return Object.entries(scansByDate).map(([date, count]) => ({
+                    date,
+                    count
+                }));
+            }
             
-            // Initialize the Dashboard
-            updateDashboardStats();
+            // Calculate a conversion rate (placeholder implementation)
+            function calculateConversionRate(scanCount) {
+                // This is a simple placeholder - in reality you'd calculate this based on
+                // actual conversions if you're tracking them
+                if (scanCount === 0) return 0;
+                if (scanCount < 10) return (2 + Math.random() * 3).toFixed(1);
+                if (scanCount < 50) return (4 + Math.random() * 3).toFixed(1);
+                return (6 + Math.random() * 4).toFixed(1);
+            }
             
-            // Populate the Active Campaigns tab
-            updateActiveCampaigns();
-            
-            // Populate the All Campaigns table
-            updateCampaignsTable();
+            // Initialize the dashboard by loading real data
+            loadRealData();
             
             // Tab switching
             document.querySelectorAll('.tab').forEach(tab => {
@@ -785,6 +845,9 @@
                     document.getElementById(tabId).classList.add('active');
                 });
             });
+
+            document.getElementById('clear-all-data').addEventListener('click', clearAllData);
+
             
             // New Campaign Button
             document.getElementById('new-campaign-btn').addEventListener('click', function() {
@@ -807,6 +870,7 @@
             });
             
             // Save New Campaign
+           // Save New Campaign
             document.getElementById('save-new-campaign').addEventListener('click', function() {
                 const name = document.getElementById('campaign-name').value;
                 const type = document.getElementById('campaign-type').value;
@@ -823,7 +887,7 @@
                 
                 // Create new campaign object
                 const newCampaign = {
-                    id: campaigns.length + 1,
+                    id: `MANUAL-${Date.now()}`, // Create a unique ID for manual campaigns
                     name,
                     description,
                     type,
@@ -836,6 +900,16 @@
                     scanHistory: [],
                     conversionRate: 0
                 };
+                
+                // Retrieve existing manual campaigns from localStorage
+                const savedManualCampaigns = localStorage.getItem('ezdrink-manual-campaigns');
+                const manualCampaigns = savedManualCampaigns ? JSON.parse(savedManualCampaigns) : [];
+                
+                // Add new campaign to the list
+                manualCampaigns.push(newCampaign);
+                
+                // Save updated manual campaigns to localStorage
+                localStorage.setItem('ezdrink-manual-campaigns', JSON.stringify(manualCampaigns));
                 
                 // Add to campaigns array
                 campaigns.push(newCampaign);
@@ -852,7 +926,6 @@
                 // Show success message
                 alert('Campaign created successfully!');
             });
-            
             // Close View Campaign Modal
             document.getElementById('close-view-campaign').addEventListener('click', function() {
                 document.getElementById('view-campaign-modal').style.display = 'none';
@@ -867,8 +940,7 @@
                 exportToCSV();
             });
             
-            // Functions
-            
+            // Function to update dashboard stats
             function updateDashboardStats() {
                 const totalScans = campaigns.reduce((sum, campaign) => sum + campaign.scans, 0);
                 document.getElementById('total-scans').textContent = totalScans;
@@ -882,15 +954,19 @@
                         current.scans > best.scans ? current : best, campaigns[0]);
                     document.getElementById('best-campaign-name').textContent = bestCampaign.name;
                     document.getElementById('best-campaign-scans').textContent = `${bestCampaign.scans} scans`;
+                } else {
+                    document.getElementById('best-campaign-name').textContent = "-";
+                    document.getElementById('best-campaign-scans').textContent = "0 scans";
                 }
                 
                 // Calculate average conversion rate
                 const avgConversionRate = campaigns.length > 0 
-                    ? (campaigns.reduce((sum, campaign) => sum + campaign.conversionRate, 0) / campaigns.length).toFixed(1)
-                    : 0;
+                    ? (campaigns.reduce((sum, campaign) => sum + parseFloat(campaign.conversionRate), 0) / campaigns.length).toFixed(1)
+                    : "0.0";
                 document.getElementById('conversion-rate').textContent = `${avgConversionRate}%`;
             }
             
+            // Function to update active campaigns display
             function updateActiveCampaigns() {
                 const activeCampaigns = campaigns.filter(campaign => campaign.status === 'active');
                 const container = document.getElementById('active-campaigns-list');
@@ -916,7 +992,7 @@
                     // Calculate days active
                     const startDate = new Date(campaign.startDate);
                     const today = new Date();
-                    const daysActive = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+                    const daysActive = Math.max(1, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)));
                     
                     campaignElement.innerHTML = `
                         <div class="qr-card-header">
@@ -983,7 +1059,7 @@
                 // Add event listeners for view buttons
                 document.querySelectorAll('.view-campaign').forEach(button => {
                     button.addEventListener('click', function() {
-                        const campaignId = parseInt(this.getAttribute('data-id'));
+                        const campaignId = this.getAttribute('data-id');
                         viewCampaign(campaignId);
                     });
                 });
@@ -991,12 +1067,13 @@
                 // Add event listeners for edit buttons
                 document.querySelectorAll('.edit-campaign').forEach(button => {
                     button.addEventListener('click', function() {
-                        const campaignId = parseInt(this.getAttribute('data-id'));
+                        const campaignId = this.getAttribute('data-id');
                         editCampaign(campaignId);
                     });
                 });
             }
             
+            // Function to update campaigns table
             function updateCampaignsTable() {
                 const tableBody = document.getElementById('campaigns-table-body');
                 
@@ -1029,7 +1106,7 @@
                 // Add event listeners for view buttons
                 document.querySelectorAll('.view-campaign-table').forEach(button => {
                     button.addEventListener('click', function() {
-                        const campaignId = parseInt(this.getAttribute('data-id'));
+                        const campaignId = this.getAttribute('data-id');
                         viewCampaign(campaignId);
                     });
                 });
@@ -1037,12 +1114,13 @@
                 // Add event listeners for edit buttons
                 document.querySelectorAll('.edit-campaign-table').forEach(button => {
                     button.addEventListener('click', function() {
-                        const campaignId = parseInt(this.getAttribute('data-id'));
+                        const campaignId = this.getAttribute('data-id');
                         editCampaign(campaignId);
                     });
                 });
             }
             
+            // Function to view campaign details
             function viewCampaign(campaignId) {
                 const campaign = campaigns.find(c => c.id === campaignId);
                 if (!campaign) return;
@@ -1055,7 +1133,7 @@
                 // Calculate days active
                 const startDate = new Date(campaign.startDate);
                 const today = new Date();
-                const daysActive = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+                const daysActive = Math.max(1, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)));
                 
                 modalBody.innerHTML = `
                     <div class="qr-card-content" style="margin-bottom: 20px;">
@@ -1114,7 +1192,11 @@
                     <p>Recent scan activity for this campaign</p>
                     
                     <div class="chart-container">
-                        <p style="text-align: center; padding-top: 120px; color: #666;">Scan history chart would be displayed here.</p>
+                        ${
+                            campaign.scanHistory && campaign.scanHistory.length > 0 
+                            ? '<p>Scan history data available</p>' // You could add a chart here
+                            : '<p style="text-align: center; padding-top: 120px; color: #666;">No scan history available yet.</p>'
+                        }
                     </div>
                 `;
                 
@@ -1123,17 +1205,19 @@
                 // Set up the edit button
                 document.getElementById('edit-campaign-btn').setAttribute('data-id', campaignId);
                 document.getElementById('edit-campaign-btn').addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
+                    const id = this.getAttribute('data-id');
                     document.getElementById('view-campaign-modal').style.display = 'none';
                     editCampaign(id);
                 });
             }
             
+            // Function to edit campaign
             function editCampaign(campaignId) {
                 // In a real app, this would open an edit form
                 alert(`Edit campaign ${campaignId} functionality would be implemented here.`);
             }
             
+            // Function to export campaigns to CSV
             function exportToCSV() {
                 // Create CSV content
                 let csvContent = "data:text/csv;charset=utf-8,";
@@ -1165,6 +1249,18 @@
             
             function formatDateForFilename(date) {
                 return date.toISOString().split('T')[0];
+            }
+
+            function clearAllData() {
+                if (confirm('Are you sure you want to delete ALL campaign data? This cannot be undone.')) {
+                    localStorage.removeItem('ezdrink-qr-codes');
+                    localStorage.removeItem('ezdrink-qr-scans');
+                    campaigns = [];
+                    updateDashboardStats();
+                    updateActiveCampaigns();
+                    updateCampaignsTable();
+                    alert('All campaign data has been cleared.');
+                }
             }
         });
     </script>
