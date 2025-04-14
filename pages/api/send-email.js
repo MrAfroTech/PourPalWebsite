@@ -2,65 +2,87 @@
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
-  // Add comprehensive CORS headers
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  console.log('Email API called, method:', req.method);
+  console.log('Environment variables loaded:', {
+    host: process.env.EMAIL_HOST || 'not set',
+    port: process.env.EMAIL_PORT || 'not set',
+    user: process.env.EMAIL_USER ? 'is set' : 'not set',
+    pass: process.env.EMAIL_PASSWORD ? 'is set' : 'not set',
+    from: process.env.EMAIL_FROM || 'not set'
+  });
 
-  // Handle OPTIONS request (preflight CORS)
+  // Handle OPTIONS request
   if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
   
-  // Only allow POST requests
+  // Only handle POST requests
   if (req.method !== 'POST') {
-    console.log(`Rejected ${req.method} request to /api/send-email`);
+    console.log('Rejecting non-POST request');
     return res.status(405).json({ success: false, message: 'Method not allowed' });
   }
 
   try {
-    console.log('Processing email request...');
+    console.log('Processing POST request');
     const emailData = req.body;
-    
-    // Log request data for debugging
     console.log('Request body:', JSON.stringify(emailData));
     
-    // Basic validation
+    // Validate required fields
     if (!emailData.to || !emailData.subject || (!emailData.html && !emailData.text)) {
-      console.log('Validation failed:', { to: !!emailData.to, subject: !!emailData.subject, html: !!emailData.html, text: !!emailData.text });
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Invalid email data. Required fields: to, subject, and either html or text.' 
+      console.log('Missing required fields:', {
+        to: !!emailData.to,
+        subject: !!emailData.subject,
+        html: !!emailData.html,
+        text: !!emailData.text
+      });
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields'
       });
     }
     
-    // Create transporter with fixed PrivateEmail settings
+    console.log('Creating transporter');
+    // Create transporter using environment variables
     const transporter = nodemailer.createTransport({
-      host: 'mail.privateemail.com',
-      port: 587,
-      secure: false,
+      host: process.env.EMAIL_HOST,
+      port: parseInt(process.env.EMAIL_PORT),
+      secure: process.env.EMAIL_SECURE === 'true',
       auth: {
-        user: 'team@ezdrink.us',
-        pass: 'Setmefree$2025'
-      }
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+      },
+      tls: {
+        rejectUnauthorized: false
+      },
+      debug: true, // Enable debug logs
+      logger: true  // Log SMTP traffic
     });
     
-    // Prepare the email options
+    console.log('Preparing mail options');
+    // Send email
     const mailOptions = {
-      from: '"EzDrink Cash Finder" <team@ezdrink.us>',
+      from: process.env.EMAIL_FROM,
       to: emailData.to,
       subject: emailData.subject,
-      text: emailData.text,
-      html: emailData.html
+      text: emailData.text || '',
+      html: emailData.html || ''
     };
+    console.log('Mail options prepared:', {
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+      textLength: mailOptions.text?.length || 0,
+      htmlLength: mailOptions.html?.length || 0
+    });
     
-    console.log('Attempting to send email to:', emailData.to);
-    // Send the email
+    console.log('Sending email...');
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully:', info.messageId);
     
-    // Return success response
     return res.status(200).json({
       success: true,
       message: 'Email sent successfully',
@@ -69,13 +91,17 @@ export default async function handler(req, res) {
     
   } catch (error) {
     console.error('Error sending email:', error);
+    console.error('Error details:', {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+      command: error.command
+    });
     
-    // Return error response with more details
     return res.status(500).json({
       success: false,
       message: 'Failed to send email',
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      error: error.message
     });
   }
 }
