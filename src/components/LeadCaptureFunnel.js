@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/LeadCaptureFunnel.css';
 import CashFinderForm from './CashFinderForm';
+import { sendCashFinderReport, queueCashFinderPlusEmail, simulateEmailSend } from '../services/directEmailService';
 
 const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
   const [formData, setFormData] = useState({
@@ -15,8 +16,11 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
   const [cashFinderData, setCashFinderData] = useState(null);
   const [deliveryMethod, setDeliveryMethod] = useState('email');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sendError, setSendError] = useState(null);
   // Add state to track if Cash Finder Plus email has been triggered
   const [cashFinderPlusTriggered, setCashFinderPlusTriggered] = useState(false);
+  // Track which delivery method was used successfully
+  const [deliverySuccess, setDeliverySuccess] = useState(null);
 
   useEffect(() => {
     // Disable body scroll when popup is open
@@ -76,7 +80,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     e.preventDefault();
     
     if (validate()) {
-      // Store data in localStorage
+      // Store data in localStorage for backup
       try {
         const existingLeads = JSON.parse(localStorage.getItem('pourpal_leads') || '[]');
         localStorage.setItem('pourpal_leads', JSON.stringify([
@@ -106,36 +110,18 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
 
   const handleDeliveryMethodChange = (e) => {
     setDeliveryMethod(e.target.value);
+    // Clear any previous errors when changing method
+    setSendError(null);
   };
 
-  // Function to store Cash Finder Plus data for future email
-  const triggerCashFinderPlusEmail = (userData) => {
+  // Function to trigger Cash Finder Plus email
+  const triggerCashFinderPlusEmail = async (userData) => {
     // Don't trigger if already triggered
     if (cashFinderPlusTriggered) return;
     
     try {
-      // Since we're not using an API, we'll store the data in localStorage
-      // that another part of your application can use to trigger emails
-      const cashFinderPlusQueue = JSON.parse(localStorage.getItem('cash_finder_plus_queue') || '[]');
-      
-      // Add this user to the queue with a scheduled time (24 hours from now)
-      const scheduledTime = new Date();
-      scheduledTime.setHours(scheduledTime.getHours() + 24);
-      
-      localStorage.setItem('cash_finder_plus_queue', JSON.stringify([
-        ...cashFinderPlusQueue,
-        {
-          name: userData.name,
-          firstName: userData.name.split(' ')[0],
-          email: userData.email,
-          phone: userData.phone,
-          company: userData.company,
-          cashFinderData: userData.cashFinderResults,
-          scheduledFor: scheduledTime.toISOString(),
-          createdAt: new Date().toISOString(),
-          status: 'pending'
-        }
-      ]));
+      // Queue the follow-up email
+      await queueCashFinderPlusEmail(userData);
       
       // Mark as triggered so we don't queue multiple times
       setCashFinderPlusTriggered(true);
@@ -143,12 +129,14 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
       console.log('Cash Finder Plus email queued for future delivery');
     } catch (error) {
       console.error('Error queueing Cash Finder Plus email:', error);
+      // Non-critical, so we continue anyway
     }
   };
 
   const handleSendResults = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSendError(null);
     
     // Combine all data
     const completeData = {
@@ -158,20 +146,39 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     };
     
     try {
-      // Here you would make an API call to your backend service
-      // For demonstration purposes, we'll simulate a successful API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('Sending results via', deliveryMethod, ':', completeData);
-      
-      // Store in localStorage for demonstration
+      // Store in localStorage for backup and tracking
       localStorage.setItem('pourpal_submission', JSON.stringify({
         ...completeData,
-        deliveredAt: new Date().toISOString()
+        deliveryAttemptedAt: new Date().toISOString()
       }));
       
+      // IMPORTANT: This is where the email is sent
+      // For development/testing, use the simulation function
+      // const sendResult = await simulateEmailSend(formData, cashFinderData, deliveryMethod);
+      
+      // For production, use the real email sending function
+      const sendResult = await sendCashFinderReport(formData, cashFinderData, deliveryMethod);
+      
+      console.log('Send result:', sendResult);
+      
+      if (!sendResult.success) {
+        throw new Error(sendResult.message || 'Failed to send report');
+      }
+      
+      // Update the localStorage record with success info
+      localStorage.setItem('pourpal_submission', JSON.stringify({
+        ...completeData,
+        deliveryAttemptedAt: new Date().toISOString(),
+        deliverySuccessAt: new Date().toISOString(),
+        deliveryMethod: sendResult.actualMethod || deliveryMethod,
+        messageId: sendResult.id
+      }));
+      
+      // Store which method was actually used (in case of fallback)
+      setDeliverySuccess(sendResult.actualMethod || deliveryMethod);
+      
       // Queue Cash Finder Plus email for future sending
-      triggerCashFinderPlusEmail(completeData);
+      await triggerCashFinderPlusEmail(completeData);
       
       // Move to success screen
       setCurrentStep('success');
@@ -185,7 +192,15 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     } catch (error) {
       console.error('Error sending results:', error);
       setIsSubmitting(false);
-      // You could add error handling here
+      setSendError(error.message || 'Failed to send report. Please try again.');
+      
+      // Update localStorage with failure info
+      localStorage.setItem('pourpal_submission', JSON.stringify({
+        ...completeData,
+        deliveryAttemptedAt: new Date().toISOString(),
+        deliveryError: error.message,
+        deliveryErrorAt: new Date().toISOString()
+      }));
     }
   };
 
@@ -204,7 +219,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
             </div>
             
             <form className="funnel-form" onSubmit={handleLeadFormSubmit}>
-              <div className="form-group">
+                              <div className="form-group">
                 <label htmlFor="name">Your Name *</label>
                 <input
                   type="text"
@@ -378,6 +393,13 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
                 </div>
               </div>
               
+              {sendError && (
+                <div className="error-notification">
+                  <span className="error-icon">⚠️</span>
+                  <span className="error-text">{sendError}</span>
+                </div>
+              )}
+              
               <div className="funnel-footer">
                 <button 
                   type="submit" 
@@ -402,14 +424,14 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
                 <span className="gradient-text">Success!</span>
               </h2>
               <p className="funnel-subtitle">
-                Your Cash Finder Report has been sent to your {deliveryMethod === 'email' ? 'email' : 'phone'}.
+                Your Cash Finder Report has been sent to your {deliverySuccess || deliveryMethod === 'email' ? 'email' : 'phone'}.
               </p>
             </div>
             
             <div className="success-message">
               <p>Thank you for using our Cash Finder tool. We've sent your personalized report to:</p>
               <p className="delivery-destination">
-                {deliveryMethod === 'email' ? formData.email : formData.phone}
+                {deliverySuccess === 'email' || deliveryMethod === 'email' ? formData.email : formData.phone}
               </p>
               <p>If you don't see it within the next few minutes, please check your spam folder or contact our support team.</p>
               

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzDrink Logo Download</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        
+        .logo-container {
+            width: 600px;
+            max-width: 90%;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        svg {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        
+        .download-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .download-button {
+            background-color: #d4af37;
+            color: #000;
+            font-weight: bold;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .download-button:hover {
+            background-color: #f5e28a;
+            transform: translateY(-2px);
+        }
+        
+        .download-button svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            margin-bottom: 0;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 25px;
+            max-width: 500px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <!-- SVG Logo -->
+        <svg id="ezdrink-logo" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- Gold gradient for "Ez" -->
+            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#d4af37" />
+                <stop offset="100%" stop-color="#f5e28a" />
+            </linearGradient>
+            
+            <!-- Logo text -->
+            <text x="300" y="140" font-family="Arial, sans-serif" font-size="120" font-weight="bold" text-anchor="middle">
+                <tspan fill="url(#goldGradient)">Ez</tspan><tspan fill="#000000">Drink</tspan>
+            </text>
+        </svg>
+        
+        <div class="download-buttons">
+            <a href="#" class="download-button" id="svg-download">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download SVG
+            </a>
+            <a href="#" class="download-button" id="png-download">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download PNG
+            </a>
+            <a href="#" class="download-button" id="pdf-download">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download PDF
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Function to download SVG
+        document.getElementById('svg-download').addEventListener('click', function(e) {
+            e.preventDefault();
+            const svgData = new XMLSerializer().serializeToString(document.getElementById('ezdrink-logo'));
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const svgUrl = URL.createObjectURL(svgBlob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = svgUrl;
+            downloadLink.download = 'EzDrink_Logo.svg';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        });
+
+        // Function to download PNG (this creates a PNG from the SVG)
+        document.getElementById('png-download').addEventListener('click', function(e) {
+            e.preventDefault();
+            const canvas = document.createElement('canvas');
+            const svg = document.getElementById('ezdrink-logo');
+            const box = svg.viewBox.baseVal;
+            
+            canvas.width = 1200; // High resolution
+            canvas.height = 400;
+            
+            const ctx = canvas.getContext('2d');
+            const data = new XMLSerializer().serializeToString(svg);
+            const DOMURL = window.URL || window.webkitURL || window;
+            const img = new Image();
+            const svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+            const url = DOMURL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                DOMURL.revokeObjectURL(url);
+                
+                const pngUrl = canvas.toDataURL('image/png');
+                const downloadLink = document.createElement('a');
+                downloadLink.href = pngUrl;
+                downloadLink.download = 'EzDrink_Logo.png';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            };
+            
+            img.src = url;
+        });
+
+        // Function to download PDF
+        document.getElementById('pdf-download').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert("PDF download would be implemented here. For now, please use the SVG or PNG download, as PDF generation requires additional libraries.");
+            // Note: Actual PDF generation would require a library like jsPDF
+        });
+    </script>
+</body>
+</html>

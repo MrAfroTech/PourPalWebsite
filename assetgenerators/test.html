@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transparent QR Code Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        #qrcode {
+            margin: 20px 0;
+            background-color: transparent;
+        }
+        
+        #download-btn {
+            margin-top: 15px;
+        }
+        
+        .preview {
+            margin-top: 20px;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC');
+            text-align: center;
+        }
+        
+        .preview-text {
+            margin-bottom: 10px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Transparent QR Code Generator</h1>
+        
+        <div class="controls">
+            <div>
+                <label for="text-input">QR Code Content (URL or Text):</label>
+                <input type="text" id="text-input" placeholder="Enter URL or text" value="https://ezdrink.com">
+            </div>
+            
+            <div>
+                <label for="foreground-color">Foreground Color:</label>
+                <input type="color" id="foreground-color" value="#000000">
+            </div>
+            
+            <div>
+                <label for="size">QR Code Size:</label>
+                <input type="number" id="size" min="100" max="500" value="200">
+            </div>
+            
+            <div>
+                <label for="error-correction">Error Correction Level:</label>
+                <select id="error-correction">
+                    <option value="L">Low (7%)</option>
+                    <option value="M" selected>Medium (15%)</option>
+                    <option value="Q">Quartile (25%)</option>
+                    <option value="H">High (30%)</option>
+                </select>
+            </div>
+            
+            <button id="generate-btn">Generate QR Code</button>
+        </div>
+        
+        <div class="qr-container">
+            <div id="qrcode"></div>
+            <button id="download-btn" disabled>Download Transparent QR Code</button>
+        </div>
+        
+        <div class="preview">
+            <div class="preview-text">QR Code Preview on Postcard Background</div>
+            <div id="preview-qrcode"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const textInput = document.getElementById('text-input');
+            const foregroundColor = document.getElementById('foreground-color');
+            const sizeInput = document.getElementById('size');
+            const errorCorrection = document.getElementById('error-correction');
+            const generateBtn = document.getElementById('generate-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const qrContainer = document.getElementById('qrcode');
+            const previewContainer = document.getElementById('preview-qrcode');
+            
+            let qrcode = null;
+            let previewQR = null;
+            
+            // Generate the QR code
+            function generateQRCode() {
+                // Clear previous QR codes
+                qrContainer.innerHTML = '';
+                previewContainer.innerHTML = '';
+                
+                const text = textInput.value || 'https://ezdrink.com';
+                const color = foregroundColor.value;
+                const size = parseInt(sizeInput.value, 10) || 200;
+                const ecLevel = errorCorrection.value;
+                
+                // Create main QR code
+                qrcode = new QRCode(qrContainer, {
+                    text: text,
+                    width: size,
+                    height: size,
+                    colorDark: color,
+                    colorLight: "rgba(0, 0, 0, 0)", // Transparent background
+                    correctLevel: QRCode.CorrectLevel[ecLevel]
+                });
+                
+                // Create preview QR code
+                previewQR = new QRCode(previewContainer, {
+                    text: text,
+                    width: size,
+                    height: size,
+                    colorDark: color,
+                    colorLight: "rgba(0, 0, 0, 0)", // Transparent background
+                    correctLevel: QRCode.CorrectLevel[ecLevel]
+                });
+                
+                // Enable download button
+                downloadBtn.disabled = false;
+            }
+            
+            // Download the QR code as PNG with transparency
+            function downloadQRCode() {
+                const canvas = qrContainer.querySelector('canvas');
+                
+                if (canvas) {
+                    // Create a new canvas with transparency
+                    const transparentCanvas = document.createElement('canvas');
+                    const ctx = transparentCanvas.getContext('2d');
+                    transparentCanvas.width = canvas.width;
+                    transparentCanvas.height = canvas.height;
+                    
+                    // Draw the QR code on transparent canvas
+                    ctx.drawImage(canvas, 0, 0);
+                    
+                    // Create a download link
+                    const downloadLink = document.createElement('a');
+                    downloadLink.download = 'transparent-qrcode.png';
+                    
+                    // Convert canvas to data URL
+                    transparentCanvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        downloadLink.href = url;
+                        downloadLink.click();
+                        URL.revokeObjectURL(url);
+                    }, 'image/png');
+                }
+            }
+            
+            // Event listeners
+            generateBtn.addEventListener('click', generateQRCode);
+            downloadBtn.addEventListener('click', downloadQRCode);
+            
+            // Generate a default QR code on page load
+            generateQRCode();
+        });
+    </script>
+</body>
+</html>
