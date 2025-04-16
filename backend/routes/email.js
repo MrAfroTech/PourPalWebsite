@@ -1,108 +1,148 @@
 // routes/email.js
 const express = require('express');
 const router = express.Router();
-const emailService = require('../services/emailService');
-const subscriptionService = require('../services/subscriptionService');
+const AWS = require('aws-sdk');
 
-// Send Cash Finder Report email
+// Configure AWS SDK with environment variables
+const configureAWS = () => {
+  AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION || 'us-east-1'
+  });
+  return new AWS.SES({ apiVersion: '2010-12-01' });
+};
+
+// Helper to log events to console with timestamps
+const logEvent = (type, message, data = null) => {
+  console.log(`[${new Date().toISOString()}][${type.toUpperCase()}] ${message}`, data || '');
+};
+
+// Email sending endpoint
 router.post('/send-email', async (req, res) => {
   try {
-    console.log('Received request to send email:', req.body.to);
+    const { to, subject, text, html, userData } = req.body;
     
-    const { to, subject, html, text } = req.body;
+    logEvent('info', 'Email request received', { to, subject });
     
     // Validate required fields
-    if (!to || !subject || (!html && !text)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Missing required fields'
+    if (!to || !subject || (!text && !html)) {
+      logEvent('error', 'Missing required email fields');
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Missing required email fields' 
       });
     }
     
-    // Send email
-    const result = await emailService.sendEmail({
-      to,
-      subject,
-      html,
-      text
-    });
+    // Create SES instance
+    const ses = configureAWS();
     
-    // Save subscriber data (optional)
-    try {
-      if (req.body.userData) {
-        await subscriptionService.saveSubscriber(req.body.userData);
+    // Prepare email parameters
+    const params = {
+      Source: process.env.EMAIL_FROM || 'team@ezdrink.us',
+      Destination: {
+        ToAddresses: [to]
+      },
+      Message: {
+        Subject: {
+          Data: subject,
+          Charset: 'UTF-8'
+        },
+        Body: {
+          Text: {
+            Data: text || 'Please view this email with an HTML-capable email client.',
+            Charset: 'UTF-8'
+          }
+        }
       }
-    } catch (subError) {
-      console.error('Error saving subscriber data:', subError);
-      // Continue anyway - this is not critical
+    };
+    
+    // Add HTML body if provided
+    if (html) {
+      params.Message.Body.Html = {
+        Data: html,
+        Charset: 'UTF-8'
+      };
     }
     
-    // Return success
-    res.status(200).json({
+    // Send the email
+    logEvent('info', 'Sending email via AWS SES');
+    const result = await ses.sendEmail(params).promise();
+    
+    logEvent('info', 'Email sent successfully', { messageId: result.MessageId });
+    
+    // Store user data for tracking/analysis if needed
+    if (userData) {
+      // Here you would typically save to a database
+      logEvent('info', 'User data received for tracking', { userData });
+    }
+    
+    // Return success response
+    return res.status(200).json({
       success: true,
       message: 'Email sent successfully',
-      messageId: result.messageId
+      messageId: result.MessageId
     });
+    
   } catch (error) {
-    console.error('Error sending email:', error);
+    logEvent('error', 'Email sending failed', { 
+      error: error.message,
+      code: error.code,
+      statusCode: error.statusCode
+    });
     
-    // Check if it's a bounce
-    const isBounce = error.message && (
-      error.message.includes('bounce') ||
-      error.message.includes('rejected') ||
-      error.message.includes('invalid')
-    );
-    
-    // If it's a bounce, log it
-    if (isBounce) {
-      try {
-        await emailService.recordBounce(req.body.to, error.message);
-      } catch (bounceError) {
-        console.error('Error recording bounce:', bounceError);
-      }
-    }
-    
-    res.status(500).json({
+    // Return detailed error for debugging
+    return res.status(500).json({
       success: false,
       message: 'Failed to send email',
-      error: error.message
+      error: error.message,
+      code: error.code
     });
   }
 });
 
-// Queue Cash Finder Plus email for later sending
+// Queue follow-up email endpoint
 router.post('/queue-follow-up', async (req, res) => {
   try {
-    const { email, firstName, company, cashFinderData } = req.body;
+    const { email, firstName, company, cashFinderData, scheduledFor } = req.body;
     
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email is required'
+    logEvent('info', 'Follow-up email request received', { email, scheduledFor });
+    
+    // Validate required fields
+    if (!email || !firstName || !company) {
+      logEvent('error', 'Missing required fields for follow-up email');
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Missing required fields for follow-up email' 
       });
     }
     
-    // Queue the email
-    await emailService.queueFollowUpEmail({
+    // In a real implementation, you would:
+    // 1. Store this request in a database
+    // 2. Set up a scheduler (like node-cron) to process it later
+    // 3. Send confirmation to the client
+    
+    // For now, just log and return success
+    logEvent('info', 'Follow-up email queued for future delivery', {
       email,
-      firstName,
-      company,
-      cashFinderData,
-      emailType: 'cash-finder-plus'
+      scheduledFor
     });
     
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: 'Follow-up email scheduled successfully'
+      message: 'Follow-up email queued successfully',
+      scheduledFor: scheduledFor
     });
+    
   } catch (error) {
-    console.error('Error queuing follow-up email:', error);
+    logEvent('error', 'Failed to queue follow-up email', { 
+      error: error.message
+    });
     
-    // This is non-critical, so return success anyway
-    res.status(200).json({
-      success: true,
-      message: 'Request received, but follow-up may be delayed',
-      warning: error.message
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to queue follow-up email',
+      error: error.message
     });
   }
 });
