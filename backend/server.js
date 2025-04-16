@@ -10,10 +10,16 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: ['https://pourpal-website2.vercel.app', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+    // Allow requests from any Vercel deployment of your project and your custom domain
+    origin: [
+      /.*-maurice-sanders-projects\.vercel\.app$/,  // This matches any Vercel preview URL
+      'https://yourdomain.com',                     // Your production domain
+      'http://localhost:3000'                       // Local development
+    ],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
+  
 app.use(bodyParser.json());
 
 // Routes
