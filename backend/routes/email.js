@@ -5,11 +5,18 @@ const AWS = require('aws-sdk');
 
 // Configure AWS SDK with environment variables
 const configureAWS = () => {
+  // Log env variables existence (not their values) for debugging
+  console.log(`[CONFIG] AWS Key exists: ${!!process.env.AWS_ACCESS_KEY_ID}`);
+  console.log(`[CONFIG] AWS Secret exists: ${!!process.env.AWS_SECRET_ACCESS_KEY}`);
+  console.log(`[CONFIG] AWS Region: ${process.env.AWS_REGION || 'us-east-1'}`);
+  console.log(`[CONFIG] Email From: ${process.env.EMAIL_FROM || 'team@ezdrink.us'}`);
+  
   AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     region: process.env.AWS_REGION || 'us-east-1'
   });
+  
   return new AWS.SES({ apiVersion: '2010-12-01' });
 };
 
@@ -18,83 +25,172 @@ const logEvent = (type, message, data = null) => {
   console.log(`[${new Date().toISOString()}][${type.toUpperCase()}] ${message}`, data || '');
 };
 
-// Email sending endpoint
+// Validate email address format
+const isValidEmail = (email) => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+};
+
+// Email sending endpoint with comprehensive error handling
 router.post('/send-email', async (req, res) => {
   try {
-    const { to, subject, text, html, userData } = req.body;
+    logEvent('info', 'Email request received', req.body);
     
-    logEvent('info', 'Email request received', { to, subject });
+    const { to, subject, text, html, userData } = req.body;
     
     // Validate required fields
     if (!to || !subject || (!text && !html)) {
-      logEvent('error', 'Missing required email fields');
+      logEvent('error', 'Missing required email fields', { to, subject, hasText: !!text, hasHtml: !!html });
       return res.status(400).json({ 
         success: false, 
         message: 'Missing required email fields' 
       });
     }
     
-    // Create SES instance
-    const ses = configureAWS();
+    // Validate email format
+    if (!isValidEmail(to)) {
+      logEvent('error', 'Invalid email format', { to });
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid email format' 
+      });
+    }
     
-    // Prepare email parameters
-    const params = {
-      Source: process.env.EMAIL_FROM || 'team@ezdrink.us',
-      Destination: {
-        ToAddresses: [to]
-      },
-      Message: {
-        Subject: {
-          Data: subject,
-          Charset: 'UTF-8'
+    try {
+      // Create SES instance
+      const ses = configureAWS();
+      
+      // Prepare email parameters
+      const params = {
+        Source: process.env.EMAIL_FROM || 'team@ezdrink.us',
+        Destination: {
+          ToAddresses: [to]
         },
-        Body: {
-          Text: {
-            Data: text || 'Please view this email with an HTML-capable email client.',
+        Message: {
+          Subject: {
+            Data: subject,
             Charset: 'UTF-8'
+          },
+          Body: {
+            Text: {
+              Data: text || 'Please view this email with an HTML-capable email client.',
+              Charset: 'UTF-8'
+            }
           }
         }
-      }
-    };
-    
-    // Add HTML body if provided
-    if (html) {
-      params.Message.Body.Html = {
-        Data: html,
-        Charset: 'UTF-8'
       };
+      
+      // Add HTML body if provided
+      if (html) {
+        params.Message.Body.Html = {
+          Data: html,
+          Charset: 'UTF-8'
+        };
+      }
+      
+      logEvent('info', 'Preparing to send email via AWS SES', { 
+        to: params.Destination.ToAddresses[0],
+        from: params.Source,
+        subject: params.Message.Subject.Data 
+      });
+      
+      // Send the email
+      const result = await ses.sendEmail(params).promise();
+      
+      logEvent('info', 'Email sent successfully', { messageId: result.MessageId });
+      
+      // Store user data if provided
+      if (userData) {
+        logEvent('info', 'User data received for tracking', userData);
+        // In a production environment, you would save this to a database
+      }
+      
+      // Return success response
+      return res.status(200).json({
+        success: true,
+        message: 'Email sent successfully',
+        messageId: result.MessageId
+      });
+    } catch (awsError) {
+      // Capture specific AWS errors
+      logEvent('error', 'AWS SES Error', { 
+        code: awsError.code, 
+        message: awsError.message,
+        statusCode: awsError.statusCode
+      });
+      
+      // Handle specific AWS error codes
+      let errorMessage = 'Failed to send email';
+      let statusCode = 500;
+      
+      switch (awsError.code) {
+        case 'MessageRejected':
+          errorMessage = 'Email was rejected by AWS SES';
+          break;
+        case 'MailFromDomainNotVerified':
+          errorMessage = 'The sending domain is not verified';
+          break;
+        case 'EmailAddressNotVerified':
+          errorMessage = 'The sending email address is not verified';
+          break;
+        case 'InvalidParameterValue':
+          errorMessage = 'Invalid email parameter';
+          break;
+        case 'AccessDenied':
+        case 'SignatureDoesNotMatch':
+        case 'InvalidClientTokenId':
+          errorMessage = 'AWS authentication error. Check your credentials.';
+          break;
+        case 'Throttling':
+          errorMessage = 'AWS SES rate limit exceeded. Try again later.';
+          statusCode = 429; // Too Many Requests
+          break;
+        default:
+          errorMessage = `AWS SES error: ${awsError.code || 'unknown'}`;
+      }
+      
+      // For sandbox mode issues
+      if (awsError.message && awsError.message.includes('sandbox')) {
+        errorMessage = 'AWS SES account is in sandbox mode. Can only send to verified emails.';
+      }
+      
+      return res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+        error: awsError.message,
+        code: awsError.code
+      });
     }
-    
-    // Send the email
-    logEvent('info', 'Sending email via AWS SES');
-    const result = await ses.sendEmail(params).promise();
-    
-    logEvent('info', 'Email sent successfully', { messageId: result.MessageId });
-    
-    // Store user data for tracking/analysis if needed
-    if (userData) {
-      // Here you would typically save to a database
-      logEvent('info', 'User data received for tracking', { userData });
-    }
-    
-    // Return success response
-    return res.status(200).json({
-      success: true,
-      message: 'Email sent successfully',
-      messageId: result.MessageId
-    });
-    
   } catch (error) {
-    logEvent('error', 'Email sending failed', { 
+    logEvent('error', 'Unhandled exception in email endpoint', { 
       error: error.message,
-      code: error.code,
-      statusCode: error.statusCode
+      stack: error.stack
     });
     
-    // Return detailed error for debugging
     return res.status(500).json({
       success: false,
-      message: 'Failed to send email',
+      message: 'Internal server error while processing email request',
+      error: error.message
+    });
+  }
+});
+
+// Simple email test endpoint - for checking configuration
+router.get('/test-email-config', async (req, res) => {
+  try {
+    const ses = configureAWS();
+    const sendQuota = await ses.getSendQuota().promise();
+    
+    return res.status(200).json({
+      success: true,
+      message: 'AWS SES configuration is valid',
+      quota: sendQuota,
+      emailFrom: process.env.EMAIL_FROM || 'team@ezdrink.us'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'AWS SES configuration test failed',
       error: error.message,
       code: error.code
     });
@@ -117,12 +213,8 @@ router.post('/queue-follow-up', async (req, res) => {
       });
     }
     
-    // In a real implementation, you would:
-    // 1. Store this request in a database
-    // 2. Set up a scheduler (like node-cron) to process it later
-    // 3. Send confirmation to the client
-    
     // For now, just log and return success
+    // In a production environment, you would store this in a database for later processing
     logEvent('info', 'Follow-up email queued for future delivery', {
       email,
       scheduledFor
