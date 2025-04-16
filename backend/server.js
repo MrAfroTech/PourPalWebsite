@@ -10,12 +10,7 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-    // Allow requests from any Vercel deployment of your project and your custom domain
-    origin: [
-      /.*-maurice-sanders-projects\.vercel\.app$/,  // This matches any Vercel preview URL
-      'https://yourdomain.com',                     // Your production domain
-      'http://localhost:3000'                       // Local development
-    ],
+    origin: '*',  // Allow all origins temporarily
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
   }));
