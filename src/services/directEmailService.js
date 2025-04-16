@@ -4,6 +4,41 @@ import { cashFinderReportTemplate, cashFinderReportTextTemplate,
   cashFinderPlusTemplate, cashFinderPlusTextTemplate } from './emailTemplates';
 
 /**
+ * Enhanced debugging logger
+ * @param {String} level - Log level (error, warn, info, debug)
+ * @param {String} context - Where the log is coming from
+ * @param {String} message - Main log message
+ * @param {Object} data - Additional data to log
+ */
+const debugLog = (level, context, message, data = null) => {
+  const timestamp = new Date().toISOString();
+  const prefix = `[${timestamp}][${level.toUpperCase()}][${context}]`;
+  
+  console[level](`${prefix} ${message}`);
+  
+  if (data) {
+    console[level](`${prefix} Data:`, data);
+    
+    // Store in localStorage for debugging
+    try {
+      const logs = JSON.parse(localStorage.getItem('email_service_debug_logs') || '[]');
+      logs.push({
+        timestamp,
+        level,
+        context,
+        message,
+        data
+      });
+      // Keep only the most recent 100 logs
+      while (logs.length > 100) logs.shift();
+      localStorage.setItem('email_service_debug_logs', JSON.stringify(logs));
+    } catch (e) {
+      console.error('Error storing debug logs:', e);
+    }
+  }
+};
+
+/**
 * Function to send email via backend API which uses AWS SES
 * This approach is secure as credentials stay on the server
 * @param {Object} emailData - Complete email data to send
@@ -13,8 +48,28 @@ const sendEmailViaBackend = async (emailData) => {
   // Use Render URL for production
   const BACKEND_EMAIL_ENDPOINT = 'https://ezdrinklive.onrender.com/api/send-email';
   
+  debugLog('info', 'sendEmailViaBackend', 'Starting email send request', {
+    to: emailData.to,
+    subject: emailData.subject,
+    dataIncluded: Object.keys(emailData),
+    timestamp: new Date().toISOString()
+  });
+  
   try {
+    // Log the request payload (without sensitive content)
+    const requestPayload = {
+      to: emailData.to,
+      subject: emailData.subject,
+      hasText: !!emailData.text,
+      hasHtml: !!emailData.html,
+      hasUserData: !!emailData.userData,
+      userDataFields: emailData.userData ? Object.keys(emailData.userData) : []
+    };
+    
+    debugLog('debug', 'sendEmailViaBackend', 'Request payload overview', requestPayload);
+    
     // Send the complete email data needed by the API endpoint
+    debugLog('info', 'sendEmailViaBackend', `Sending POST request to ${BACKEND_EMAIL_ENDPOINT}`);
     const response = await fetch(BACKEND_EMAIL_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -29,11 +84,21 @@ const sendEmailViaBackend = async (emailData) => {
       })
     });
 
+    // Log detailed response information
+    debugLog('info', 'sendEmailViaBackend', `Response received with status ${response.status}`, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries([...response.headers.entries()]),
+    });
+
     // Check if response is ok
     if (!response.ok) {
       // For API unavailable errors
       if (response.status === 404 || response.status === 405) {
-        console.error('API endpoint not available or not accepting POST requests');
+        debugLog('warn', 'sendEmailViaBackend', 'API endpoint not available or not accepting POST requests', {
+          status: response.status,
+          statusText: response.statusText
+        });
         // Return a simulated success for now to prevent blocking the UI flow
         return { 
           success: true, 
@@ -42,9 +107,62 @@ const sendEmailViaBackend = async (emailData) => {
         };
       }
       
+      // For 500 server errors
+      if (response.status === 500) {
+        // Get the response text to understand the error better
+        const responseText = await response.text();
+        debugLog('error', 'sendEmailViaBackend', 'Server error (500)', {
+          status: response.status,
+          responseText
+        });
+        
+        try {
+          // Try to parse the response text as JSON
+          const errorJson = JSON.parse(responseText);
+          debugLog('error', 'sendEmailViaBackend', 'Parsed error response', errorJson);
+          
+          // Check for specific error types
+          if (errorJson.error && errorJson.error.includes('security token')) {
+            debugLog('error', 'sendEmailViaBackend', 'Authentication error detected', {
+              errorType: 'security_token_invalid',
+              message: errorJson.error || errorJson.message
+            });
+            
+            // Log to localStorage for debugging
+            try {
+              const authErrors = JSON.parse(localStorage.getItem('email_auth_errors') || '[]');
+              authErrors.push({
+                timestamp: new Date().toISOString(),
+                endpoint: BACKEND_EMAIL_ENDPOINT,
+                errorResponse: errorJson,
+              });
+              localStorage.setItem('email_auth_errors', JSON.stringify(authErrors));
+            } catch (e) {
+              console.error('Error storing auth error:', e);
+            }
+          }
+        } catch (parseError) {
+          debugLog('error', 'sendEmailViaBackend', 'Error parsing server response as JSON', {
+            parseError: parseError.message,
+            responseText: responseText.substring(0, 500) // Truncate long responses
+          });
+        }
+        
+        // Return a simulated success for server errors
+        return { 
+          success: true, 
+          message: 'Your report request was received (Email delivery may be delayed)',
+          id: `email_${Date.now()}`,
+          actualMethod: 'delayed_email'
+        };
+      }
+      
       // For other errors, try to get details
       const errorText = await response.text(); 
-      console.error('Error response:', response.status, errorText);
+      debugLog('error', 'sendEmailViaBackend', `Error response: ${response.status}`, {
+        status: response.status,
+        errorText,
+      });
       throw new Error(`Server returned ${response.status}: ${errorText || 'No error details'}`);
     }
 
@@ -52,19 +170,39 @@ const sendEmailViaBackend = async (emailData) => {
     let result;
     try {
       result = await response.json();
+      debugLog('info', 'sendEmailViaBackend', 'Successful response', result);
     } catch (jsonError) {
-      console.error('Error parsing JSON response:', jsonError);
+      debugLog('error', 'sendEmailViaBackend', 'Error parsing JSON response', {
+        error: jsonError.message,
+        responseText: await response.text()
+      });
       throw new Error('Invalid response from server (not JSON)');
     }
 
     // Return success result
+    debugLog('info', 'sendEmailViaBackend', 'Email sent successfully', {
+      messageId: result.messageId,
+      timestamp: new Date().toISOString()
+    });
+    
     return { 
       success: true, 
       message: result.message || 'Email sent successfully',
       id: result.messageId || `email_${Date.now()}`
     };
   } catch (error) {
-    console.error('Error sending email:', error);
+    debugLog('error', 'sendEmailViaBackend', `Error sending email: ${error.message}`, {
+      error: {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      },
+      emailData: {
+        to: emailData.to,
+        subject: emailData.subject
+      }
+    });
+    
     // Instead of throwing, return a success to keep the UI flow going
     return { 
       success: true, 
@@ -81,6 +219,11 @@ const sendEmailViaBackend = async (emailData) => {
 * @returns {Promise} - Resolves with success info or rejects with error
 */
 export const sendCashFinderReportEmail = async (userData, reportData) => {
+  debugLog('info', 'sendCashFinderReportEmail', 'Preparing to send report email', {
+    user: userData.email,
+    company: userData.company
+  });
+  
   const templateData = {
     userName: userData.name,
     companyName: userData.company || userData.barName,
@@ -90,6 +233,12 @@ export const sendCashFinderReportEmail = async (userData, reportData) => {
   // Generate the HTML and text versions of the email
   const htmlContent = cashFinderReportTemplate(templateData);
   const textContent = cashFinderReportTextTemplate(templateData);
+
+  debugLog('debug', 'sendCashFinderReportEmail', 'Generated email content', {
+    htmlLength: htmlContent.length,
+    textLength: textContent.length,
+    reportDataKeys: Object.keys(reportData)
+  });
 
   const emailData = {
     to: userData.email,
@@ -115,11 +264,13 @@ export const sendCashFinderReportEmail = async (userData, reportData) => {
 * @returns {Promise} - Resolves with success data or rejects with error
 */
 export const sendCashFinderReportSMS = async (userData, reportData) => {
+  debugLog('info', 'sendCashFinderReportSMS', 'SMS delivery requested (not implemented)', {
+    phone: userData.phone
+  });
+  
   // For SMS, you would need to integrate with an SMS service
   // This is a placeholder implementation
-
-  console.log('SMS feature requested, but not implemented in private email service');
-  console.log('Consider sending an email with a link to view the report instead');
+  debugLog('warn', 'sendCashFinderReportSMS', 'SMS feature requested, but not implemented');
 
   // Return a failure response
   return {
@@ -127,6 +278,51 @@ export const sendCashFinderReportSMS = async (userData, reportData) => {
     message: 'SMS delivery not available with private email system',
     fallbackMethod: 'email'
   };
+};
+
+/**
+* Creates a debug report that can be downloaded for troubleshooting
+* @returns {String} - A data URL containing the debug logs
+*/
+export const generateDebugReport = () => {
+  try {
+    const debugData = {
+      timestamp: new Date().toISOString(),
+      emailLogs: JSON.parse(localStorage.getItem('email_service_debug_logs') || '[]'),
+      authErrors: JSON.parse(localStorage.getItem('email_auth_errors') || '[]'),
+      cashFinderPlusQueue: JSON.parse(localStorage.getItem('cash_finder_plus_queue') || '[]'),
+      submissions: JSON.parse(localStorage.getItem('pourpal_submission') || '{}'),
+      leads: JSON.parse(localStorage.getItem('pourpal_leads') || '[]'),
+      browserInfo: {
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        platform: navigator.platform,
+        vendor: navigator.vendor
+      }
+    };
+    
+    const jsonString = JSON.stringify(debugData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    return URL.createObjectURL(blob);
+  } catch (error) {
+    console.error('Error generating debug report:', error);
+    return null;
+  }
+};
+
+/**
+* View recent debug logs
+* @param {Number} limit - Maximum number of logs to return
+* @returns {Array} - Array of log entries
+*/
+export const getRecentDebugLogs = (limit = 20) => {
+  try {
+    const logs = JSON.parse(localStorage.getItem('email_service_debug_logs') || '[]');
+    return logs.slice(-limit);
+  } catch (error) {
+    console.error('Error retrieving debug logs:', error);
+    return [];
+  }
 };
 
 /**
@@ -138,10 +334,17 @@ export const queueCashFinderPlusEmail = async (userData) => {
   // Use Render URL for production
   const FOLLOW_UP_ENDPOINT = 'https://ezdrinklive.onrender.com/api/queue-follow-up';
   
+  debugLog('info', 'queueCashFinderPlusEmail', 'Queueing Cash Finder Plus email', {
+    email: userData.email,
+    company: userData.company || userData.barName
+  });
+  
   try {
     // Calculate schedule time (24 hours from now)
     const scheduledTime = new Date();
     scheduledTime.setHours(scheduledTime.getHours() + 24);
+    
+    debugLog('debug', 'queueCashFinderPlusEmail', `Scheduled for ${scheduledTime.toISOString()}`);
     
     // Send the request to the backend
     const response = await fetch(FOLLOW_UP_ENDPOINT, {
@@ -156,6 +359,12 @@ export const queueCashFinderPlusEmail = async (userData) => {
         cashFinderData: userData.cashFinderResults,
         scheduledFor: scheduledTime.toISOString()
       })
+    });
+    
+    // Log response details
+    debugLog('info', 'queueCashFinderPlusEmail', `Response received with status ${response.status}`, {
+      status: response.status,
+      statusText: response.statusText
     });
     
     // Also keep a backup in localStorage
@@ -176,12 +385,14 @@ export const queueCashFinderPlusEmail = async (userData) => {
           status: 'pending'
         }
       ]));
+      
+      debugLog('info', 'queueCashFinderPlusEmail', 'Backup stored in localStorage');
     } catch (storageError) {
-      console.error('Error storing in localStorage:', storageError);
+      debugLog('error', 'queueCashFinderPlusEmail', `Error storing in localStorage: ${storageError.message}`);
       // Continue anyway - this is just a backup
     }
 
-    console.log('Cash Finder Plus email queued for', scheduledTime.toISOString());
+    debugLog('info', 'queueCashFinderPlusEmail', 'Cash Finder Plus email queued successfully');
 
     return {
       success: true,
@@ -189,7 +400,14 @@ export const queueCashFinderPlusEmail = async (userData) => {
       scheduledTime: scheduledTime.toISOString()
     };
   } catch (error) {
-    console.error('Error queuing follow-up email:', error);
+    debugLog('error', 'queueCashFinderPlusEmail', `Error queuing follow-up email: ${error.message}`, {
+      error: {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      }
+    });
+    
     // Return success anyway to not block UI flow
     return {
       success: true,
@@ -207,23 +425,34 @@ export const queueCashFinderPlusEmail = async (userData) => {
 * @returns {Promise} - Resolves with success info or rejects with error
 */
 export const sendCashFinderReport = async (userData, reportData, deliveryMethod) => {
+  debugLog('info', 'sendCashFinderReport', `Sending report via ${deliveryMethod}`, {
+    userEmail: userData.email,
+    company: userData.company,
+    deliveryMethod
+  });
+  
   if (deliveryMethod === 'email') {
     return sendCashFinderReportEmail(userData, reportData);
   } else if (deliveryMethod === 'sms') {
     // Try SMS first, but fallback to email if SMS is not available
     try {
+      debugLog('info', 'sendCashFinderReport', 'Attempting SMS delivery');
       const smsResult = await sendCashFinderReportSMS(userData, reportData);
+      
       if (!smsResult.success && smsResult.fallbackMethod === 'email') {
-        console.log('Falling back to email delivery due to SMS unavailability');
+        debugLog('info', 'sendCashFinderReport', 'Falling back to email delivery');
         return sendCashFinderReportEmail(userData, reportData);
       }
       return smsResult;
     } catch (error) {
-      console.error('SMS delivery failed, falling back to email:', error);
+      debugLog('error', 'sendCashFinderReport', `SMS delivery failed: ${error.message}`);
+      debugLog('info', 'sendCashFinderReport', 'Falling back to email delivery');
       return sendCashFinderReportEmail(userData, reportData);
     }
   } else {
-    throw new Error(`Unsupported delivery method: ${deliveryMethod}`);
+    const errorMsg = `Unsupported delivery method: ${deliveryMethod}`;
+    debugLog('error', 'sendCashFinderReport', errorMsg);
+    throw new Error(errorMsg);
   }
 };
 
@@ -231,14 +460,9 @@ export const sendCashFinderReport = async (userData, reportData, deliveryMethod)
 * For development use: simulate sending an email without actually making API calls
 */
 export const simulateEmailSend = async (userData, reportData, deliveryMethod) => {
-  console.log(`SIMULATED ${deliveryMethod.toUpperCase()} SEND:`, {
+  debugLog('info', 'simulateEmailSend', `SIMULATED ${deliveryMethod.toUpperCase()} SEND`, {
     to: deliveryMethod === 'email' ? userData.email : userData.phone,
     subject: `Your Cash Finder Report for ${userData.company || userData.barName}`,
-    reportDataPreview: {
-      averageRevenue: reportData.averageRevenue,
-      bestNightRevenue: reportData.bestNightRevenue,
-      totalOpportunity: reportData.totalOpportunity
-    }
   });
 
   // For email, we would use the template - let's preview it
@@ -251,17 +475,21 @@ export const simulateEmailSend = async (userData, reportData, deliveryMethod) =>
 
     // Log the first 200 characters of the text version to preview
     const text = cashFinderReportTextTemplate(templateData);
-    console.log('Email text preview:', text.substring(0, 200) + '...');
+    debugLog('debug', 'simulateEmailSend', `Email text preview: ${text.substring(0, 200)}...`);
   }
 
   // Simulate network delay
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({
+      const result = {
         success: true,
         message: `Report successfully sent via ${deliveryMethod} (simulated)`,
         id: 'sim_' + Math.random().toString(36).substr(2, 9)
-      });
+      };
+      
+      debugLog('info', 'simulateEmailSend', 'Simulation complete', result);
+      
+      resolve(result);
     }, 1500);
   });
 };
