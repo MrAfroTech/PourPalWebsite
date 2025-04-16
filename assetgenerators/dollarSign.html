@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dollar Signs Pattern</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .pattern-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .dollar-pattern {
+            width: 200px;
+            height: 350px;
+            position: relative;
+            overflow: hidden;
+            background-color: transparent;
+        }
+        
+        .dollar-sign {
+            position: absolute;
+            font-weight: bold;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .gold-dollar {
+            background: linear-gradient(45deg, #d4af37 40%, #e0b841 60%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        }
+        
+        .black-dollar {
+            background: linear-gradient(45deg, #000000 40%, #333333 60%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.1);
+        }
+        
+        .brown-dollar {
+            background: linear-gradient(45deg, #8B4513 40%, #A0522D 60%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .btn {
+            background-color: #d4af37;
+            color: #121212;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        
+        .btn:hover {
+            background-color: #e0b841;
+        }
+        
+        .settings {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        input, select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dollar Signs Pattern</h1>
+        
+        <div class="settings">
+            <div class="setting-group">
+                <label for="num-dollars">Number of $ Signs:</label>
+                <input type="number" id="num-dollars" min="10" max="100" value="40">
+            </div>
+            
+            <div class="setting-group">
+                <label for="min-size">Min Size (px):</label>
+                <input type="number" id="min-size" min="10" max="40" value="20">
+            </div>
+            
+            <div class="setting-group">
+                <label for="max-size">Max Size (px):</label>
+                <input type="number" id="max-size" min="30" max="100" value="50">
+            </div>
+            
+            <div class="setting-group">
+                <label for="background">Background:</label>
+                <select id="background">
+                    <option value="transparent" selected>Transparent</option>
+                    <option value="#FFFFFF">White</option>
+                    <option value="#121212">Dark</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="pattern-container">
+            <div class="dollar-pattern" id="dollar-pattern"></div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" id="regenerate-btn">Regenerate Pattern</button>
+            <button class="btn" id="download-btn">Download Pattern</button>
+        </div>
+    </div>
+
+    <script>
+        // Get elements
+        const dollarPattern = document.getElementById('dollar-pattern');
+        const numDollarsInput = document.getElementById('num-dollars');
+        const minSizeInput = document.getElementById('min-size');
+        const maxSizeInput = document.getElementById('max-size');
+        const backgroundSelect = document.getElementById('background');
+        const regenerateBtn = document.getElementById('regenerate-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        
+        // Function to generate the dollar signs pattern
+        function generatePattern() {
+            // Clear existing pattern
+            dollarPattern.innerHTML = '';
+            
+            // Get settings
+            const numDollars = parseInt(numDollarsInput.value);
+            const minSize = parseInt(minSizeInput.value);
+            const maxSize = parseInt(maxSizeInput.value);
+            
+            // Set background
+            dollarPattern.style.backgroundColor = backgroundSelect.value;
+            
+            // Dollar sign classes
+            const dollarClasses = ['gold-dollar', 'black-dollar', 'brown-dollar'];
+            
+            // Generate dollar signs
+            for (let i = 0; i < numDollars; i++) {
+                // Create dollar sign element
+                const dollarSign = document.createElement('div');
+                dollarSign.className = 'dollar-sign ' + dollarClasses[Math.floor(Math.random() * dollarClasses.length)];
+                dollarSign.textContent = '$';
+                
+                // Random position
+                const left = Math.random() * 80 + 10; // 10% to 90%
+                const top = Math.random() * 85 + 5; // 5% to 90%
+                
+                // Random size
+                const size = Math.floor(Math.random() * (maxSize - minSize + 1)) + minSize;
+                
+                // Random rotation
+                const rotation = Math.floor(Math.random() * 60) - 30; // -30 to 30 degrees
+                
+                // Set styles
+                dollarSign.style.left = `${left}%`;
+                dollarSign.style.top = `${top}%`;
+                dollarSign.style.fontSize = `${size}px`;
+                dollarSign.style.transform = `rotate(${rotation}deg)`;
+                
+                // Add to pattern
+                dollarPattern.appendChild(dollarSign);
+            }
+        }
+        
+        // Generate initial pattern
+        generatePattern();
+        
+        // Add event listeners
+        regenerateBtn.addEventListener('click', generatePattern);
+        
+        // Download functionality
+        downloadBtn.addEventListener('click', function() {
+            // Create a canvas from the pattern
+            const width = 200;
+            const height = 350;
+            
+            // Create a canvas element
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            
+            // Set background
+            if (backgroundSelect.value !== 'transparent') {
+                ctx.fillStyle = backgroundSelect.value;
+                ctx.fillRect(0, 0, width, height);
+            }
+            
+            // Draw each dollar sign
+            dollarPattern.querySelectorAll('.dollar-sign').forEach(sign => {
+                // Get styles
+                const left = parseFloat(sign.style.left) / 100 * width;
+                const top = parseFloat(sign.style.top) / 100 * height;
+                const fontSize = parseFloat(sign.style.fontSize);
+                const rotation = parseFloat(sign.style.transform.match(/rotate\(([-\d.]+)deg\)/)[1]);
+                
+                // Get class for color
+                let color;
+                if (sign.classList.contains('gold-dollar')) {
+                    color = '#d4af37';
+                } else if (sign.classList.contains('black-dollar')) {
+                    color = '#000000';
+                } else if (sign.classList.contains('brown-dollar')) {
+                    color = '#8B4513';
+                }
+                
+                // Save context
+                ctx.save();
+                
+                // Position and rotate
+                ctx.translate(left, top);
+                ctx.rotate(rotation * Math.PI / 180);
+                
+                // Draw dollar sign
+                ctx.fillStyle = color;
+                ctx.font = `bold ${fontSize}px Arial`;
+                ctx.fillText('$', 0, 0);
+                
+                // Restore context
+                ctx.restore();
+            });
+            
+            // Download canvas as image
+            try {
+                const link = document.createElement('a');
+                link.download = 'dollar-signs-pattern.png';
+                link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error('Error generating download:', error);
+                alert('Error generating image. Try a different browser.');
+                
+                // Alternative method
+                const img = canvas.toDataURL('image/png');
+                window.open(img);
+            }
+        });
+        
+        // Validate input relationships
+        maxSizeInput.addEventListener('change', function() {
+            if (parseInt(maxSizeInput.value) <= parseInt(minSizeInput.value)) {
+                maxSizeInput.value = parseInt(minSizeInput.value) + 10;
+            }
+        });
+        
+        minSizeInput.addEventListener('change', function() {
+            if (parseInt(minSizeInput.value) >= parseInt(maxSizeInput.value)) {
+                minSizeInput.value = parseInt(maxSizeInput.value) - 10;
+            }
+        });
+    </script>
+</body>
+</html>

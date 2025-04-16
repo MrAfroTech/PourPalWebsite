@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzDrink Bartender Postcard Back</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(233, 198, 94, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #E9C65E;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+        
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            margin-top: 30px;
+        }
+        
+        .card-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .card-back {
+            width: 200px;
+            height: 350px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            background: linear-gradient(135deg, #E9C65E 0%, #d4af37 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .card-back:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(0,0,0,0.03)' fill-rule='evenodd'/%3E%3C/svg%3E") center;
+            opacity: 0.5;
+        }
+        
+        .back-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .tagline {
+            font-size: 20px;
+            font-weight: bold;
+            color: #121212;
+            max-width: 160px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.3;
+        }
+        
+        .description {
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.8);
+            max-width: 160px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        .emphasis {
+            font-weight: bold;
+            color: #000;
+            display: block;
+            margin: 12px 0;
+            font-size: 16px;
+        }
+        
+        .website {
+            font-size: 16px;
+            font-weight: bold;
+            color: #121212;
+            margin-top: 20px;
+            position: absolute;
+            bottom: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        
+        .download-btn {
+            display: block;
+            background-color: #E9C65E;
+            color: #121212;
+            padding: 12px 24px;
+            margin: 20px 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background-color: #f0d078;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 198, 94, 0.3);
+        }
+        
+        .download-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .instructions {
+            text-align: center;
+            margin: 20px 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        
+        .bottom-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EzDrink Bartender Postcard</h1>
+        
+        <div class="card-container">
+            <div>
+                <div class="card-label">Postcard Back</div>
+                <div class="card-back" id="card-back">
+                    <div class="back-content">
+                        <div class="tagline">
+                            Made By Bartenders For Bartenders
+                        </div>
+                        
+                        <div class="description">
+                            No more memorizing complex orders during the rush.
+                            
+                            <span class="emphasis">Higher Tips. Less Drama.</span>
+                            
+                            Better bartending life starts tonight.
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <p>This is a preview of the back of your EzDrink bartender-focused postcard.</p>
+            <p>Click the button below to download a high-resolution image.</p>
+        </div>
+        
+        <div class="download-container">
+            <button class="download-btn" id="download-back">Download Postcard Back</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // Download function
+        document.getElementById('download-back').addEventListener('click', function() {
+            downloadCard('card-back', `ezdrink-bartender-postcard-back.png`);
+        });
+        
+        function downloadCard(elementId, filename) {
+            // Show loading message
+            alert(`Generating high-resolution image...`);
+            
+            // Business card dimensions in pixels at 300 DPI
+            // Standard size is 2" x 3.5" (portrait)
+            const width = Math.round(2 * 300);
+            const height = Math.round(3.5 * 300);
+            
+            // Options for html2canvas
+            const options = {
+                scale: 3, // Scale up for higher quality
+                backgroundColor: '#E9C65E',
+                logging: false, // Disable logs
+                useCORS: true, // Allow cross-origin images
+                allowTaint: true
+            };
+            
+            // Generate the canvas
+            html2canvas(document.getElementById(elementId), options).then(function(canvas) {
+                // Create a new canvas with the right dimensions
+                const finalCanvas = document.createElement('canvas');
+                finalCanvas.width = width;
+                finalCanvas.height = height;
+                const ctx = finalCanvas.getContext('2d');
+                
+                // Draw the image to the canvas, filling the entire dimensions
+                ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, width, height);
+                
+                try {
+                    // Create download link
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = finalCanvas.toDataURL('image/png');
+                    document.body.appendChild(link);
+                    
+                    // Trigger click
+                    link.click();
+                    
+                    // Remove link
+                    document.body.removeChild(link);
+                    
+                    // Show success message
+                    alert(`Downloaded ${filename} at 300 DPI`);
+                } catch (error) {
+                    console.error('Error generating download:', error);
+                    alert('Error generating image. Try a different browser.');
+                }
+            }).catch(function(error) {
+                console.error('Error with html2canvas:', error);
+                alert('Error generating image. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>

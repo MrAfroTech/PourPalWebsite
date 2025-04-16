@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzDrink - Bartender Pain Points</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .pain-section {
+            background: rgba(255, 50, 50, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            width: 650px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 50, 50, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .pain-section h2 {
+            color: #ff4a4a;
+            text-align: center;
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pain-point {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #ff4a4a;
+            transition: all 0.3s ease;
+        }
+
+        .pain-point:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pain-point h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            color: #ff7a7a;
+        }
+
+        .pain-point h3 span {
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+
+        .pain-point p {
+            margin-bottom: 0;
+            font-size: 1.2rem;
+        }
+
+        .pain-point:last-child {
+            margin-bottom: 0;
+        }
+
+        #download-btn {
+            padding: 15px 30px;
+            background-color: #E9C65E;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        #download-btn:hover {
+            background-color: #f0d078;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 198, 94, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="pain-section" id="pain-section">
+        <h2>BARTENDERS ARE SAYING GOODBYE TO:</h2>
+        
+        <div class="pain-point">
+            <h3><span>💸</span> UNPREDICTABLE TIPS &amp; INCOME</h3>
+            <p>Slow nights, forgotten orders, and split checks that slice into your hard-earned cash.</p>
+        </div>
+
+        <div class="pain-point">
+            <h3><span>🤬</span> THE NIGHTMARE CUSTOMERS</h3>
+            <p>The shouters, the wavers, the "I was next!" crowd crushing your vibe and stress levels.</p>
+        </div>
+
+        <div class="pain-point">
+            <h3><span>🧠</span> THE MEMORY GAME MADNESS</h3>
+            <p>That sinking feeling when multiple orders blur together during the Friday night rush.</p>
+        </div>
+    </div>
+
+    <button id="download-btn">Download Red Box Image</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        document.getElementById('download-btn').addEventListener('click', function() {
+            const element = document.getElementById('pain-section');
+            
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#1a1a1a',
+                width: element.offsetWidth,
+                height: element.offsetHeight
+            }).then(canvas => {
+                // Convert to image and trigger download
+                const link = document.createElement('a');
+                link.download = 'ezdrink-bartender-pain-points.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html>

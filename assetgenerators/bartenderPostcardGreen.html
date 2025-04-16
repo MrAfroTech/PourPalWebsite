@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-widtƒh, initial-scale=1.0">
+    <title>EzDrink - Bartender Solutions</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .love-section {
+            background: rgba(80, 200, 120, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            width: 650px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(80, 200, 120, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .love-section h2 {
+            color: #50c878;
+            text-align: center;
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #50c878;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            color: #7aff9a;
+        }
+
+        .feature h3 span {
+            margin-right: 15px;
+            font-size: 1.8rem;
+        }
+
+        .feature p {
+            margin-bottom: 0;
+            font-size: 1.2rem;
+        }
+
+        .feature:last-child {
+            margin-bottom: 0;
+        }
+
+        #download-btn {
+            padding: 15px 30px;
+            background-color: #E9C65E;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        #download-btn:hover {
+            background-color: #f0d078;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(233, 198, 94, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="love-section" id="love-section">
+        <h2>BARTENDERS ARE SAYING</h2>
+        <h2>HELLO TO:</h2>
+        
+        <div class="feature">
+            <h3><span>💰</span> FATTER WALLET, HAPPIER YOU</h3>
+            <p>20% higher tips when you focus on crafting drinks, not chasing payments or remembering complex orders.</p>
+        </div>
+
+        <div class="feature">
+            <h3><span>😌</span> STRESS-FREE SHIFTS</h3>
+            <p>Watch difficult customers transform when they're ordering through their phones instead of shouting over music.</p>
+        </div>
+
+        <div class="feature">
+            <h3><span>✨</span> PERFECT ORDER RECALL</h3>
+            <p>Every order, perfectly captured and organized - even during your busiest Saturday night crush.</p>
+        </div>
+    </div>
+
+    <button id="download-btn">Download Green Box Image</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        document.getElementById('download-btn').addEventListener('click', function() {
+            const element = document.getElementById('love-section');
+            
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#1a1a1a',
+                width: element.offsetWidth,
+                height: element.offsetHeight
+            }).then(canvas => {
+                // Convert to image and trigger download
+                const link = document.createElement('a');
+                link.download = 'ezdrink-bartender-solutions.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html>
