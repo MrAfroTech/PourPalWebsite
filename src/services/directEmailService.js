@@ -10,9 +10,8 @@ import { cashFinderReportTemplate, cashFinderReportTextTemplate,
 * @returns {Promise} - Resolves with API response or rejects with error
 */
 const sendEmailViaBackend = async (emailData) => {
-  // Use localhost for development, update to your Render URL when deployed
-  const BACKEND_EMAIL_ENDPOINT = 'http://localhost:3001/api/send-email';
-  // For production: const BACKEND_EMAIL_ENDPOINT = 'https://your-render-url.onrender.com/api/send-email';
+  // Use Render URL for production
+  const BACKEND_EMAIL_ENDPOINT = 'https://ezdrinklive.onrender.com/api/send-email';
   
   try {
     // Send the complete email data needed by the API endpoint
@@ -136,9 +135,8 @@ export const sendCashFinderReportSMS = async (userData, reportData) => {
 * @returns {Promise} - Resolves with success info or rejects with error
 */
 export const queueCashFinderPlusEmail = async (userData) => {
-  // Use localhost for development, update to your Render URL when deployed
-  const FOLLOW_UP_ENDPOINT = 'http://localhost:3001/api/queue-follow-up';
-  // For production: const FOLLOW_UP_ENDPOINT = 'https://your-render-url.onrender.com/api/queue-follow-up';
+  // Use Render URL for production
+  const FOLLOW_UP_ENDPOINT = 'https://ezdrinklive.onrender.com/api/queue-follow-up';
   
   try {
     // Calculate schedule time (24 hours from now)
