@@ -10,11 +10,13 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-    origin: '*',  // Allow all origins temporarily
+    origin: ['http://localhost:3000', 'https://www.ezdrink.us'],
+
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // Optional: needed if you’re using cookies or auth headers
   }));
-  
+
 app.use(bodyParser.json());
 
 // Routes
