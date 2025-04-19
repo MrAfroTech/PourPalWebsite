@@ -43,27 +43,19 @@ const debugLog = (level, context, message, data = null) => {
 * @param {Object} emailData - Complete email data to send
 * @returns {Promise} - Resolves with API response or rejects with error
 */
-const sendEmailViaBackend = async (emailData) => {
-  // Use local URL for development, Render URL for production
+const sendEmailViaBackend = async (emailData) => { 
+  // Update the URL to use your Vercel deployment instead of Render
   const BACKEND_EMAIL_ENDPOINT = window.location.hostname === 'localhost' 
     ? 'http://localhost:3001/api/send-email' 
-    : 'https://ezdrinklive.onrender.com/api/send-email';
+    : 'https://ez-drink-h5xnw2ao5-maurice-sanders-projects.vercel.app/api/send-email';
   
-  debugLog('info', 'sendEmailViaBackend', 'Starting email send request', {
+  console.log('📧 STARTING EMAIL SEND', {
     to: emailData.to,
     subject: emailData.subject,
-    dataIncluded: Object.keys(emailData),
-    timestamp: new Date().toISOString()
+    endpoint: BACKEND_EMAIL_ENDPOINT
   });
   
   try {
-    debugLog('debug', 'sendEmailViaBackend', 'Sending POST request', {
-      endpoint: BACKEND_EMAIL_ENDPOINT,
-      emailTo: emailData.to
-    });
-    
-    // Simplified request with just the necessary data
-    // No auth token or config - the backend handles this internally
     const response = await fetch(BACKEND_EMAIL_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -78,31 +70,34 @@ const sendEmailViaBackend = async (emailData) => {
       })
     });
 
-    debugLog('info', 'sendEmailViaBackend', `Response received with status ${response.status}`, {
-      status: response.status,
+    console.log(`📥 RESPONSE: Status ${response.status}`, {
       statusText: response.statusText
     });
 
-    // Handle non-successful response
+    // Handle error responses
     if (!response.ok) {
-      const errorText = await response.text();
-      debugLog('error', 'sendEmailViaBackend', `Error response: ${response.status}`, {
-        status: response.status,
-        errorText
-      });
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        const errorText = await response.text();
+        errorData = { message: errorText };
+      }
       
-      // Always return success to the UI to maintain user experience
+      console.error('🚫 EMAIL ERROR:', errorData);
+      
+      // Show the error to the user
       return { 
-        success: true, 
-        message: 'Your report is being processed. You will receive it shortly.',
-        id: `email_${Date.now()}`,
-        actualMethod: 'delayed_email'
+        success: false, 
+        message: errorData.message || `Failed to send email (${response.status})`,
+        error: errorData.error,
+        code: errorData.code
       };
     }
-
-    // Parse successful response
+    
+    // Process successful response
     const result = await response.json();
-    debugLog('info', 'sendEmailViaBackend', 'Email sent successfully', result);
+    console.log('✅ EMAIL SENT:', result);
     
     return { 
       success: true, 
@@ -110,24 +105,15 @@ const sendEmailViaBackend = async (emailData) => {
       id: result.messageId || `email_${Date.now()}`
     };
   } catch (error) {
-    debugLog('error', 'sendEmailViaBackend', `Error sending email: ${error.message}`, {
-      error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      }
-    });
+    console.error('💥 EMAIL EXCEPTION:', error);
     
-    // Return a success to keep the UI flow going even during errors
     return { 
-      success: true, 
-      message: 'Your report is being processed. You will receive it shortly.',
-      id: `email_${Date.now()}`,
-      actualMethod: 'delayed_email'
+      success: false, 
+      message: `Error sending email: ${error.message}`,
+      error: error.message
     };
-  }
+  } 
 };
-
 /**
 * Sends a Cash Finder Report email
 * @param {Object} userData - User contact information

@@ -173,12 +173,12 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
         ...completeData,
         deliveryAttemptedAt: new Date().toISOString(),
         deliverySuccessAt: new Date().toISOString(),
-        deliveryMethod: sendResult.actualMethod || deliveryMethod,
-        messageId: sendResult.id
+        deliveryMethod: sendResult?.actualMethod || deliveryMethod,
+        messageId: sendResult?.id || null
       }));
       
       // Store which method was used successfully (in case of fallback)
-      setDeliverySuccess(sendResult.actualMethod || deliveryMethod);
+      setDeliverySuccess(sendResult?.actualMethod || deliveryMethod);
       
       // Queue Cash Finder Plus email for future sending
       await triggerCashFinderPlusEmail(completeData);

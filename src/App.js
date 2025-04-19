@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from
 import './styles/App.css';
 // In your App.js or routing configuration
 import AppDownloadSplash from './components/AppDownloadSplash';
+import EzDrinkVideoPopup from './components/EzDrinkVideoPopup';
 
 // Components
 import Navbar from './components/Navbar';
@@ -94,12 +95,26 @@ const AppContent = () => {
   const [showCTA, setShowCTA] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [showFunnel, setShowFunnel] = useState(false);
+  const [showVideoPopup, setShowVideoPopup] = useState(false);
   const location = useLocation();
   
   // Check if the current path is a standalone page without navbar or footer
   const isDownloadPage = location.pathname === '/download';
   const isCashFinderPage = location.pathname === '/cash-finder';
   const hideNavbar = isDownloadPage || isCashFinderPage;
+
+  // Auto-display video popup when site loads
+  useEffect(() => {
+    // Only show popup on homepage (not on other routes)
+    if (location.pathname === '/') {
+      // Delay showing popup by 3 seconds for better user experience
+      const timer = setTimeout(() => {
+        setShowVideoPopup(true);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -126,6 +141,13 @@ const AppContent = () => {
     setShowFunnel(true);
     // Close any other modals
     setShowPopup(false);
+    setShowVideoPopup(false); // Close video popup as well
+  };
+  
+  // Create a function to open the video popup manually
+  const openVideoPopup = () => {
+    console.log("Opening video popup");
+    setShowVideoPopup(true);
   };
 
   return (
@@ -169,15 +191,26 @@ const AppContent = () => {
       {/* Only show Footer if not on standalone pages */}
       {!hideNavbar && <Footer />}
       
+      {/* Existing popups */}
       {showPopup && <LeadCapturePopup isOpen={showPopup} onClose={() => setShowPopup(false)} />}
       
-      {/* Make sure the funnel is rendered when showFunnel is true */}
       {showFunnel && (
         <LeadCaptureFunnel 
           isOpen={showFunnel} 
           onClose={() => {
             console.log("Closing funnel");
             setShowFunnel(false);
+          }} 
+        />
+      )}
+      
+      {/* Video popup - now configured to appear automatically */}
+      {showVideoPopup && (
+        <EzDrinkVideoPopup 
+          isOpen={showVideoPopup} 
+          onClose={() => {
+            console.log("Closing video popup");
+            setShowVideoPopup(false);
           }} 
         />
       )}
