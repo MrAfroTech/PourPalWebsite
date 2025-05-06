@@ -1,5 +1,6 @@
 /* src/styles/EzDrinkVideoPopup.css */
 
+/* Keep all original CSS rules the same */
 .video-popup-overlay {
   position: fixed;
   top: 0;
@@ -24,6 +25,16 @@
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
+}
+
+/* Modified thank-you-mode styles with !important to ensure they override any other styles */
+.video-popup-container.thank-you-mode {
+  width: 320px !important;
+  height: 650px !important;
+  max-width: 320px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
 }
 
 .popup-close-btn {
@@ -348,14 +359,16 @@
   padding: 14px 30px;
 }
 
-/* Thank you page styles */
+/* Thank you page styles - Modified for better vertical layout */
 .thank-you-container {
-  padding: 50px 30px;
+  padding: 40px 10px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  justify-content: space-between;
+  gap: 30px;
+  height: 100%;
 }
 
 .white-text {
@@ -363,19 +376,16 @@
   font-weight: bold;
 }
 
-/* You might also want to ensure your thank-you-title has consistent styling */
 .thank-you-title {
-  display: flex;
-  align-items: center;
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
 }
 
 .thank-you-message {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.9);
-  max-width: 80%;
-  margin: 0 auto 30px;
+  max-width: 95%;
+  margin: 0 auto 20px;
 }
 
 .thank-you-image {
@@ -384,13 +394,35 @@
   margin-bottom: 20px;
 }
 
-/* Gradient text */
 .gradient-text {
   background: linear-gradient(135deg, #f0b743 0%, #e0912d 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline;
+}
+
+.primary-button {
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0b743 0%, #e0912d 100%);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  margin-top: 10px;
+  width: 90%;
+  max-width: 280px;
+}
+
+.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(240, 183, 67, 0.3);
 }
 
 @media (max-width: 768px) {

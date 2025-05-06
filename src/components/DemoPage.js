@@ -1,73 +1,63 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/DemoPage.css';
 
 const DemoPage = () => {
-  const videoRef = useRef(null);
-  
-  useEffect(() => {
-    // Auto-scroll to video section when page loads
-    if (videoRef.current) {
-      videoRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
-
   return (
     <div className="demo-page">
-      <div className="demo-hero">
-        <div className="demo-overlay"></div>
-        <div className="demo-content">
-          <h1 className="demo-title">See How EzDrink Works</h1>
-          <p className="demo-subtitle">Experience the future of bar ordering in action</p>
-        </div>
-      </div>
       
-      <div className="video-section" ref={videoRef}>
+
+      {/* Video Demo Section */}
+      <div className="video-demo-section">
         <div className="video-container">
-          <div className="limited-time-banner">
-            <span className="pulse-dot"></span>
-            <span>Limited Time: 30% Off Launch Pricing Ends Soon!</span>
+          <div className="video-poster" id="videoPoster">
+            <div className="loading-container">
+              <div className="video-overlay"></div>
+              <div className="gradient-overlay"></div>
+              <div className="grid-pattern"></div>
+              
+              <div className="logo">
+                <span className="ez-text">Ez</span><span className="drink-text">Drink</span>
+              </div>
+              
+              <div className="loading-message">
+                Revolutionizing hospitality, one order at a time...
+              </div>
+              
+              <div className="loading-bar">
+                <div className="loading-progress"></div>
+              </div>
+            </div>
           </div>
-          
-          <div className="video-wrapper">
-            {/* Replace with your actual video source */}
-            <video 
-                controls 
-                autoPlay 
-                poster="/bar-background.svg"
-                className="demo-video"
-            >
-                <source src="/demoMarch2025.mov" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
-          </div>
-          
-          <div className="video-caption">
-            <h3>See how EzDrink can transform your bar experience in just 2 minutes</h3>
-          </div>
-        </div>
-        
-        <div className="post-video-cta">
-          <h2>Ready to revolutionize your bar?</h2>
-          <p>Join the hundreds of bar owners already seeing amazing results with EzDrink</p>
-          <Link to="/" className="cta-button">Get Started Now - 30% Off</Link>
-          <p className="hurry-text">Hurry! Special pricing ends soon.</p>
+          <video 
+            controls 
+            width="100%" 
+            className="demo-video"
+            preload="auto"
+            playsInline
+            autoPlay
+            muted
+            onCanPlay={() => {
+              document.getElementById('videoPoster').style.display = 'none';
+            }}
+          >
+            <source src="https://ly05c9rwajtfq1zb.public.blob.vercel-storage.com/demoMay2025-PCmgi9wrTvfWjB9wDLTP83iIsSTBhE.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
-      
+
       <div className="demo-features">
         <div className="feature-highlight">
           <div className="feature-icon">⚡</div>
           <h3>Speed</h3>
           <p>Cut wait times by 30%</p>
         </div>
-        
         <div className="feature-highlight">
           <div className="feature-icon">💰</div>
           <h3>Revenue</h3>
           <p>Increase sales by 25%</p>
         </div>
-        
         <div className="feature-highlight">
           <div className="feature-icon">👥</div>
           <h3>Efficiency</h3>

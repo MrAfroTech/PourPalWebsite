@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/LeadCaptureFunnel.css';
 import CashFinderForm from './CashFinderForm';
-import { sendCashFinderReport, queueCashFinderPlusEmail, simulateEmailSend } from '../services/directEmailService';
+import { 
+  generateCashFinderEmail, 
+  generateCashFinderPlainText, 
+  queueCashFinderPlusEmail 
+} from '../services/cashFinderEmailTemplate';
 
 const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
   const [formData, setFormData] = useState({
@@ -82,8 +86,8 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     if (validate()) {
       // Store data in localStorage for backup
       try {
-        const existingLeads = JSON.parse(localStorage.getItem('pourpal_leads') || '[]');
-        localStorage.setItem('pourpal_leads', JSON.stringify([
+        const existingLeads = JSON.parse(localStorage.getItem('ezdrink_leads') || '[]');
+        localStorage.setItem('ezdrink_leads', JSON.stringify([
           ...existingLeads,
           {
             ...formData,
@@ -108,6 +112,23 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     setCurrentStep('delivery');
   };
 
+  const testAPIConnection = async () => {
+    try {
+      // Replace with your actual API endpoint
+      const response = await fetch('/api/health-check');
+      if (response.ok) {
+        console.log('API server reachable');
+        return true;
+      } else {
+        console.error('API server returned error:', response.status);
+        return false;
+      }
+    } catch (error) {
+      console.error('Cannot connect to API server:', error);
+      return false;
+    }
+  };
+
   const handleDeliveryMethodChange = (e) => {
     setDeliveryMethod(e.target.value);
     // Clear any previous errors when changing method
@@ -120,7 +141,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     if (cashFinderPlusTriggered) return;
     
     try {
-      // Queue the follow-up email
+      // Queue the follow-up email using imported function
       await queueCashFinderPlusEmail(userData);
       
       // Mark as triggered so we don't queue multiple times
@@ -132,6 +153,114 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
       // Non-critical, so we continue anyway
     }
   };
+
+  // Function to send the Cash Finder report
+ // Function to send the Cash Finder report
+const sendCashFinderReport = async (userData, cashFinderData, deliveryMethod) => {
+  // Create an API endpoint URL
+  const apiEndpoint = '/api/send-email';
+
+  
+  try {
+    // First make sure we have valid inputs
+    if (!userData || !userData.email) {
+      throw new Error('Missing required user data');
+    }
+    
+    // Generate email content using imported function
+    let emailHtml = '';
+    let emailPlainText = '';
+    
+    try {
+      emailHtml = generateCashFinderEmail(userData, cashFinderData);
+      emailPlainText = generateCashFinderPlainText(userData, cashFinderData);
+    } catch (templateError) {
+      console.error('Error generating email templates:', templateError);
+      // Fallback to simple versions if the template generation fails
+      emailHtml = `<html><body><h1>Your Cash Finder Report</h1><p>Thank you for using our Cash Finder tool, ${userData.name || 'valued customer'}.</p><p>Please visit <a href="https://ezdrink.us/dashboard">your dashboard</a> to view your full report.</p></body></html>`;
+      emailPlainText = `Your Cash Finder Report\n\nThank you for using our Cash Finder tool, ${userData.name || 'valued customer'}.\n\nPlease visit https://ezdrink.us/dashboard to view your full report.`;
+    }
+    
+    // Ensure we have some content to send
+    if (!emailHtml || !emailPlainText) {
+      throw new Error('Failed to generate email content');
+    }
+    
+    // Prepare the payload with validated data
+    const payload = {
+      userData: {
+        ...userData,
+        // Ensure these fields are present
+        name: userData.name || 'Bar Owner',
+        email: userData.email,
+        company: userData.company || 'Your Bar'
+      },
+      cashFinderData: cashFinderData || {},
+      deliveryMethod: deliveryMethod || 'email',
+      emailContent: {
+        html: emailHtml,
+        text: emailPlainText
+      }
+    };
+    
+    // Log the payload for debugging (without the full HTML content)
+    console.log('Sending payload:', {
+      userData: payload.userData,
+      deliveryMethod: payload.deliveryMethod,
+      emailContent: {
+        htmlLength: payload.emailContent.html.length,
+        textLength: payload.emailContent.text.length
+      }
+    });
+    
+    // Send the API request with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    try {
+      console.log('Attempting to send request to:', apiEndpoint);
+
+const response = await fetch(apiEndpoint, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-vercel-protection-bypass': process.env.NEXT_PUBLIC_BYPASS_SECRET || 'mysecretkeyfordeployment12345678'
+  },
+  body: JSON.stringify(payload),
+  signal: controller.signal
+});
+
+console.log('Request sent, response status:', response.status);
+
+      
+      
+      clearTimeout(timeoutId); // Clear the timeout
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`API responded with status: ${response.status}, message: ${errorData.message || 'Unknown error'}`);
+      }
+      
+      const result = await response.json();
+      return result;
+    } catch (fetchError) {
+      if (fetchError.name === 'AbortError') {
+        throw new Error('Request timed out - server may be busy');
+      }
+      throw fetchError;
+    }
+  } catch (error) {
+    console.error('Error sending Cash Finder report:', error);
+    
+    // Return a structured error that the calling code can handle
+    return {
+      success: false,
+      error: error.message,
+      fallback: true,
+      message: 'Failed to send report through API, but we\'ll process it for you.'
+    };
+  }
+};
 
   const handleSendResults = async (e) => {
     e.preventDefault();
@@ -147,12 +276,12 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
     
     try {
       // Store in localStorage for backup and tracking
-      localStorage.setItem('pourpal_submission', JSON.stringify({
+      localStorage.setItem('ezdrink_submission', JSON.stringify({
         ...completeData,
         deliveryAttemptedAt: new Date().toISOString()
       }));
       
-      // Try to send the email
+      // Try to send the email using the function we defined above
       let sendResult;
       try {
         // For production, use the real email sending function
@@ -169,7 +298,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
       }
       
       // Update the localStorage record with info
-      localStorage.setItem('pourpal_submission', JSON.stringify({
+      localStorage.setItem('ezdrink_submission', JSON.stringify({
         ...completeData,
         deliveryAttemptedAt: new Date().toISOString(),
         deliverySuccessAt: new Date().toISOString(),
@@ -214,7 +343,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
       }, 5000);
       
       // Update localStorage with the issue
-      localStorage.setItem('pourpal_submission', JSON.stringify({
+      localStorage.setItem('ezdrink_submission', JSON.stringify({
         ...completeData,
         deliveryAttemptedAt: new Date().toISOString(),
         deliveryError: error.message,
@@ -238,7 +367,7 @@ const LeadCaptureFunnel = ({ isOpen, onClose, onCashFinderSubmit }) => {
             </div>
             
             <form className="funnel-form" onSubmit={handleLeadFormSubmit}>
-                              <div className="form-group">
+              <div className="form-group">
                 <label htmlFor="name">Your Name *</label>
                 <input
                   type="text"

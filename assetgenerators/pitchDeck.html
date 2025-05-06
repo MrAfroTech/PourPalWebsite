@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzDrink Pitch Deck</title>
+    <style>
+        @page {
+            size: landscape;
+            margin: 0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+        }
+        
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            page-break-after: always;
+            break-after: page;
+            overflow: hidden;
+            padding: 0 10%;
+            box-sizing: border-box;
+        }
+        
+        .slide-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+        }
+        
+        .radial-gradient-1 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0) 60%);
+            z-index: 1;
+        }
+        
+        .radial-gradient-2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 60%, rgba(184, 134, 11, 0.1) 0%, rgba(184, 134, 11, 0) 70%);
+            z-index: 1;
+        }
+        
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #d4af37;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        
+        li {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+        
+        .gold {
+            background: linear-gradient(to right, #d4af37, #f5e28a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        th {
+            background-color: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .feature-box {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #d4af37;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .contact {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .contact strong {
+            color: #d4af37;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .highlight {
+            background-color: rgba(212, 175, 55, 0.1);
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .col-2 {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .col {
+            width: 48%;
+        }
+        
+        @media print {
+            body {
+                background-color: #121212 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            .slide {
+                page-break-after: always;
+                break-after: page;
+                height: 100vh;
+                width: 100vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <div class="logo"><span class="gold">Ez</span>Drink</div>
+            <h2>AI Enhanced Marketplace Revolutionizing The Hospitality Industry </h2>
+            <p style="margin-top: 60px; color: rgba(255,255,255,0.7);">May 2025</p>
+        </div>
+        <div class="slide-number">1</div>
+    </div>
+    
+
+    <!-- Slide 2: The Problem -->
+<div class="slide">
+    <div class="grid-pattern"></div>
+    <div class="radial-gradient-1"></div>
+    <div class="radial-gradient-2"></div>
+    <div class="slide-content">
+        <h2><span class="gold">The Problem</span></h2>
+        <ul>
+            <li>Long wait times at bars, nightclubs, festivals, fairs and venues frustrate customers.</li>
+            <li>Businesses lose significant revenue when customers abandon orders due to long lines.</li>
+            <li>Staff inefficiency - bartenders spend excessive time taking orders instead of making drinks.</li>
+            <li>Order accuracy suffers in loud, crowded environments.</li>
+        </ul>
+        <div class="feature-box">
+            <p style="font-size: 1.4rem; text-align: center;">Venues are losing up to <span class="gold" style="font-size: 1.8rem; font-weight: bold;">25%</span> of potential revenue during peak hours due to customer frustration with ordering processes</p>
+        </div>
+    </div>
+    <div class="slide-number">2</div>
+</div>
+
+    <!-- Slide 3: The Solution -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <h2><span class="gold">The Solution: EzDrink Marketplace</span></h2>
+            <ul>
+                <li>User-friendly mobile app that creates true VIP experience at any venue</li>
+                <li>AI-powered "Drink Memory" technology remembers preferences across all venues</li>
+                <li>Bartenders receive detailed customer preferences for personalized service</li>
+                <li>Integrated payment system with split tab functionality and digital receipts</li>
+            </ul>
+            <div class="feature-box">
+                <p style="font-size: 1.4rem; text-align: center;">Transforming the ordering experience while delivering:</p>
+                <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                    <div style="text-align: center;">
+                        <div class="gold" style="font-size: 2rem; font-weight: bold;">30%</div>
+                        <div>Less Wait Time</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="gold" style="font-size: 2rem; font-weight: bold;">25%</div>
+                        <div>Revenue Increase</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="gold" style="font-size: 2rem; font-weight: bold;">40%</div>
+                        <div>Staff Efficiency</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">3</div>
+    </div>
+
+    <!-- Slide 4: Why Now -->
+<div class="slide">
+    <div class="grid-pattern"></div>
+    <div class="radial-gradient-1"></div>
+    <div class="radial-gradient-2"></div>
+    <div class="slide-content">
+        <h2><span class="gold">Why Now?</span></h2>
+        <ul>
+            <li>Hospitality industry facing unprecedented labor challenges.</li>
+            <li>Consumer expectations for digital experiences have dramatically increased.</li>
+            <li>78% of venue operators report understaffing impacts customer experience.</li>
+            <li>Mobile technology adoption has reached critical mass (97% smartphone penetration).</li>
+            <li>AI technology has reached commercial viability for personalization at scale.</li>
+            <li>Global tourism returning to pre-pandemic levels, creating new opportunities.</li>
+        </ul>
+        <div class="feature-box">
+            <p style="text-align: center; font-size: 1.4rem;">The convergence of <span class="gold">labor shortages</span>, <span class="gold">consumer expectations</span>, <span class="gold">global tourism</span>, and <span class="gold">AI readiness</span> creates the perfect market timing</p>
+        </div>
+    </div>
+    <div class="slide-number">4</div>
+</div>
+
+    <!-- Slide 5: Market Opportunity -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <h2><span class="gold">Market Opportunity</span></h2>
+            
+            <h3>Initial Markets:</h3>
+                <ul>
+                    <li>UCF Area: 85+ potential venue clients within 5-mile radius</li>
+                    <li>Downtown Orlando: 150+ potential venue clients</li>
+                    <li>Ybor City: 75+ venues in Tampa's historic entertainment district</li>
+                </ul>
+
+            <h3>Expansion Strategy:</h3>
+            <ul>
+                <li><strong>Phase 1 (Years 1-2):</strong> Regional expansion to South Florida, college towns</li>
+                <li><strong>Phase 2 (Years 2-3):</strong> National expansion to key entertainment districts</li>
+                <li><strong>Phase 3 (Years 4-5):</strong> Global expansion to tourism-rich destinations around the world</li>
+            </ul>
+            
+            <div class="feature-box">
+                <h3>Licensing & Territory Model</h3>
+                <p>Strategic partnerships for territorial exclusivity in key markets, creating multiple revenue streams and accelerated global adoption</p>
+            </div>
+        </div>
+        <div class="slide-number">5</div>
+    </div>
+
+    <!-- Slide 6: Unique Advantage -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <h2><span class="gold">Our Unique Advantage</span></h2>
+            
+            <div class="feature-box">
+                <h3>Purpose-Built for Hospitality</h3>
+                <p>Specifically designed for bars, nightclubs, and high-volume venues with unique operational challenges</p>
+            </div>
+            
+            <div class="feature-box">
+                <h3>Proprietary Technology & IP Protection</h3>
+                <p>Secured USPTO provisional patent for our AI-driven "Drink Memory" system that creates universal drink profiles across venues</p>
+            </div>
+            
+            <div class="feature-box">
+                <h3>Technical Innovation</h3>
+                <p>Expertise in AI/ML, automated testing, and software engineering creates a robust, scalable platform</p>
+            </div>
+            
+            <div class="feature-box">
+                <h3>Seamless Integration</h3>
+                <p>Works with existing POS systems or as a standalone solution with minimal implementation costs</p>
+            </div>
+        </div>
+        <div class="slide-number">6</div>
+    </div>
+
+<!-- Slide 7: Business Model -->
+<div class="slide">
+    <div class="grid-pattern"></div>
+    <div class="radial-gradient-1"></div>
+    <div class="radial-gradient-2"></div>
+    <div class="slide-content" style="padding-top: 10px;">
+        <h2 style="margin-bottom: 15px;"><span class="gold">Business Model</span></h2>
+        
+        <div class="col-2" style="margin-bottom: 10px;">
+            <div class="col">
+                <div class="feature-box" style="margin-bottom: 10px;">
+                    <h3>Venue Setup Fee</h3>
+                    <p>Scaled implementation fee based on capacity:</p>
+                    <ul>
+                        <li>Small (up to 300): $500-1,000</li>
+                        <li>Medium (301-1,000): $1,000-2,500</li>
+                        <li>Large (1,001-5,000): $2,500-4,000</li>
+                        <li>Stadium (5,000+): $4,000-5,000</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-box">
+                    <h3>Monthly Subscription</h3>
+                    <p>$199-599 based on venue size and feature requirements</p>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="feature-box" style="margin-bottom: 10px;">
+                    <h3>Transaction Fee</h3>
+                    <p>Industry-standard transaction fees (2.9% + $0.30) with premium customer subscription option. Venues benefit from higher transaction volume and increased customer spending.</p>
+                </div>
+                
+                <div class="feature-box">
+                    <h3>Customer Premium Subscription</h3>
+                    <p>$7.99/month option eliminates per-transaction fees while providing enhanced benefits: priority service, exclusive promotions, and loyalty rewards across venues.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-2" style="margin-bottom: 10px;">
+            <div class="col">
+                <div class="feature-box">
+                    <h3>Licensing Opportunities</h3>
+                    <ul>
+                        <li>Venue Transaction License: $10,000-35,000</li>
+                        <li>Regional territory rights: $250,000</li>
+                        <li>National/international territory: $1,000,000+</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <div class="feature-box">
+                    <h3>Zero-Based Budget Approach</h3>
+                    <p>Built with zero technical debt, focusing investments on marketing and growth rather than overhead. Our lean operational model eliminates unnecessary costs, allowing maximum capital efficiency.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-box" style="text-align: center; margin-bottom: 0;">
+            <p style="font-size: 1.2rem; margin: 0;">Innovative revenue model delivering exceptional profit margins through initial years of operation</p>
+        </div>
+    </div>
+    <div class="slide-number">7</div>
+</div>
+
+    <!-- Slide 8: Competitive Analysis -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <h2><span class="gold">Competitive Analysis</span></h2>
+            
+            <table>
+                <tr>
+                    <th>Competitor</th>
+                    <th>Market Share</th>
+                    <th>Key Differentiator</th>
+                    <th>EzDrink Advantage</th>
+                </tr>
+                <tr>
+                    <td>Toast</td>
+                    <td>7.5%</td>
+                    <td>Comprehensive POS</td>
+                    <td>Purpose-built for bars, 40% faster service</td>
+                </tr>
+                <tr>
+                    <td>Square</td>
+                    <td>5.3%</td>
+                    <td>Brand recognition</td>
+                    <td>Specialized optimization, 15% lower TCO</td>
+                </tr>
+                <tr>
+                    <td>Tabit</td>
+                    <td>2.1%</td>
+                    <td>Mobile ordering</td>
+                    <td>Superior customization, faster implementation</td>
+                </tr>
+                <tr>
+                    <td>Legacy POS</td>
+                    <td>65%</td>
+                    <td>Established relationships</td>
+                    <td>Modern platform, 70% better UX scores</td>
+                </tr>
+            </table>
+        </div>
+        <div class="slide-number">8</div>
+    </div>
+
+    <!-- Slide 9: Financial Highlights -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <h2><span class="gold">Financial Highlights</span></h2>
+            
+            <table>
+                <tr>
+                    <th>Year</th>
+                    <th>Revenue</th>
+                    <th>EBITDA</th>
+                    <th>Profit Margin</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>$750K</td>
+                    <td>$750K</td>
+                    <td>100%</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>$2.4M</td>
+                    <td>$2.4M</td>
+                    <td>100%</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>$6.5M</td>
+                    <td>$5.75M</td>
+                    <td>89%</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>$15.2M</td>
+                    <td>$13.7M</td>
+                    <td>90%</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>$28M</td>
+                    <td>$25.5M</td>
+                    <td>91%</td>
+                </tr>
+            </table>
+            
+            <div class="feature-box">
+                <p style="text-align: center; font-size: 1.4rem;"><span class="gold" style="font-weight: bold;">Critical Advantage:</span> Initial investment covers all operating expenses for Years 1-2, enabling 100% profit margins during crucial growth phase</p>
+            </div>
+        </div>
+        <div class="slide-number">9</div>
+    </div>
+
+    <!-- Slide 10: Technical Foundation -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <h2><span class="gold">Technical Foundation</span></h2>
+            
+            <div class="col-2">
+                <div class="col">
+                    <div class="feature-box">
+                        <h3>Architecture</h3>
+                        <ul>
+                            <li>Cloud-native microservices</li>
+                            <li>Containerized deployment</li>
+                            <li>Real-time data processing</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h3>Front-End</h3>
+                        <ul>
+                            <li>Progressive web app</li>
+                            <li>Mobile-responsive design</li>
+                            <li>Intuitive user experience</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <div class="feature-box">
+                        <h3>AI Technology</h3>
+                        <ul>
+                            <li>Machine learning preference analysis</li>
+                            <li>Personalized recommendation engine</li>
+                            <li>Behavioral pattern recognition</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-box">
+                        <h3>Order Optimization</h3>
+                        <ul>
+                            <li>Intelligent queuing system</li>
+                            <li>Staff workload balancing</li>
+                            <li>Predictive demand modeling</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">10</div>
+    </div>
+
+    <!-- Slide 11: Team -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <h2><span class="gold">Team</span></h2>
+            
+            <div class="feature-box">
+                <h3>Maurice Sanders - Founder & CTO</h3>
+                <ul>
+                    <li>Quality Assurance Engineer at Bellomy with expertise in automation and AI integration</li>
+                    <li>DevOps Engineer experience at Comcast, working with AWS serverless applications</li>
+                    <li>Currently pursuing M.S. in AI/ML at Georgia Tech (Expected May 2026)</li>
+                    <li>Expertise in Selenium, Playwright, and AI prompt engineering</li>
+                    <li>Creator of multiple automation frameworks and AI-driven solutions</li>
+                </ul>
+            </div>
+            
+            <h3>Proven Technical Capabilities:</h3>
+            <div class="col-2">
+                <div class="col">
+                    <div class="feature-box">
+                        <h3>AI/ML Innovation</h3>
+                        <p>Developing AI agent with Node.js backend, React frontend, and Supabase database integration, featuring real-time LLM interaction</p>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <div class="feature-box">
+                        <h3>Automation Expertise</h3>
+                        <p>Built comprehensive frameworks using Playwright and Selenium, increasing test coverage by 35% and improving defect detection by 30%</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-box">
+                <h3>Additional Strengths</h3>
+                <p>Rapid learning capabilities with AI, strong problem-solving mindset, excellent communication skills in Agile environments, and proven ability to build frameworks from scratch</p>
+            </div>
+        </div>
+        <div class="slide-number">11</div>
+    </div>
+
+   <!-- Slide 12: The Ask -->
+<div class="slide">
+    <div class="grid-pattern"></div>
+    <div class="radial-gradient-1"></div>
+    <div class="radial-gradient-2"></div>
+    <div class="slide-content">
+        <h2><span class="gold">The Ask</span></h2>
+        
+        <div class="col-2" style="margin-bottom: 15px;">
+            <div class="col">
+                <div class="feature-box" style="margin-bottom: 0;">
+                    <h3>Annual Compensation Package</h3>
+                    <ul style="margin-bottom: 0;">
+                        <li>Founder/CTO (combined role): $125,000 + 74.5% equity</li>
+                        <li>Sales Manager: $50,000 base + commission + 5% equity</li>
+                        <li>PR/Social Media Manager: $70,000 + 5% equity</li>
+                        <li>Administrative Assistant: $64,000 + 5% equity</li>
+                        <li>Customer Success (Q3): $55,000 (prorated) + 5% equity</li>
+                        <li>100% employer-covered healthcare benefits</li>
+                        <li>Advisor: $24,000 or 0.5% equity</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="feature-box" style="margin-bottom: 0;">
+                    <h3>Key Investment Benefits</h3>
+                    <ul style="margin-bottom: 0;">
+                        <li>Investment covers all operating expenses (Years 1-2)</li>
+                        <li>100% profit margins during growth phase</li>
+                        <li>70% cost reduction vs. industry avg ($2.5M)</li>
+                        <li>Strategic opportunity fund for market adaptability</li>
+                        <li>First-mover advantage in key markets</li>
+                        <li>Patent-protected core technology</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-number">12</div>
+</div>
+    <!-- Slide 13: Cost Reduction Summary -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content">
+            <h2><span class="gold">Significant Cost Advantage</span></h2>
+            
+            <div style="display: flex; justify-content: space-around; align-items: center; margin: 50px 0;">
+                <div style="text-align: center;">
+                    <div style="color: rgba(255,255,255,0.7); font-size: 1.4rem; margin-bottom: 15px;">Industry Average Initial Investment</div>
+                    <div style="font-size: 4rem; margin-top: 10px;">$2.5M</div>
+                </div>
+                <div style="font-size: 4rem; color: rgba(255,255,255,0.5);">vs</div>
+                <div style="text-align: center;">
+                    <div style="color: rgba(255,255,255,0.7); font-size: 1.4rem; margin-bottom: 15px;">EzDrink Requirement</div>
+                    <div class="gold" style="font-size: 4rem; font-weight: bold; margin-top: 10px;">$750K</div>
+                </div>
+            </div>
+            
+            <div class="feature-box" style="text-align: center; margin-top: 50px;">
+                <h3 style="font-size: 2.5rem;">70% Cost Reduction</h3>
+                <p style="font-size: 1.6rem;">Achieving superior results with a fraction of the typical investment</p>
+            </div>
+            
+            <div class="feature-box" style="margin-top: 50px;">
+                <p style="font-size: 1.4rem; text-align: center;">An exceptional opportunity to enter a high-growth market with a capital-efficient business model and patented technology</p>
+            </div>
+        </div>
+        <div class="slide-number">13</div>
+    </div>
+
+    <!-- Slide 14: Thank You -->
+    <div class="slide">
+        <div class="grid-pattern"></div>
+        <div class="radial-gradient-1"></div>
+        <div class="radial-gradient-2"></div>
+        <div class="slide-content" style="text-align: center;">
+            <h2 style="font-size: 3rem;"><span class="gold">Thank You</span></h2>
+            
+            <div style="margin-top: 60px;">
+                <div class="logo" style="margin-bottom: 30px;"><span class="gold">Ez</span>Drink</div>
+                <div class="contact" style="font-size: 1.2rem;">
+                    <p><strong>Maurice Sanders</strong>, Founder & CTO</p>
+                    <p>305-434-0738</p>
+                    <p>mauric.sanders@ezdrink.us</p>
+                    <p>ezdrink.us</p>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">14</div>
+    </div>
+    <!-- Add this script at the end of your HTML file, right before the closing </body> tag -->
+<script>
+    // Function to add the required libraries
+    function loadLibraries() {
+        // Add jsPDF library
+        var jspdfScript = document.createElement('script');
+        jspdfScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        document.head.appendChild(jspdfScript);
+        
+        // Add html2canvas library
+        var html2canvasScript = document.createElement('script');
+        html2canvasScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        document.head.appendChild(html2canvasScript);
+    }
+    
+    // Load libraries immediately
+    loadLibraries();
+    
+    // Main initialization function
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create the download button with improved visibility
+        const downloadButton = document.createElement('button');
+        downloadButton.textContent = 'Download PDF';
+        downloadButton.id = 'downloadPdf';
+        downloadButton.style.position = 'fixed';
+        downloadButton.style.top = '20px';
+        downloadButton.style.right = '20px';
+        downloadButton.style.zIndex = '9999'; // Higher z-index
+        downloadButton.style.padding = '12px 24px'; // Larger button
+        downloadButton.style.backgroundColor = '#d4af37';
+        downloadButton.style.color = '#000000'; // Darker text for contrast
+        downloadButton.style.border = '2px solid #ffffff'; // White border for visibility
+        downloadButton.style.borderRadius = '6px';
+        downloadButton.style.cursor = 'pointer';
+        downloadButton.style.fontWeight = 'bold';
+        downloadButton.style.fontSize = '16px'; // Larger text
+        downloadButton.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)'; // Add shadow for depth
+        document.body.appendChild(downloadButton);
+    
+        // Add a check to verify button creation
+        console.log('Download button created:', downloadButton);
+        setTimeout(() => {
+            const buttonCheck = document.getElementById('downloadPdf');
+            if (!buttonCheck) {
+                console.error('Button not found in DOM after creation!');
+                // Try creating again with different approach
+                const fallbackButton = document.createElement('button');
+                fallbackButton.innerHTML = 'Download PDF';
+                fallbackButton.id = 'downloadPdf';
+                Object.assign(fallbackButton.style, {
+                    position: 'absolute',
+                    top: '20px',
+                    right: '20px',
+                    zIndex: '9999',
+                    padding: '12px 24px',
+                    backgroundColor: '#d4af37',
+                    color: '#000000',
+                    border: '2px solid #ffffff',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    fontSize: '16px',
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
+                });
+                document.body.insertBefore(fallbackButton, document.body.firstChild);
+            }
+        }, 1000);
+    
+        // Set up slide navigation
+        let currentSlideIndex = 0;
+        window.currentSlideIndex = currentSlideIndex;
+        const slides = document.querySelectorAll('.slide');
+    
+        // Hide all slides except the first one
+        for (let i = 1; i < slides.length; i++) {
+            slides[i].style.display = 'none';
+        }
+    
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            // Right arrow or space: next slide
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentSlideIndex < slides.length - 1) {
+                    slides[currentSlideIndex].style.display = 'none';
+                    currentSlideIndex++;
+                    slides[currentSlideIndex].style.display = 'flex';
+                }
+            }
+            // Left arrow: previous slide
+            else if (e.key === 'ArrowLeft') {
+                if (currentSlideIndex > 0) {
+                    slides[currentSlideIndex].style.display = 'none';
+                    currentSlideIndex--;
+                    slides[currentSlideIndex].style.display = 'flex';
+                }
+            }
+            
+            // Make the current slide index available globally
+            window.currentSlideIndex = currentSlideIndex;
+        });
+    
+        // Add PDF generation functionality - using event delegation to handle both original and fallback buttons
+        document.body.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'downloadPdf') {
+                generatePDF();
+            }
+        });
+    
+        // PDF generation function
+        function generatePDF() {
+            // Check if libraries are loaded
+            if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+                alert('PDF libraries are still loading. Please try again in a few seconds.');
+                return;
+            }
+    
+            // Show loading indicator
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.textContent = 'Generating PDF...';
+            loadingIndicator.style.position = 'fixed';
+            loadingIndicator.style.top = '50%';
+            loadingIndicator.style.left = '50%';
+            loadingIndicator.style.transform = 'translate(-50%, -50%)';
+            loadingIndicator.style.padding = '20px';
+            loadingIndicator.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            loadingIndicator.style.color = '#fff';
+            loadingIndicator.style.borderRadius = '8px';
+            loadingIndicator.style.zIndex = '10000';
+            loadingIndicator.style.fontFamily = 'Arial, sans-serif';
+            loadingIndicator.style.fontSize = '16px';
+            document.body.appendChild(loadingIndicator);
+            
+            try {
+                // Create a new jsPDF instance in landscape orientation
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                // Get all slides
+                const slides = document.querySelectorAll('.slide');
+                const slidesArray = Array.from(slides);
+                const originalDisplays = slidesArray.map(slide => slide.style.display);
+                let processedSlides = 0;
+                
+                // Process each slide one by one
+                function processSlide(index) {
+                    if (index >= slidesArray.length) {
+                        // All slides processed, save the PDF
+                        doc.save('EzDrink_Pitch_Deck.pdf');
+                        
+                        // Restore original display states
+                        slidesArray.forEach((slide, i) => {
+                            slide.style.display = originalDisplays[i];
+                        });
+                        
+                        document.body.removeChild(loadingIndicator);
+                        return;
+                    }
+                    
+                    const slide = slidesArray[index];
+                    
+                    // Make sure the slide is visible for capturing
+                    slide.style.display = 'flex';
+                    
+                    html2canvas(slide, {
+                        scale: 2, // Higher quality
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#121212'
+                    }).then(function(canvas) {
+                        // Add the canvas as an image to the PDF
+                        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                        
+                        // Add a page for slides after the first one
+                        if (index > 0) {
+                            doc.addPage();
+                        }
+                        
+                        // Add the image to fill the page
+                        doc.addImage(imgData, 'JPEG', 0, 0, 297, 210); // A4 landscape dimensions in mm
+                        
+                        // Update loading text
+                        processedSlides++;
+                        loadingIndicator.textContent = `Generating PDF... ${processedSlides}/${slidesArray.length}`;
+                        
+                        // Hide slide after processing unless it's the current one
+                        if (index !== window.currentSlideIndex) {
+                            slide.style.display = 'none';
+                        }
+                        
+                        // Process the next slide
+                        processSlide(index + 1);
+                    }).catch(function(error) {
+                        console.error('Error capturing slide:', error);
+                        loadingIndicator.textContent = `Error: ${error.message}. Try again.`;
+                        setTimeout(function() {
+                            document.body.removeChild(loadingIndicator);
+                        }, 3000);
+                    });
+                }
+                
+                // Start processing slides
+                processSlide(0);
+            } catch (error) {
+                console.error('Error initializing PDF:', error);
+                loadingIndicator.textContent = `Error: ${error.message}. Try again.`;
+                setTimeout(function() {
+                    document.body.removeChild(loadingIndicator);
+                }, 3000);
+            }
+        }
+    
+        // Ensure button is always visible by checking every few seconds
+        setInterval(function() {
+            if (!document.getElementById('downloadPdf')) {
+                console.log('Download button disappeared, recreating...');
+                const recoveryButton = document.createElement('button');
+                recoveryButton.textContent = 'Download PDF';
+                recoveryButton.id = 'downloadPdf';
+                Object.assign(recoveryButton.style, {
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    zIndex: '9999',
+                    padding: '12px 24px',
+                    backgroundColor: '#d4af37',
+                    color: '#000000',
+                    border: '2px solid #ffffff',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    fontSize: '16px',
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
+                });
+                document.body.appendChild(recoveryButton);
+            }
+        }, 5000);
+    });
+    </script>
+</body>
+
+</html>

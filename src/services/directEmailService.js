@@ -39,15 +39,27 @@ const debugLog = (level, context, message, data = null) => {
 };
 
 /**
+ * Determine the appropriate API endpoint based on the current environment
+ * @returns {String} - The API endpoint URL
+ */
+const getApiEndpoint = (path) => {
+  // Local development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return `http://localhost:3001/api/${path}`;
+  }
+  
+  // Production (ezdrink.us) or preview deployments
+  return `${window.location.origin}/api/${path}`;
+};
+
+/**
 * Function to send email via our Node.js backend API
 * @param {Object} emailData - Complete email data to send
 * @returns {Promise} - Resolves with API response or rejects with error
 */
 const sendEmailViaBackend = async (emailData) => { 
-  // Update the URL to use your Vercel deployment instead of Render
-  const BACKEND_EMAIL_ENDPOINT = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3001/api/send-email' 
-    : 'https://ez-drink-h5xnw2ao5-maurice-sanders-projects.vercel.app/api/send-email';
+  // Dynamically determine the API endpoint
+  const BACKEND_EMAIL_ENDPOINT = getApiEndpoint('send-email');
   
   console.log('📧 STARTING EMAIL SEND', {
     to: emailData.to,
@@ -114,6 +126,7 @@ const sendEmailViaBackend = async (emailData) => {
     };
   } 
 };
+
 /**
 * Sends a Cash Finder Report email
 * @param {Object} userData - User contact information
@@ -178,10 +191,8 @@ export const sendCashFinderReportSMS = async (userData, reportData) => {
 * @returns {Promise} - Resolves with success info or rejects with error
 */
 export const queueCashFinderPlusEmail = async (userData) => {
-  // Use local URL for development, Render URL for production
-  const FOLLOW_UP_ENDPOINT = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3001/api/queue-follow-up' 
-    : 'https://ezdrinklive.onrender.com/api/queue-follow-up';
+  // Dynamically determine the API endpoint
+  const FOLLOW_UP_ENDPOINT = getApiEndpoint('queue-follow-up');
   
   debugLog('info', 'queueCashFinderPlusEmail', 'Queueing Cash Finder Plus email', {
     email: userData.email,

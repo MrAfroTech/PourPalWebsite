@@ -43,7 +43,7 @@ const StatsModal = ({ statType, onClose }) => {
       
       default:
         return {
-          title: 'PourPal Benefits',
+          title: 'EzDrink Benefits',
           benefits: []
         };
     }

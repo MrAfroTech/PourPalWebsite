@@ -172,6 +172,7 @@ const AppContent = () => {
           </>
         } />
         <Route path="/demo" element={<DemoPage />} />
+       
         <Route path="/increase-revenue" element={<IncreaseRevenue />} />
         <Route path="/reduce-expenses" element={<ReduceExpenses />} />
         <Route path="/download" element={<AppDownloadSplash />} />

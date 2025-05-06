@@ -9,8 +9,8 @@ const Footer = () => {
           <div className="footer-brand">
             <div className="footer-logo">
               <span className="logo-text">
-                <span className="gradient-text">Pour</span>
-                <span className="accent-text">Pal</span>
+                <span className="gradient-text">Ez</span>
+                <span className="accent-text">Drink</span>
               </span>
             </div>
             <p className="footer-tagline">
@@ -71,7 +71,7 @@ const Footer = () => {
                 <li><a href="#">Help Center</a></li>
                 <li><a href="#">Contact Us</a></li>
                 <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms of Service</a></li>
+                <li><a href="/terms-of-service">Terms of Service</a></li>
               </ul>
             </div>
           </div>
@@ -79,7 +79,7 @@ const Footer = () => {
         
         <div className="footer-bottom">
           <p className="copyright">
-            &copy; {new Date().getFullYear()} PourPal. All rights reserved.
+            &copy; {new Date().getFullYear()} EzDrink. All rights reserved.
           </p>
         </div>
       </div>
