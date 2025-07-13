@@ -1,12 +1,31 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import '../styles/wineWalkMap.css';
+import wineWalkData from '../data/wineWalkLocations.json';
 
 const WineWalkMap = () => {
-    // Configuration flags - easily change these for different environments
-    const DEMO_MODE = true; // Set to false for production with real Google Maps
-    const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY"; // Replace with your actual API key
-    const ENABLE_CONTINUOUS_TRACKING = false; // Set to true for continuous GPS tracking
+    // Configuration from environment variables with proper fallbacks
+    const DEMO_MODE = process.env.REACT_APP_DEMO_MODE === 'false' ? false : true;
+    const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "";
+    const ENABLE_CONTINUOUS_TRACKING = process.env.REACT_APP_ENABLE_CONTINUOUS_TRACKING === 'true';
     
+    // Developer override system for quick testing (set to null to use env vars)
+    const DEV_OVERRIDE = {
+        DEMO_MODE: null, // Set to true/false to override, null to use env var
+        GOOGLE_MAPS_API_KEY: null, // Set to your key to override, null to use env var
+        ENABLE_CONTINUOUS_TRACKING: null // Set to true/false to override, null to use env var
+    };
+    
+    // Final configuration
+    const config = {
+        DEMO_MODE: DEV_OVERRIDE.DEMO_MODE !== null ? DEV_OVERRIDE.DEMO_MODE : DEMO_MODE,
+        GOOGLE_MAPS_API_KEY: DEV_OVERRIDE.GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY,
+        ENABLE_CONTINUOUS_TRACKING: DEV_OVERRIDE.ENABLE_CONTINUOUS_TRACKING !== null ? DEV_OVERRIDE.ENABLE_CONTINUOUS_TRACKING : ENABLE_CONTINUOUS_TRACKING
+    };
+
     const mapRef = useRef(null);
+    const scriptRef = useRef(null);
+    const loadingRef = useRef(false);
+    const initializingRef = useRef(false); // Prevent multiple initializations
     const [map, setMap] = useState(null);
     const [userMarker, setUserMarker] = useState(null);
     const [watchId, setWatchId] = useState(null);
@@ -16,92 +35,81 @@ const WineWalkMap = () => {
     const [userLocation, setUserLocation] = useState(null);
     const [status, setStatus] = useState({ message: '', type: '', visible: false });
     const [mapsLoaded, setMapsLoaded] = useState(false);
+    const [componentMounted, setComponentMounted] = useState(false);
 
-    // Mock data for wine walk locations since JSON file might not be available
-    const defaultWineWalkData = {
-        search_center: {
-            address: "Downtown Clermont, FL",
-            coordinates: {
-                latitude: 28.5493,
-                longitude: -81.7731
+    // Mark component as mounted
+    useEffect(() => {
+        setComponentMounted(true);
+        return () => {
+            setComponentMounted(false);
+        };
+    }, []);
+
+    // Log configuration on component mount
+    useEffect(() => {
+        if (!componentMounted) return;
+        
+        console.log('🗺️ Wine Walk Map Configuration:', {
+            'Raw Environment Variables': {
+                REACT_APP_DEMO_MODE: process.env.REACT_APP_DEMO_MODE,
+                REACT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? 'SET' : 'NOT SET',
+                REACT_APP_ENABLE_CONTINUOUS_TRACKING: process.env.REACT_APP_ENABLE_CONTINUOUS_TRACKING,
+                NODE_ENV: process.env.NODE_ENV
             },
-            radius: "1 mile"
-        },
-        total_establishments: 8,
-        search_date: "2025-01-15",
-        establishments: [
-            {
-                name: "The Roasted Spirit",
-                address: "756 W Montrose Street, Clermont, FL 34711",
-                category: "Bar/Cocktail Lounge",
-                description: "Elevated spirits bar with craft cocktails",
-                phone: "(352) 394-8844",
-                specialties: ["Craft Cocktails", "Wine Selection", "Small Plates"],
-                hours: {
-                    monday_thursday: "11:00 AM - 11:00 PM",
-                    friday_saturday: "11:00 AM - 12:00 AM",
-                    sunday: "12:00 PM - 10:00 PM"
-                },
-                distance_from_center: "0.1 miles"
-            },
-            {
-                name: "Clermont Brewing Company",
-                address: "691 W Montrose St, Clermont, FL 34711",
-                category: "Brewery/Restaurant",
-                description: "Local brewery with handcrafted beers and pub food",
-                phone: "(352) 241-2337",
-                specialties: ["Craft Beer", "Burgers", "Wings"],
-                hours: {
-                    monday_thursday: "11:00 AM - 10:00 PM",
-                    friday_saturday: "11:00 AM - 11:00 PM",
-                    sunday: "12:00 PM - 9:00 PM"
-                },
-                distance_from_center: "0.2 miles"
-            },
-            {
-                name: "Waterfront Inn",
-                address: "1105 W Highway 50, Clermont, FL 34711",
-                category: "Waterfront Restaurant/Bar",
-                description: "Lakefront dining with beautiful sunset views",
-                phone: "(352) 394-4424",
-                specialties: ["Seafood", "Steaks", "Sunset Views"],
-                hours: {
-                    sunday_monday: "11:00 AM - 9:00 PM",
-                    tuesday_wednesday: "11:00 AM - 9:00 PM",
-                    thursday: "11:00 AM - 9:00 PM",
-                    friday_saturday: "11:00 AM - 10:00 PM"
-                },
-                distance_from_center: "0.5 miles"
-            },
-            {
-                name: "Los Tres Amigos",
-                address: "1035 W Highway 50, Clermont, FL 34711",
-                category: "Mexican Restaurant/Bar",
-                description: "Authentic Mexican cuisine with margaritas",
-                phone: "(352) 394-7041",
-                specialties: ["Margaritas", "Tacos", "Fajitas"],
-                hours: "Daily 11:00 AM - 10:00 PM",
-                distance_from_center: "0.4 miles"
-            },
-            {
-                name: "Hickory Point Bar & Grill",
-                address: "2107 Hooks St, Clermont, FL 34711",
-                category: "BBQ Restaurant",
-                description: "Smoky BBQ and cold beers",
-                phone: "(352) 394-2711",
-                specialties: ["BBQ Ribs", "Brisket", "Cold Beer"],
-                hours: "Daily 11:00 AM - 9:00 PM",
-                distance_from_center: "0.8 miles"
+            'Final Configuration': {
+                DEMO_MODE: config.DEMO_MODE,
+                HAS_API_KEY: !!config.GOOGLE_MAPS_API_KEY,
+                CONTINUOUS_TRACKING: config.ENABLE_CONTINUOUS_TRACKING
             }
-        ]
-    };
+        });
+    }, [config, componentMounted]);
+
+    // Cleanup function
+    useEffect(() => {
+        return () => {
+            // Clean up geolocation
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+            }
+            
+            // Clean up markers safely
+            if (locationMarkers.length > 0) {
+                locationMarkers.forEach(marker => {
+                    try {
+                        if (marker && marker.setMap) {
+                            marker.setMap(null);
+                        }
+                    } catch (error) {
+                        console.warn('Error removing location marker:', error);
+                    }
+                });
+            }
+            
+            if (userMarker) {
+                try {
+                    if (userMarker.setMap) {
+                        userMarker.setMap(null);
+                    }
+                } catch (error) {
+                    console.warn('Error removing user marker:', error);
+                }
+            }
+
+            // Reset refs
+            loadingRef.current = false;
+            initializingRef.current = false;
+        };
+    }, [watchId, locationMarkers, userMarker]);
 
     const showStatus = useCallback((message, type) => {
+        if (!componentMounted) return;
         setStatus({ message, type, visible: true });
         setTimeout(() => {
-            setStatus(prev => ({ ...prev, visible: false }));
+            if (componentMounted) {
+                setStatus(prev => ({ ...prev, visible: false }));
+            }
         }, 5000);
-    }, []);
+    }, [componentMounted]);
 
     const getLocationIcon = useCallback((type) => {
         const icons = {
@@ -189,140 +197,268 @@ const WineWalkMap = () => {
         };
     }, []);
 
-    const addLocationMarkers = useCallback((mapInstance) => {
-        if (!mapInstance || !window.google || !window.google.maps) return;
+    // Helper function to create marker content for AdvancedMarkerElement
+    const createMarkerContent = useCallback((icon) => {
+        const markerElement = document.createElement('div');
+        markerElement.style.cssText = `
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        `;
+        markerElement.textContent = icon;
+        return markerElement;
+    }, []);
+
+    const addLocationMarkers = useCallback(async (mapInstance) => {
+        if (!mapInstance || !window.google || !window.google.maps || !componentMounted) return;
         
         // Clear existing markers safely
         locationMarkers.forEach(marker => {
             if (marker && marker.setMap) {
-                marker.setMap(null);
+                try {
+                    marker.setMap(null);
+                } catch (error) {
+                    console.warn('Error removing marker:', error);
+                }
             }
         });
         
         const newMarkers = [];
-        locations.forEach((location, index) => {
-            const position = {
-                lat: location.lat + (index * 0.0005), // Smaller offset to prevent clustering
-                lng: location.lng + (index * 0.0005)
-            };
-            
-            const marker = new window.google.maps.Marker({
-                position: position,
-                map: mapInstance,
-                title: location.name,
-                icon: getMarkerIcon(location.type),
-                animation: window.google.maps.Animation.DROP
-            });
-            
-            const infoWindow = new window.google.maps.InfoWindow({
-                content: createInfoWindowContent(location)
-            });
-            
-            marker.addListener('click', () => {
-                // Close all other info windows
-                newMarkers.forEach(m => {
-                    if (m.infoWindow && m.infoWindow.close) {
-                        m.infoWindow.close();
-                    }
-                });
-                infoWindow.open(mapInstance, marker);
-            });
-            
-            marker.infoWindow = infoWindow;
-            newMarkers.push(marker);
-        });
         
-        setLocationMarkers(newMarkers);
+        // Use legacy markers for stability
+        for (let index = 0; index < locations.length; index++) {
+            const location = locations[index];
+            try {
+                const position = {
+                    lat: location.lat + (index * 0.0005),
+                    lng: location.lng + (index * 0.0005)
+                };
+                
+                // Use legacy Marker for better stability
+                const marker = new window.google.maps.Marker({
+                    position: position,
+                    map: mapInstance,
+                    title: location.name,
+                    icon: getMarkerIcon(location.type),
+                    animation: window.google.maps.Animation.DROP
+                });
+                
+                const infoWindow = new window.google.maps.InfoWindow({
+                    content: createInfoWindowContent(location)
+                });
+                
+                marker.addListener('click', () => {
+                    // Close all other info windows
+                    newMarkers.forEach(m => {
+                        if (m.infoWindow && m.infoWindow.close) {
+                            try {
+                                m.infoWindow.close();
+                            } catch (error) {
+                                console.warn('Error closing info window:', error);
+                            }
+                        }
+                    });
+                    infoWindow.open(mapInstance, marker);
+                });
+                
+                marker.infoWindow = infoWindow;
+                newMarkers.push(marker);
+            } catch (error) {
+                console.warn('Error creating marker for location:', location.name, error);
+            }
+        }
+        
+        if (componentMounted) {
+            setLocationMarkers(newMarkers);
+        }
         
         if (newMarkers.length > 0) {
-            const bounds = new window.google.maps.LatLngBounds();
-            newMarkers.forEach(marker => {
-                bounds.extend(marker.getPosition());
-            });
-            mapInstance.fitBounds(bounds);
-            
-            window.google.maps.event.addListenerOnce(mapInstance, 'bounds_changed', () => {
-                if (mapInstance.getZoom() > 18) {
-                    mapInstance.setZoom(18);
-                }
-            });
+            try {
+                const bounds = new window.google.maps.LatLngBounds();
+                newMarkers.forEach(marker => {
+                    bounds.extend(marker.getPosition());
+                });
+                mapInstance.fitBounds(bounds);
+                
+                window.google.maps.event.addListenerOnce(mapInstance, 'bounds_changed', () => {
+                    if (mapInstance.getZoom() > 18) {
+                        mapInstance.setZoom(18);
+                    }
+                });
+            } catch (error) {
+                console.warn('Error setting map bounds:', error);
+            }
         }
-    }, [locations, locationMarkers, getMarkerIcon, createInfoWindowContent]);
+    }, [locations, locationMarkers, getMarkerIcon, createInfoWindowContent, componentMounted]);
 
     const initMap = useCallback(() => {
-        if (!window.google || !window.google.maps || !mapRef.current) {
-            console.log('Google Maps not ready yet');
+        if (!window.google || !window.google.maps || !mapRef.current || !componentMounted) {
             return;
         }
         
-        const defaultCenter = { lat: 28.5493, lng: -81.7731 };
+        if (initializingRef.current) {
+            console.log('Map already initializing...');
+            return;
+        }
         
-        const mapInstance = new window.google.maps.Map(mapRef.current, {
-            zoom: 15,
-            center: defaultCenter,
-            styles: [
-                { 
+        initializingRef.current = true;
+        
+        try {
+            const defaultCenter = { lat: 28.5493, lng: -81.7731 };
+            
+            // Use basic configuration to avoid conflicts
+            const mapInstance = new window.google.maps.Map(mapRef.current, {
+                zoom: 16,
+                center: defaultCenter,
+                styles: [{ 
                     featureType: 'poi', 
                     elementType: 'labels', 
                     stylers: [{ visibility: 'off' }] 
+                }],
+                mapTypeControl: true,
+                streetViewControl: true,
+                fullscreenControl: true,
+                zoomControl: true
+                // Remove mapId to avoid conflicts with styles
+            });
+            
+            if (componentMounted) {
+                setMap(mapInstance);
+                
+                if (locations.length > 0) {
+                    addLocationMarkers(mapInstance);
                 }
-            ],
-            mapTypeControl: true,
-            streetViewControl: true,
-            fullscreenControl: true,
-            zoomControl: true
-        });
-        
-        setMap(mapInstance);
-        
-        if (locations.length > 0) {
-            addLocationMarkers(mapInstance);
+                
+                showStatus('Interactive Google Maps loaded successfully!', 'success');
+            }
+        } catch (error) {
+            console.error('Error initializing map:', error);
+            if (componentMounted) {
+                showStatus('Error loading Google Maps', 'error');
+            }
+        } finally {
+            initializingRef.current = false;
+        }
+    }, [locations, addLocationMarkers, showStatus, componentMounted]);
+
+    const checkExistingGoogleMaps = useCallback(() => {
+        // Check if Google Maps is already loaded anywhere in the application
+        if (window.google && window.google.maps) {
+            console.log('Google Maps already loaded, using existing instance');
+            return true;
         }
         
-        showStatus('Interactive Google Maps loaded successfully!', 'success');
-    }, [locations, addLocationMarkers, showStatus]);
+        // Check for existing script tags
+        const existingScripts = document.querySelectorAll('script[src*="maps.googleapis.com"]');
+        if (existingScripts.length > 0) {
+            console.log('Google Maps script already exists, waiting for load...');
+            return 'loading';
+        }
+        
+        return false;
+    }, []);
 
     const loadGoogleMaps = useCallback(() => {
-        if (DEMO_MODE) {
-            // Demo mode - simulate map loading without actual Google Maps API
+        if (!componentMounted) return;
+        
+        if (config.DEMO_MODE) {
             setMapsLoaded(true);
             showStatus('Demo mode: Map interface loaded (no API key required)', 'success');
-            console.log('Running in DEMO MODE - set DEMO_MODE to false for live Google Maps');
+            console.log('🔧 Running in DEMO MODE - set REACT_APP_DEMO_MODE=false for live Google Maps');
             return;
         }
 
-        // Live mode - load actual Google Maps
-        if (window.google && window.google.maps) {
+        const existingMaps = checkExistingGoogleMaps();
+        
+        // If Google Maps is already loaded, use it
+        if (existingMaps === true) {
             setMapsLoaded(true);
-            initMap();
+            setTimeout(() => initMap(), 100); // Small delay to ensure component is ready
             return;
         }
         
-        if (!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY === "YOUR_GOOGLE_MAPS_API_KEY") {
-            console.error('Google Maps API key not configured');
-            showStatus('Google Maps API key required for live mode. Using demo mode.', 'error');
+        // If currently loading, wait
+        if (existingMaps === 'loading') {
+            const checkInterval = setInterval(() => {
+                if (window.google && window.google.maps) {
+                    clearInterval(checkInterval);
+                    if (componentMounted) {
+                        setMapsLoaded(true);
+                        setTimeout(() => initMap(), 100);
+                    }
+                }
+            }, 100);
+            
+            // Timeout after 10 seconds
+            setTimeout(() => {
+                clearInterval(checkInterval);
+                if (!window.google && componentMounted) {
+                    showStatus('Google Maps loading timeout', 'error');
+                }
+            }, 10000);
+            return;
+        }
+        
+        // Prevent multiple loads
+        if (loadingRef.current) {
+            console.log('Google Maps already loading...');
+            return;
+        }
+        
+        if (!config.GOOGLE_MAPS_API_KEY) {
+            console.error('Google Maps API key not found in environment variables');
+            showStatus('Google Maps API key missing. Add REACT_APP_GOOGLE_MAPS_API_KEY to your .env file.', 'error');
             setMapsLoaded(true);
             return;
         }
         
+        loadingRef.current = true;
         showStatus('Loading Google Maps...', 'success');
         
+        // Create unique callback function name
+        const callbackName = 'initGoogleMaps_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        window[callbackName] = () => {
+            loadingRef.current = false;
+            if (componentMounted) {
+                setMapsLoaded(true);
+                setTimeout(() => initMap(), 100);
+                showStatus('Google Maps loaded successfully!', 'success');
+            }
+            // Clean up callback
+            delete window[callbackName];
+        };
+        
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=geometry`;
+        // Remove the marker library to avoid conflicts
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=${callbackName}`;
         script.async = true;
         script.defer = true;
-        script.onload = () => {
-            setMapsLoaded(true);
-            initMap();
-            showStatus('Google Maps loaded successfully!', 'success');
-        };
         script.onerror = () => {
-            console.error('Failed to load Google Maps API');
-            showStatus('Failed to load Google Maps. Check your API key and internet connection.', 'error');
-            setMapsLoaded(true); // Still show the interface, just without the map
+            loadingRef.current = false;
+            console.error('Failed to load Google Maps API - check your API key and billing settings');
+            if (componentMounted) {
+                showStatus('Failed to load Google Maps. Check your API key, billing, and internet connection.', 'error');
+                setMapsLoaded(true);
+            }
+            // Clean up callback
+            delete window[callbackName];
+            if (scriptRef.current && scriptRef.current.parentNode) {
+                scriptRef.current.parentNode.removeChild(scriptRef.current);
+            }
+            scriptRef.current = null;
         };
+        
+        scriptRef.current = script;
         document.head.appendChild(script);
-    }, [initMap, showStatus]);
+    }, [initMap, showStatus, config, componentMounted, checkExistingGoogleMaps]);
 
     const getCategoryType = useCallback((category) => {
         const categoryMap = {
@@ -343,22 +479,41 @@ const WineWalkMap = () => {
     const formatHours = useCallback((hours) => {
         if (!hours) return null;
         if (typeof hours === 'string') return hours;
-        
         if (hours.monday_thursday) {
             return `Mon-Thu: ${hours.monday_thursday}, Fri-Sat: ${hours.friday_saturday || hours.monday_thursday}, Sun: ${hours.sunday || hours.monday_thursday}`;
         }
         if (hours.sunday_monday) {
             return `Sun-Mon: ${hours.sunday_monday}, Tue-Wed: ${hours.tuesday_wednesday}, Thu: ${hours.thursday}, Fri-Sat: ${hours.friday_saturday}`;
         }
-        
         return 'See website for hours';
     }, []);
 
-    const loadLocationsFromData = useCallback(() => {
+    const loadDefaultLocations = useCallback(() => {
+        const defaultLocations = [
+            {
+                id: 1,
+                name: "The Roasted Spirit",
+                address: "756 W Montrose Street, Clermont, FL 34711",
+                type: "bar",
+                lat: 28.5493,
+                lng: -81.7731,
+                description: "Elevated spirits bar",
+                hours: "Daily 11:00 AM - 11:00 PM",
+                featured: true,
+                order: 1
+            }
+        ];
+        if (componentMounted) {
+            setLocations(defaultLocations);
+            console.log('Loaded default locations:', defaultLocations);
+        }
+    }, [componentMounted]);
+
+    const loadLocationsFromJSON = useCallback(() => {
+        if (!componentMounted) return;
+        
         try {
-            const wineWalkData = defaultWineWalkData; // Use the mock data
             let locationsData = [];
-            
             if (wineWalkData && wineWalkData.establishments) {
                 locationsData = wineWalkData.establishments.map((establishment, index) => ({
                     id: index + 1,
@@ -377,6 +532,10 @@ const WineWalkMap = () => {
                     specialties: establishment.specialties,
                     distance_from_center: establishment.distance_from_center
                 }));
+            } else if (wineWalkData && wineWalkData.locations) {
+                locationsData = wineWalkData.locations;
+            } else {
+                throw new Error('No locations or establishments found in JSON file');
             }
             
             if (locationsData.length > 0) {
@@ -390,23 +549,31 @@ const WineWalkMap = () => {
                 throw new Error('No valid locations found');
             }
         } catch (error) {
-            console.error('Failed to load locations:', error);
-            showStatus('Using demo data', 'error');
+            console.error('Failed to load locations from JSON:', error);
+            showStatus('Loading default locations (JSON file issue)', 'error');
+            loadDefaultLocations();
         }
-    }, [getCategoryType, formatHours, showStatus]);
+    }, [getCategoryType, formatHours, showStatus, loadDefaultLocations, componentMounted]);
 
     useEffect(() => {
-        loadLocationsFromData();
-        loadGoogleMaps(); // Now uses the flag system
-        
-        return () => {
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
+        if (!componentMounted) return;
+        loadLocationsFromJSON();
+        // Delay the map loading slightly to ensure component is fully mounted
+        const timer = setTimeout(() => {
+            if (componentMounted) {
+                loadGoogleMaps();
             }
-        };
-    }, [loadLocationsFromData, loadGoogleMaps, watchId]);
+        }, 100);
+        
+        return () => clearTimeout(timer);
+    }, [loadLocationsFromJSON, loadGoogleMaps, componentMounted]);
 
-    // Rest of your methods remain the same...
+    useEffect(() => {
+        if (!config.DEMO_MODE && map && locations.length > 0 && mapsLoaded && componentMounted) {
+            addLocationMarkers(map);
+        }
+    }, [locations, map, mapsLoaded, addLocationMarkers, config.DEMO_MODE, componentMounted]);
+
     const calculateDistance = useCallback((pos1, pos2) => {
         const R = 6371;
         const dLat = (pos2.lat - pos1.lat) * Math.PI / 180;
@@ -417,6 +584,80 @@ const WineWalkMap = () => {
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         return R * c;
     }, []);
+
+    const updateDistances = useCallback((userPos) => {
+        locations.forEach((location) => {
+            const distance = calculateDistance(userPos, location);
+            console.log(`Distance to ${location.name}: ${distance.toFixed(1)} km`);
+        });
+    }, [locations, calculateDistance]);
+
+    const updatePosition = useCallback((position) => {
+        if (!componentMounted) return;
+        
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        const newUserLocation = { lat, lng };
+        setUserLocation(newUserLocation);
+        console.log('User position updated:', newUserLocation);
+        showStatus(`Location updated! Accuracy: ${Math.round(accuracy)}m`, 'success');
+        
+        // Only update map marker if not in demo mode
+        if (!config.DEMO_MODE && map && window.google) {
+            try {
+                if (userMarker) {
+                    userMarker.setPosition(newUserLocation);
+                } else {
+                    const marker = new window.google.maps.Marker({
+                        position: newUserLocation,
+                        map: map,
+                        title: 'Your Location',
+                        icon: {
+                            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+                                    <circle cx="15" cy="15" r="12" fill="#4285F4" stroke="#ffffff" stroke-width="3"/>
+                                    <circle cx="15" cy="15" r="5" fill="#ffffff"/>
+                                </svg>
+                            `),
+                            scaledSize: new window.google.maps.Size(30, 30),
+                            anchor: new window.google.maps.Point(15, 15)
+                        },
+                        zIndex: 1000
+                    });
+                    
+                    setUserMarker(marker);
+                }
+                map.setCenter(newUserLocation);
+                map.setZoom(16);
+            } catch (error) {
+                console.warn('Error updating user marker:', error);
+            }
+        }
+        updateDistances(newUserLocation);
+    }, [map, userMarker, showStatus, updateDistances, config.DEMO_MODE, componentMounted]);
+
+    const handleLocationError = useCallback((error) => {
+        if (!componentMounted) return;
+        
+        let message;
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                message = "Location access denied. Please enable location services.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                message = "Location information is unavailable.";
+                break;
+            case error.TIMEOUT:
+                message = "Location request timed out.";
+                break;
+            default:
+                message = "An unknown error occurred.";
+                break;
+        }
+        showStatus(message, 'error');
+        setIsTracking(false);
+    }, [showStatus, componentMounted]);
 
     const startTracking = useCallback(() => {
         if (!navigator.geolocation) {
@@ -429,107 +670,25 @@ const WineWalkMap = () => {
             timeout: 10000,
             maximumAge: 60000
         };
-        
-        if (ENABLE_CONTINUOUS_TRACKING) {
-            // Continuous tracking mode
+
+        if (config.ENABLE_CONTINUOUS_TRACKING) {
             const id = navigator.geolocation.watchPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    const accuracy = position.coords.accuracy;
-                    const newUserLocation = { lat, lng };
-                    
-                    setUserLocation(newUserLocation);
-                    setIsTracking(true);
-                    showStatus(`Location updated! Accuracy: ${Math.round(accuracy)}m`, 'success');
-                    console.log('User position updated:', newUserLocation);
-                    
-                    // Update map marker if in live mode
-                    if (!DEMO_MODE && map && window.google) {
-                        if (userMarker) {
-                            userMarker.setPosition(newUserLocation);
-                        } else {
-                            const marker = new window.google.maps.Marker({
-                                position: newUserLocation,
-                                map: map,
-                                title: 'Your Location',
-                                icon: {
-                                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
-                                            <circle cx="15" cy="15" r="12" fill="#4285F4" stroke="#ffffff" stroke-width="3"/>
-                                            <circle cx="15" cy="15" r="5" fill="#ffffff"/>
-                                        </svg>
-                                    `),
-                                    scaledSize: new window.google.maps.Size(30, 30),
-                                    anchor: new window.google.maps.Point(15, 15)
-                                },
-                                zIndex: 1000
-                            });
-                            setUserMarker(marker);
-                        }
-                        map.setCenter(newUserLocation);
-                        map.setZoom(16);
-                    }
-                },
-                (error) => {
-                    let message;
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            message = "Location access denied. Please enable location services.";
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            message = "Location information is unavailable.";
-                            break;
-                        case error.TIMEOUT:
-                            message = "Location request timed out.";
-                            break;
-                        default:
-                            message = "An unknown error occurred.";
-                            break;
-                    }
-                    showStatus(message, 'error');
-                    setIsTracking(false);
-                },
+                updatePosition,
+                handleLocationError,
                 options
             );
             setWatchId(id);
+            setIsTracking(true);
+            showStatus('Continuous GPS tracking started!', 'success');
         } else {
-            // Single location mode
             navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    const accuracy = position.coords.accuracy;
-                    const newUserLocation = { lat, lng };
-                    
-                    setUserLocation(newUserLocation);
-                    setIsTracking(true);
-                    showStatus(`Location found! Accuracy: ${Math.round(accuracy)}m`, 'success');
-                    console.log('User position:', newUserLocation);
-                },
-                (error) => {
-                    let message;
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            message = "Location access denied. Please enable location services.";
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            message = "Location information is unavailable.";
-                            break;
-                        case error.TIMEOUT:
-                            message = "Location request timed out.";
-                            break;
-                        default:
-                            message = "An unknown error occurred.";
-                            break;
-                    }
-                    showStatus(message, 'error');
-                    setIsTracking(false);
-                },
+                updatePosition,
+                handleLocationError,
                 options
             );
+            setIsTracking(true);
         }
-    }, [showStatus, map, userMarker]);
+    }, [updatePosition, handleLocationError, showStatus, config.ENABLE_CONTINUOUS_TRACKING]);
 
     const stopTracking = useCallback(() => {
         if (watchId) {
@@ -538,15 +697,22 @@ const WineWalkMap = () => {
         }
         setIsTracking(false);
         setUserLocation(null);
+        if (userMarker) {
+            try {
+                userMarker.setMap(null);
+                setUserMarker(null);
+            } catch (error) {
+                console.warn('Error removing user marker:', error);
+            }
+        }
         showStatus('GPS tracking stopped.', 'success');
-    }, [watchId, showStatus]);
+    }, [watchId, userMarker, showStatus]);
 
     const findNearestLocation = useCallback(() => {
         if (!userLocation) {
             showStatus('Please start GPS tracking first.', 'error');
             return;
         }
-        
         if (locations.length === 0) {
             showStatus('No locations available.', 'error');
             return;
@@ -563,13 +729,39 @@ const WineWalkMap = () => {
             }
         });
         
+        if (nearestLocation && !config.DEMO_MODE && map && window.google) {
+            try {
+                map.setCenter({ lat: nearestLocation.lat, lng: nearestLocation.lng });
+                map.setZoom(18);
+                
+                const marker = locationMarkers.find(m => m.getTitle() === nearestLocation.name);
+                
+                if (marker) {
+                    if (marker.setAnimation && window.google.maps.Animation) {
+                        marker.setAnimation(window.google.maps.Animation.BOUNCE);
+                        setTimeout(() => {
+                            if (marker.setAnimation) {
+                                marker.setAnimation(null);
+                            }
+                        }, 2000);
+                    }
+                    
+                    if (marker.infoWindow) {
+                        marker.infoWindow.open(map, marker);
+                    }
+                }
+            } catch (error) {
+                console.warn('Error highlighting nearest location:', error);
+            }
+        }
+        
         if (nearestLocation) {
             showStatus(
                 `Nearest: ${nearestLocation.name} (${nearestDistance.toFixed(1)} km away)`, 
                 'success'
             );
         }
-    }, [userLocation, locations, calculateDistance, showStatus]);
+    }, [userLocation, locations, map, locationMarkers, calculateDistance, showStatus, config.DEMO_MODE]);
 
     const showAllLocations = useCallback(() => {
         if (locations.length === 0) {
@@ -577,9 +769,32 @@ const WineWalkMap = () => {
             return;
         }
         
+        if (!config.DEMO_MODE && map && window.google && locationMarkers.length > 0) {
+            try {
+                const bounds = new window.google.maps.LatLngBounds();
+                locationMarkers.forEach(marker => {
+                    bounds.extend(marker.getPosition());
+                });
+                
+                if (userMarker) {
+                    bounds.extend(userMarker.getPosition());
+                }
+                
+                map.fitBounds(bounds);
+                
+                window.google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
+                    if (map.getZoom() > 18) {
+                        map.setZoom(18);
+                    }
+                });
+            } catch (error) {
+                console.warn('Error showing all locations:', error);
+            }
+        }
+        
         console.log('Showing all locations:', locations);
         showStatus(`Displaying all ${locations.length} establishments`, 'success');
-    }, [locations, showStatus]);
+    }, [locations, map, locationMarkers, userMarker, showStatus, config.DEMO_MODE]);
 
     const getDirections = useCallback((lat, lng, name) => {
         const destination = `${lat},${lng}`;
@@ -594,105 +809,58 @@ const WineWalkMap = () => {
         return distance.toFixed(1);
     }, [userLocation, calculateDistance]);
 
+    // Don't render anything until component is mounted
+    if (!componentMounted) {
+        return null;
+    }
+
     return (
-        <div style={{
-            fontFamily: 'Arial, sans-serif',
-            backgroundColor: '#121212',
-            minHeight: '100vh',
-            color: '#ffffff',
-            background: 'linear-gradient(rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.95)), radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.08), transparent 40%), radial-gradient(circle at 70% 60%, rgba(184, 134, 11, 0.05), transparent 50%)'
-        }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-                <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-                    <h1 style={{
-                        fontSize: '2.5em',
-                        marginBottom: '10px',
-                        background: 'linear-gradient(135deg, #d4af37, #f5d76e, #926f34)',
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        color: 'transparent'
-                    }}>
-                        🍽️ Clermont Food & Drink Walk
-                    </h1>
-                    <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '16px' }}>
-                        Discover the best local establishments within walking distance
-                    </p>
-                    <div style={{ fontSize: '14px', opacity: 0.8, marginTop: '10px' }}>
-                        Explore {defaultWineWalkData.total_establishments} establishments within {defaultWineWalkData.search_center.radius} of downtown Clermont
-                    </div>
-                    {/* Configuration Info */}
+        <div className="wine-walk-container">
+            <div className="wine-walk-inner">
+                <div className="wine-walk-header">
+                    <h1>🍽️ Clermont Food & Drink Walk</h1>
+                    <p>Discover the best local establishments within walking distance</p>
+                    {wineWalkData.search_center && (
+                        <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
+                            Explore {wineWalkData.total_establishments} establishments within {wineWalkData.search_center.radius} of downtown Clermont
+                        </div>
+                    )}
+                    {/* Configuration Status */}
                     <div style={{ 
                         fontSize: '12px', 
                         opacity: 0.6, 
                         marginTop: '10px',
                         padding: '5px 10px',
-                        background: DEMO_MODE ? 'rgba(255, 193, 7, 0.1)' : 'rgba(40, 167, 69, 0.1)',
+                        background: config.DEMO_MODE ? 'rgba(255, 193, 7, 0.1)' : 'rgba(40, 167, 69, 0.1)',
                         borderRadius: '15px',
                         display: 'inline-block',
-                        border: DEMO_MODE ? '1px solid rgba(255, 193, 7, 0.3)' : '1px solid rgba(40, 167, 69, 0.3)'
+                        border: config.DEMO_MODE ? '1px solid rgba(255, 193, 7, 0.3)' : '1px solid rgba(40, 167, 69, 0.3)'
                     }}>
-                        {DEMO_MODE ? '🔧 Demo Mode' : '🌐 Live Mode'} | 
-                        {ENABLE_CONTINUOUS_TRACKING ? ' Continuous GPS' : ' Single Location GPS'}
+                        {config.DEMO_MODE ? '🔧 Demo Mode' : '🌐 Live Mode'} | 
+                        {config.ENABLE_CONTINUOUS_TRACKING ? ' Continuous GPS' : ' Single Location GPS'}
+                        {process.env.NODE_ENV === 'development' && (
+                            <span style={{ marginLeft: '5px', opacity: 0.8 }}>| Dev</span>
+                        )}
                     </div>
                 </div>
 
-                <div style={{
-                    backgroundColor: '#0a0a0a',
-                    border: '1px solid rgba(212, 175, 55, 0.2)',
-                    padding: '20px',
-                    borderRadius: '12px',
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(224, 184, 65, 0.1)',
-                    marginBottom: '20px'
-                }}>
-                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '15px' }}>
+                <div className="wine-walk-controls">
+                    <div className="wine-walk-button-group">
                         <button 
-                            style={{
-                                padding: '12px 20px',
-                                border: 'none',
-                                borderRadius: '25px',
-                                cursor: 'pointer',
-                                fontWeight: 'bold',
-                                fontSize: '14px',
-                                background: isTracking ? 'rgba(255, 255, 255, 0.05)' : 'linear-gradient(135deg, #d4af37, #f5d76e, #926f34)',
-                                color: isTracking ? 'rgba(255, 255, 255, 0.9)' : '#0a0a0a',
-                                transition: 'all 0.3s ease'
-                            }}
+                            className={`wine-walk-btn ${isTracking ? 'wine-walk-btn-secondary' : 'wine-walk-btn-primary'}`}
                             onClick={isTracking ? stopTracking : startTracking}
                         >
                             {isTracking ? '⏹️ Stop Tracking' : '📍 Start GPS Tracking'}
                         </button>
-                        
                         <button 
-                            style={{
-                                padding: '12px 20px',
-                                border: '1px solid rgba(224, 184, 65, 0.3)',
-                                borderRadius: '25px',
-                                cursor: userLocation ? 'pointer' : 'not-allowed',
-                                fontWeight: 'bold',
-                                fontSize: '14px',
-                                background: 'rgba(255, 255, 255, 0.05)',
-                                color: 'rgba(255, 255, 255, 0.9)',
-                                opacity: userLocation ? 1 : 0.5,
-                                transition: 'all 0.3s ease'
-                            }}
+                            className="wine-walk-btn wine-walk-btn-secondary" 
                             onClick={findNearestLocation}
                             disabled={!userLocation}
                         >
                             🎯 Find Nearest Location
                         </button>
-                        
                         <button 
-                            style={{
-                                padding: '12px 20px',
-                                border: '1px solid rgba(224, 184, 65, 0.3)',
-                                borderRadius: '25px',
-                                cursor: 'pointer',
-                                fontWeight: 'bold',
-                                fontSize: '14px',
-                                background: 'rgba(255, 255, 255, 0.05)',
-                                color: 'rgba(255, 255, 255, 0.9)',
-                                transition: 'all 0.3s ease'
-                            }}
+                            className="wine-walk-btn wine-walk-btn-secondary" 
                             onClick={showAllLocations}
                         >
                             🗺️ Show All Locations
@@ -700,15 +868,7 @@ const WineWalkMap = () => {
                     </div>
                     
                     {status.visible && (
-                        <div style={{
-                            margin: '15px 0',
-                            padding: '10px',
-                            borderRadius: '8px',
-                            fontWeight: 'bold',
-                            background: status.type === 'success' ? 'rgba(212, 175, 55, 0.1)' : 'rgba(255, 107, 107, 0.1)',
-                            color: status.type === 'success' ? '#e0b841' : '#ff6b6b',
-                            border: status.type === 'success' ? '1px solid rgba(224, 184, 65, 0.2)' : '1px solid rgba(255, 107, 107, 0.2)'
-                        }}>
+                        <div className={`wine-walk-status ${status.type}`}>
                             {status.message}
                         </div>
                     )}
@@ -727,18 +887,9 @@ const WineWalkMap = () => {
                     )}
                 </div>
 
-                <div style={{
-                    background: '#0a0a0a',
-                    border: '1px solid rgba(212, 175, 55, 0.2)',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(224, 184, 65, 0.1)',
-                    height: '600px',
-                    position: 'relative',
-                    marginBottom: '20px'
-                }}>
-                    <div ref={mapRef} style={{ width: '100%', height: '100%' }}>
-                        {DEMO_MODE ? (
+                <div className="wine-walk-map-container">
+                    <div ref={mapRef} className="wine-walk-map">
+                        {config.DEMO_MODE ? (
                             <div style={{
                                 position: 'absolute',
                                 top: 0,
@@ -761,7 +912,7 @@ const WineWalkMap = () => {
                                     GPS tracking and directions still work!
                                 </div>
                                 <div style={{ fontSize: '12px', marginTop: '20px', opacity: 0.6, maxWidth: '400px' }}>
-                                    Set DEMO_MODE = false and add your Google Maps API key for full map functionality
+                                    Set REACT_APP_DEMO_MODE=false in your .env file for full map functionality
                                 </div>
                                 <div style={{
                                     fontSize: '11px',
@@ -771,7 +922,7 @@ const WineWalkMap = () => {
                                     borderRadius: '20px',
                                     opacity: 0.7
                                 }}>
-                                    Current: DEMO_MODE = {DEMO_MODE.toString()}
+                                    Current: DEMO_MODE = {config.DEMO_MODE.toString()}
                                 </div>
                             </div>
                         ) : !mapsLoaded ? (
@@ -810,14 +961,8 @@ const WineWalkMap = () => {
                     </div>
                 </div>
 
-                <div style={{
-                    background: 'rgba(255, 255, 255, 0.95)',
-                    padding: '20px',
-                    borderRadius: '15px',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                    marginTop: '20px'
-                }}>
-                    <h3 style={{ color: '#333', marginBottom: '20px' }}>Local Establishments ({locations.length})</h3>
+                <div className="wine-walk-location-list">
+                    <h3>Local Establishments ({locations.length})</h3>
                     <div>
                         {locations.length === 0 ? (
                             <div style={{
@@ -826,23 +971,13 @@ const WineWalkMap = () => {
                                 color: '#666',
                                 fontStyle: 'italic'
                             }}>
-                                Loading locations...
+                                No locations loaded. Check your wineWalkLocations.json file.
                             </div>
                         ) : (
                             locations.map((location, index) => (
-                                <div key={location.id || index} style={{
-                                    padding: '15px',
-                                    border: '1px solid #eee',
-                                    borderRadius: '10px',
-                                    marginBottom: '10px',
-                                    background: 'white',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: 'bold', color: '#667eea', marginBottom: '5px' }}>
+                                <div key={location.id || index} className="wine-walk-location-item">
+                                    <div className="wine-walk-location-info">
+                                        <div className="wine-walk-location-name">
                                             {getLocationIcon(location.type)} {location.name}
                                             {location.featured && (
                                                 <span style={{color: '#d4af37', marginLeft: '8px'}}>⭐</span>
@@ -866,7 +1001,7 @@ const WineWalkMap = () => {
                                                 </span>
                                             )}
                                         </div>
-                                        <div style={{ color: '#666', fontSize: '14px' }}>{location.address}</div>
+                                        <div className="wine-walk-location-address">{location.address}</div>
                                         
                                         {location.category && (
                                             <div style={{
@@ -921,19 +1056,9 @@ const WineWalkMap = () => {
                                         </div>
                                     </div>
                                     
-                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                    <div className="wine-walk-location-actions">
                                         <button 
-                                            style={{
-                                                padding: '8px 15px',
-                                                fontSize: '12px',
-                                                borderRadius: '20px',
-                                                background: 'linear-gradient(135deg, #d4af37, #f5d76e, #926f34)',
-                                                color: '#0a0a0a',
-                                                border: 'none',
-                                                fontWeight: 'bold',
-                                                cursor: 'pointer',
-                                                transition: 'all 0.3s ease'
-                                            }}
+                                            className="wine-walk-btn wine-walk-btn-primary wine-walk-btn-small"
                                             onClick={() => getDirections(location.lat, location.lng, location.name)}
                                         >
                                             Directions
@@ -945,23 +1070,28 @@ const WineWalkMap = () => {
                     </div>
                 </div>
 
-                <div style={{
-                    textAlign: 'center',
-                    marginTop: '30px',
-                    padding: '20px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: '10px',
-                    fontSize: '14px',
-                    color: 'rgba(255, 255, 255, 0.7)'
-                }}>
-                    <div>Clermont Food & Drink Walk</div>
-                    <div style={{marginTop: '5px'}}>
-                        Search center: {defaultWineWalkData.search_center.address}
+                {wineWalkData.search_center && (
+                    <div style={{
+                        textAlign: 'center',
+                        marginTop: '30px',
+                        padding: '20px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        borderRadius: '10px',
+                        fontSize: '14px',
+                        color: 'rgba(255, 255, 255, 0.7)'
+                    }}>
+                        <div>Clermont Food & Drink Walk</div>
+                        <div style={{marginTop: '5px'}}>
+                            Search center: {wineWalkData.search_center.address}
+                        </div>
+                        <div style={{marginTop: '5px'}}>
+                            Search date: {wineWalkData.search_date}
+                        </div>
+                        <div style={{marginTop: '5px', fontSize: '12px', opacity: 0.6}}>
+                            Environment: {process.env.NODE_ENV} | Mode: {config.DEMO_MODE ? 'Demo' : 'Live'}
+                        </div>
                     </div>
-                    <div style={{marginTop: '5px'}}>
-                        Search date: {defaultWineWalkData.search_date}
-                    </div>
-                </div>
+                )}
             </div>
         </div>
     );
