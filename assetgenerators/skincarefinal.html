@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skincare Elements Downloader</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5d7d0 0%, #ffeae8 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-panel {
+            background: rgba(184, 133, 107, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(184, 133, 107, 0.2);
+        }
+        
+        .control-title {
+            color: #5a2c1a;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #b8856b, #d4a574);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(184, 133, 107, 0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(184, 133, 107, 0.4);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .preview-container {
+            display: grid;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        /* Common styles for all elements */
+        .element-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+        
+        /* Header Element */
+        .header-element {
+            text-align: center;
+            background: #2b5f68;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .decorative-line {
+            font-size: 28px;
+            color: #d4a574;
+            font-weight: 300;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            color: #b8856b;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .main-title {
+            color: #d19d3e;
+            font-size: 44px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Routine Section Styles */
+        .routine-section {
+            background: rgba(249, 245, 243, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            min-height: 400px;
+        }
+        
+        .routine-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #b8856b;
+            margin-bottom: 25px;
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .step {
+            background: rgba(239, 245, 239, 0.6);
+            border-radius: 15px;
+            padding: 20px 15px;
+            position: relative;
+            border: 2px solid rgba(184, 133, 107, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
+            min-height: 180px;
+        }
+        
+        .step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #b8856b;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .step-icon {
+            width: 45px;
+            height: 45px;
+            margin: 15px auto 15px;
+            display: block;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            color: #5a2c1a;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            line-height: 1.2;
+            flex-shrink: 0;
+        }
+        
+        .step-description {
+            color: #7a5a47;
+            font-size: 11px;
+            text-align: center;
+            line-height: 1.3;
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        /* Individual Step Styles */
+        .individual-step {
+            background: rgba(239, 245, 239, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 3px solid rgba(184, 133, 107, 0.3);
+        }
+        
+        .individual-step .step-number {
+            position: static;
+            transform: none;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .individual-step .step-icon {
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
+            background: transparent;
+            border: none;
+        }
+        
+        .individual-step .step-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .individual-step .step-description {
+            font-size: 16px;
+            max-width: 400px;
+            line-height: 1.5;
+        }
+        
+        .decorative-elements {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            opacity: 0.3;
+        }
+        
+        .leaf-1 { top: 30px; left: 20px; }
+        .leaf-2 { top: 30px; right: 20px; }
+        .leaf-3 { bottom: 30px; left: 20px; }
+        .leaf-4 { bottom: 30px; right: 20px; }
+        
+        .element-title {
+            background: #b8856b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        @media (max-width: 768px) {
+            .download-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-title {
+                font-size: 28px;
+            }
+            
+            .routine-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="control-panel">
+            <h1 class="control-title">🎨 Download Individual Elements</h1>
+            <div class="download-grid">
+                <button class="download-btn" onclick="downloadElement('header', 'Header')">📋 Header Only</button>
+                <button class="download-btn" onclick="downloadElement('am-routine', 'AM Routine')">🌅 AM Routine</button>
+                <button class="download-btn" onclick="downloadElement('pm-routine', 'PM Routine')">🌙 PM Routine</button>
+                <button class="download-btn" onclick="downloadAllSteps()">📱 All Individual Steps</button>
+                <button class="download-btn" onclick="downloadStep('am-1', 'AM Step 1 - Wash Face')">💧 AM Step 1</button>
+                <button class="download-btn" onclick="downloadStep('am-2', 'AM Step 2 - Toner')">🧴 AM Step 2</button>
+                <button class="download-btn" onclick="downloadStep('am-3', 'AM Step 3 - Moisturizer')">☀️ AM Step 3</button>
+                <button class="download-btn" onclick="downloadStep('pm-1', 'PM Step 1 - Remove Makeup')">🧽 PM Step 1</button>
+                <button class="download-btn" onclick="downloadStep('pm-2', 'PM Step 2 - Cleanse')">🧼 PM Step 2</button>
+                <button class="download-btn" onclick="downloadStep('pm-3', 'PM Step 3 - Moisturise')">🌃 PM Step 3</button>
+            </div>
+        </div>
+        
+        <div class="preview-container">
+            <!-- Header Element -->
+            <div id="header" class="element-container">
+                <div class="element-title">Header Section</div>
+                <div class="header-element">
+                    <div class="decorative-line">✨</div>
+                    <div class="subtitle">AM/PM MINIMALIST</div>
+                    <h1 class="main-title">Skincare Routine</h1>
+                </div>
+            </div>
+            
+            <!-- AM Routine -->
+            <div id="am-routine" class="element-container">
+                <div class="element-title">AM Routine Section</div>
+                <div class="routine-section">
+                    <svg class="decorative-elements leaf-1" viewBox="0 0 30 30">
+                        <path d="M15 5 C10 10, 10 20, 15 25 C20 20, 20 10, 15 5 Z" fill="#a8d8a8"/>
+                    </svg>
+                    
+                    <h2 class="routine-title">AM</h2>
+                    
+                    <div class="steps-grid">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-icon"></div>
+                            <h3 class="step-title">Wash Face</h3>
+                            <p class="step-description">Wake up your skin by washing your face with water - use a gentle cleanser if required</p>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-icon"></div>
+                            <h3 class="step-title">Toner</h3>
+                            <p class="step-description">Toner is used so your face has a balanced PH, close visible pores and makes the skin ready to use the product</p>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-icon"></div>
+                            <h3 class="step-title">Moisturizer w/Sunscreen</h3>
+                            <p class="step-description">Moisturizer is a lotion or a cream to prevent the skin from getting dry and make it more smooth. Sunscreen is used to protect your skin from the sun (Ultra Violet) and from pollution</p>
+                        </div>
+                    </div>
+                    
+                    <svg class="decorative-elements leaf-2" viewBox="0 0 30 30">
+                        <path d="M15 5 C10 10, 10 20, 15 25 C20 20, 20 10, 15 5 Z" fill="#a8d8a8"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- PM Routine -->
+            <div id="pm-routine" class="element-container">
+                <div class="element-title">PM Routine Section</div>
+                <div class="routine-section">
+                    <svg class="decorative-elements leaf-3" viewBox="0 0 30 30">
+                        <path d="M15 5 C10 10, 10 20, 15 25 C20 20, 20 10, 15 5 Z" fill="#a8d8a8"/>
+                    </svg>
+                    
+                    <h2 class="routine-title">PM</h2>
+                    
+                    <div class="steps-grid">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-icon"></div>
+                            <h3 class="step-title">Remove Makeup</h3>
+                            <p class="step-description">Remove stubborn eye makeup with micellar water or oil and reusable cotton pads</p>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-icon"></div>
+                            <h3 class="step-title">Cleanse</h3>
+                            <p class="step-description">Apply a gentle cleanser & wipe away with a warm, damp reusable face cloth</p>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-icon"></div>
+                            <h3 class="step-title">Moisturise</h3>
+                            <p class="step-description">Slather on your moisturiser to help your skin rest & restore overnight</p>
+                        </div>
+                    </div>
+                    
+                    <svg class="decorative-elements leaf-4" viewBox="0 0 30 30">
+                        <path d="M15 5 C10 10, 10 20, 15 25 C20 20, 20 10, 15 5 Z" fill="#a8d8a8"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Individual Steps (Hidden, created dynamically) -->
+            <div id="am-1" class="element-container" style="display: none;">
+                <div class="individual-step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon"></div>
+                    <h3 class="step-title">AM - Wash Face</h3>
+                    <p class="step-description">Wake up your skin by washing your face with water - use a gentle cleanser if required</p>
+                </div>
+            </div>
+            
+            <div id="am-2" class="element-container" style="display: none;">
+                <div class="individual-step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon"></div>
+                    <h3 class="step-title">AM - Toner</h3>
+                    <p class="step-description">Toner is used so your face has a balanced PH, close visible pores and makes the skin ready to use the product</p>
+                </div>
+            </div>
+            
+            <div id="am-3" class="element-container" style="display: none;">
+                <div class="individual-step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon"></div>
+                    <h3 class="step-title">AM - Moisturizer w/Sunscreen</h3>
+                    <p class="step-description">Moisturizer is a lotion or a cream to prevent the skin from getting dry and make it more smooth. Sunscreen is used to protect your skin from the sun (Ultra Violet) and from pollution</p>
+                </div>
+            </div>
+            
+            <div id="pm-1" class="element-container" style="display: none;">
+                <div class="individual-step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon"></div>
+                    <h3 class="step-title">PM - Remove Makeup</h3>
+                    <p class="step-description">Remove stubborn eye makeup with micellar water or oil and reusable cotton pads</p>
+                </div>
+            </div>
+            
+            <div id="pm-2" class="element-container" style="display: none;">
+                <div class="individual-step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon"></div>
+                    <h3 class="step-title">PM - Cleanse</h3>
+                    <p class="step-description">Apply a gentle cleanser & wipe away with a warm, damp reusable face cloth</p>
+                </div>
+            </div>
+            
+            <div id="pm-3" class="element-container" style="display: none;">
+                <div class="individual-step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon"></div>
+                    <h3 class="step-title">PM - Moisturise</h3>
+                    <p class="step-description">Slather on your moisturiser to help your skin rest & restore overnight</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function downloadElement(elementId, fileName) {
+            const element = document.getElementById(elementId);
+            const button = event.target;
+            
+            // Show loading state
+            const originalText = button.textContent;
+            button.textContent = '⏳ Generating...';
+            button.classList.add('loading');
+            
+            try {
+                // Create canvas with high quality settings
+                const canvas = await html2canvas(element, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: 'white',
+                    scrollX: 0,
+                    scrollY: 0
+                });
+                
+                // Download as PNG
+                const link = document.createElement('a');
+                link.download = `${fileName.replace(/\s+/g, '-')}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+            } catch (error) {
+                console.error('Error generating image:', error);
+                alert('Sorry, there was an error generating the image. Please try again.');
+            } finally {
+                // Reset button
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('loading');
+                }, 1000);
+            }
+        }
+        
+        async function downloadStep(stepId, fileName) {
+            // Make the step visible temporarily
+            const stepElement = document.getElementById(stepId);
+            const wasHidden = stepElement.style.display === 'none';
+            
+            if (wasHidden) {
+                stepElement.style.display = 'block';
+                stepElement.style.position = 'absolute';
+                stepElement.style.left = '-9999px';
+                stepElement.style.top = '0';
+            }
+            
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '⏳ Generating...';
+            button.classList.add('loading');
+            
+            try {
+                // Wait for rendering
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                const canvas = await html2canvas(stepElement, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: 'white',
+                    scrollX: 0,
+                    scrollY: 0
+                });
+                
+                // Download as PNG
+                const link = document.createElement('a');
+                link.download = `${fileName.replace(/\s+/g, '-')}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+            } catch (error) {
+                console.error('Error generating image:', error);
+                alert('Sorry, there was an error generating the image. Please try again.');
+            } finally {
+                // Hide the step again if it was hidden
+                if (wasHidden) {
+                    stepElement.style.display = 'none';
+                    stepElement.style.position = '';
+                    stepElement.style.left = '';
+                    stepElement.style.top = '';
+                }
+                
+                // Reset button
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('loading');
+                }, 1000);
+            }
+        }
+        
+        async function downloadAllSteps() {
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '⏳ Creating All Steps...';
+            button.classList.add('loading');
+            
+            const steps = [
+                { id: 'am-1', name: 'AM-Step-1-Wash-Face' },
+                { id: 'am-2', name: 'AM-Step-2-Toner' },
+                { id: 'am-3', name: 'AM-Step-3-Moisturizer' },
+                { id: 'pm-1', name: 'PM-Step-1-Remove-Makeup' },
+                { id: 'pm-2', name: 'PM-Step-2-Cleanse' },
+                { id: 'pm-3', name: 'PM-Step-3-Moisturise' }
+            ];
+            
+            try {
+                for (let i = 0; i < steps.length; i++) {
+                    const step = steps[i];
+                    const stepElement = document.getElementById(step.id);
+                    
+                    // Show element temporarily
+                    stepElement.style.display = 'block';
+                    stepElement.style.position = 'absolute';
+                    stepElement.style.left = '-9999px';
+                    stepElement.style.top = '0';
+                    
+                    // Wait for rendering
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    
+                    const canvas = await html2canvas(stepElement, {
+                        scale: 3,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: 'white',
+                        scrollX: 0,
+                        scrollY: 0
+                    });
+                    
+                    // Download
+                    const link = document.createElement('a');
+                    link.download = `${step.name}.png`;
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Hide element again
+                    stepElement.style.display = 'none';
+                    stepElement.style.position = '';
+                    stepElement.style.left = '';
+                    stepElement.style.top = '';
+                    
+                    // Small delay between downloads
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
+            } catch (error) {
+                console.error('Error generating images:', error);
+                alert('Sorry, there was an error generating some images. Please try again.');
+            } finally {
+                // Reset button
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('loading');
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

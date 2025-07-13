@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EZDrink - 1 Million Cups Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            height: auto;
+        }
+        
+        .presentation-container {
+            position: relative;
+        }
+        
+        .slide {
+            width: 1920px;
+            height: 1080px;
+            background: radial-gradient(ellipse at center, #2c251d 0%, #1a1410 40%, #0f0c09 100%);
+            position: relative;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 2px solid #D4AF37;
+            box-sizing: border-box;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(212, 175, 55, 0.2);
+            color: #D4AF37;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            color: #D4AF37;
+            letter-spacing: 8px;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+            margin-bottom: 20px;
+        }
+        
+        .slide-title {
+            font-size: 84px;
+            font-weight: 900;
+            color: #D4AF37;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .slide-subtitle {
+            font-size: 48px;
+            font-weight: 300;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 60px;
+            line-height: 1.2;
+        }
+        
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    flex-grow: 1;
+    align-items: center;
+    max-width: 85%; /* Add this to prevent boxes from extending too far */
+    margin: 0 auto; /* Add this to center the grid */
+}
+   .content-section {
+    background: rgba(26, 20, 16, 0.6);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    padding: 60px;
+    height: auto; /* Changed from 100% to auto */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 40px 0; /* Add top and bottom margin to create space from title and bottom */
+}
+        
+        .section-title {
+            font-size: 54px;
+            font-weight: 700;
+            color: #D4AF37;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .bullet-list li {
+            font-size: 32px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            padding-left: 60px;
+            position: relative;
+            line-height: 1.3;
+        }
+        
+        .bullet-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #D4AF37;
+            font-size: 48px;
+            line-height: 1;
+        }
+        
+        .highlight {
+            color: #D4AF37;
+            font-weight: 700;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .stat-box {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid #D4AF37;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 72px;
+            font-weight: 900;
+            color: #D4AF37;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        .stat-label {
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .center-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .large-text {
+            font-size: 64px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: 40px;
+        }
+        
+.help-list {
+   font-size: 48px;
+   text-align: left;
+   max-width: 1400px;
+   list-style: none;
+   padding: 0;
+   margin: 60px 0;
+}
+
+.help-list li {
+   margin-bottom: 50px;
+   font-weight: 500;
+   line-height: 1.4;
+   padding-left: 40px;
+   position: relative;
+   color: #ffffff;
+}
+
+.help-list li::before {
+   content: "★";
+   position: absolute;
+   left: 0;
+   color: #D4AF37;
+   font-size: 36px;
+   line-height: 1.2;
+}
+
+.help-list .highlight {
+   color: #D4AF37;
+   font-weight: 700;
+}
+        /* Updated styles for the Ask slide */
+        .ask-list {
+            font-size: 42px;
+            text-align: left;
+            max-width: 1400px;
+            list-style: none;
+            padding: 0;
+            margin: 60px 0;
+        }
+        
+        .ask-list li {
+            margin-bottom: 50px;
+            font-weight: 500;
+            line-height: 1.4;
+            padding-left: 40px;
+            position: relative;
+        }
+
+.ask-list li::before {
+    content: "?";
+    position: absolute;
+    left: 0;
+    color: #D4AF37;
+    font-size: 36px;
+    line-height: 1.2;
+}
+
+        .ask-list li:nth-child(1) { color: #ffffff; }
+
+        .ask-list li:nth-child(2) { color: #ffffff; }
+        .ask-list li:nth-child(3) { color: #E6E6FA; }
+        .ask-list li:nth-child(4) { color: #F0F8FF; }
+
+        .ask-highlight {
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+        
+        .contact-info {
+            font-size: 36px;
+            color: #D4AF37;
+            font-weight: 600;
+            margin-top: 60px;
+        }
+        
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #D4AF37;
+        }
+        
+        .download-btn {
+            background: #D4AF37;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .download-btn:hover {
+            background: #B8860B;
+            transform: translateY(-2px);
+        }
+        
+        .status-message {
+            position: fixed;
+            top: 120px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .status-message.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .status-message.error {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .status-message.loading {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .viewport {
+            width: 100vw;
+            height: 56.25vw; /* 16:9 aspect ratio */
+            max-height: 100vh;
+            max-width: 177.78vh; /* 16:9 aspect ratio */
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .slide-scaled {
+            transform-origin: 0 0;
+            transform: scale(calc(100vw / 1920));
+        }
+        
+        @media (max-height: calc(100vw * 9 / 16)) {
+            .slide-scaled {
+                transform: scale(calc(100vh / 1080));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button class="download-btn" id="download-pdf">Download PDF</button>
+        <button class="download-btn" id="view-slides">View Mode</button>
+    </div>
+
+    <div id="status-message" class="status-message"></div>
+
+    <div class="presentation-container" id="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide" id="slide1">
+            <div class="center-content">
+                <div class="logo">EZDRINK</div>
+                <h1 class="slide-title">Patent-Pending</h1>
+                <h2 class="slide-subtitle">Silent Ordering for Bars, Festivals & Events</h2>
+                <div class="contact-info">Maurice Sanders | 305-434-0738 | ezdrink.us/demo </div>
+            </div>
+            <div class="slide-number">1</div>
+        </div>
+
+                <!-- Slide 7: What I Need Help With -->
+        <div class="slide" id="slide7">
+            <h1 class="slide-title">The Ask</h1>
+            <div class="center-content">
+                <ul class="ask-list">
+                    <li>Introductions: Who are the forward thinkers at venues or events that I should be talking to</li>
+                    <li>Pilot to Paid: How do I structure pilot programs that actually convert to paid contracts</li>
+                    <li>Prove My Worth: What metrics do I track to demonstrate ROI to venue partners</li>
+                    <li>Industry Connections: How do I connect with promoters, influencers and other industry magnets that have a database</li>    
+                </ul>
+                
+            </div>
+            <div class="slide-number">2</div>
+        </div>
+
+        <!-- Slide 2: My Story -->
+        <div class="slide" id="slide2">
+            <h1 class="slide-title">My Story</h1>
+            <div class="center-content">
+                <div class="large-text" style="font-size: 48px; line-height: 1.3; margin-bottom: 40px;">
+                    i'm passoinate about optimizing our leisure time. For millions of us -- bars, festivals, clubs & resorts aren't just entertainment - they're where relationships are born and memories are made.
+                </div>
+            </div>
+            <h1 class="slide-title">My Motivation</h1>
+            <div class="large-text" style="font-size: 48px; line-height: 1.3;">
+                    We invest in experiences to create great memories, not stressful ones. But poor service turns your escape into frustration. <span class="highlight">We can fix this.</span>
+                </div>
+            <div class="slide-number">3</div>
+        </div>
+
+        <!-- Slide 3: My Mission -->
+        <div class="slide" id="slide3">
+            <h1 class="slide-title">My Mission</h1>
+            <div class="center-content">
+                <div class="large-text" style="font-size: 48px; line-height: 1.3; margin-bottom: 60px;">
+                    Whether it's the college grad hitting the bar scene or the father maximizing time with his kids - <span class="highlight">we all deserve the best experience possible.</span>
+                </div>
+                <div class="large-text" style="font-size: 48px; line-height: 1.3; margin-bottom: 60px;">
+                    I can't guarantee better drinks or perfect food - but <span class="highlight">I found to a way to fine tune inefficiencies.</span>
+                </div>
+                
+            </div>
+            <div class="slide-number">4</div>
+        </div>
+
+        <!-- Slide 3: The Problem -->
+        <div class="slide" id="slide3">
+            <h1 class="slide-title">The Problem</h1>
+            <div class="center-content">
+    <div class="large-text">
+        This is <span class="highlight">Amazon for events</span> - obvious in hindsight, but no one's done it <span class="highlight">at scale</span>
+    </div>
+    <ul class="help-list" style="margin-top: 60px;">
+        <li>People wait <span class="highlight">15+ minutes</span> for service, many just leave</li>
+        <li>Venues lose revenue from <span class="highlight">missed orders</span></li>
+        <li>Staff overwhelmed, customers frustrated</li>
+        <li><span class="highlight">How many times have you left because the bar was too crowded?</span></li>
+    </ul>
+</div>
+            <div class="slide-number">5</div>
+        </div>
+
+        <!-- Slide 4: The Solution -->
+        <div class="slide" id="slide4">
+            <h1 class="slide-title">The Solution</h1>
+            <div class="center-content">
+                <div class="large-text">
+                    <span class="highlight">EZDrink:</span> Patent-Pending Silent Ordering
+                </div>
+                <div style="margin: 80px 0;">
+                    <div class="large-text" style="font-size: 84px; color: #D4AF37;">
+                        QR Scan → Order → Enjoy
+                    </div>
+                </div>
+                <ul class="bullet-list" style="font-size: 42px;">
+                    <li>Works with <span class="highlight">existing venue POS systems</span></li>
+                    <li><span class="highlight">Quick demo available</span> ezdrink.us/demo </li>
+                </ul>
+            </div>
+            <div class="slide-number">6</div>
+        </div>
+
+        <!-- Slide 5: Target Market -->
+        <div class="slide" id="slide5">
+            <h1 class="slide-title">Target Market</h1>
+            <div class="content-grid">
+                
+                <div class="content-section">
+                    <div class="section-title">Pilot Strategy</div>
+                    <ul class="bullet-list">
+                        <li>Entrepreneurial events & demo  <span class="highlight"> to business owners</span></li>
+                        
+                        <li>They're connected <span class="highlight"> to the venues </span>  where EZDrink would make an impact </li>
+                        <li><span class="highlight">Leverage social proof </span> from pilots to convert core customers</li>
+
+                    </ul>
+                </div>
+                <div class="content-section">
+                    <div class="section-title">Core Customers</div>
+                    <ul class="bullet-list">
+                        <li><span class="highlight">Bars & Clubs</span></li>
+                        <li><span class="highlight">Festivals & Fairs</span></li>
+                        <li><span class="highlight">Food Truck Events</span></li>
+                        <li>Any venue with <span class="highlight">waiting lines</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">7</div>
+        </div>
+
+        <!-- Slide 6: My Challenge -->
+        <div class="slide" id="slide6">
+            <h1 class="slide-title">My Challenge</h1>
+            <div class="center-content">
+    <div class="large-text">
+        The prototype is built <span class="highlight">(ezdrink.us/demo)</span>, struggling with <span class="highlight">selling</span>
+    </div>
+    <ul class="help-list">
+        <li><span class="highlight">Challenge #1 </span> Pre-revenue: need funding</li>
+        <li><span class="highlight">Challenge #2 </span> We need 2-3 pilot program partners</li>
+        <li><span class="highlight">Challenge #3 </span> Revenue producing partnerships</li>
+
+    </ul>
+</div>
+            <div class="slide-number">6</div>
+        </div>
+
+<div class="slide" id="slide7">
+   <h1 class="slide-title">My Current Approach</h1>
+   <div class="center-content">
+       <div class="large-text">
+           I'm taking action but need to <span class="highlight">optimize my strategy</span>
+       </div>
+       <ul class="help-list" style="margin-top: 60px;">
+           <li><span class="highlight">LinkedIn Sales Navigator</span> outreach</li>
+           <li><span class="highlight">Grassroots interviews</span> with customers & staff</li>
+           <li><span class="highlight">Visiting local bars</span> during slow periods</li>
+           <li><span class="highlight">Local chamber of commerce</span> and networking events</li>
+           <li><span class="highlight">Launch party planned</span> for later this year with decision makers</li>
+       </ul>
+   </div>
+   <div class="slide-number">7</div>
+</div>
+
+        <!-- Slide 8: Demo Available -->
+        <div class="slide" id="slide8">
+            <div class="center-content">
+                <div class="logo" style="font-size: 120px;">EZDRINK</div>
+                <div class="large-text" style="font-size: 84px; margin: 60px 0;">
+                    <span class="highlight">DEMO AVAILABLE</span>
+                </div>
+                <div class="large-text">
+                    ezdrink.us/demo
+                </div>
+                <div class="contact-info" style="font-size: 48px; margin-top: 80px;">
+                    maurice.sanders@ezdrink.us | 305-434-0738
+                </div>
+            </div>
+            <div class="slide-number">8</div>
+        </div>
+    </div>
+
+    <script>
+        let viewMode = false;
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        document.getElementById('view-slides').addEventListener('click', function() {
+            viewMode = !viewMode;
+            if (viewMode) {
+                enterViewMode();
+                this.textContent = 'Edit Mode';
+            } else {
+                exitViewMode();
+                this.textContent = 'View Mode';
+            }
+        });
+
+        function enterViewMode() {
+            document.body.style.overflow = 'hidden';
+            const presentation = document.getElementById('presentation');
+            presentation.style.position = 'fixed';
+            presentation.style.top = '0';
+            presentation.style.left = '0';
+            presentation.style.width = '100vw';
+            presentation.style.height = '100vh';
+            presentation.style.background = '#000';
+            presentation.style.zIndex = '999';
+            
+            slides.forEach((slide, index) => {
+                slide.style.display = index === currentSlide ? 'flex' : 'none';
+                slide.style.transform = 'scale(' + Math.min(window.innerWidth / 1920, window.innerHeight / 1080) + ')';
+                slide.style.transformOrigin = 'center center';
+                slide.style.position = 'absolute';
+                slide.style.top = '50%';
+                slide.style.left = '50%';
+                slide.style.marginTop = '-540px';
+                slide.style.marginLeft = '-960px';
+            });
+
+            document.addEventListener('keydown', handleKeyPress);
+        }
+
+        function exitViewMode() {
+            document.body.style.overflow = 'auto';
+            const presentation = document.getElementById('presentation');
+            presentation.style.position = 'relative';
+            presentation.style.transform = 'none';
+            presentation.style.background = 'transparent';
+            presentation.style.zIndex = 'auto';
+            
+            slides.forEach(slide => {
+                slide.style.display = 'flex';
+                slide.style.transform = 'none';
+                slide.style.position = 'relative';
+                slide.style.top = 'auto';
+                slide.style.left = 'auto';
+                slide.style.margin = '0 0 20px 0';
+            });
+
+            document.removeEventListener('keydown', handleKeyPress);
+        }
+
+        function handleKeyPress(e) {
+            if (!viewMode) return;
+            
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'Escape') {
+                document.getElementById('view-slides').click();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                slides[currentSlide].style.display = 'none';
+                currentSlide++;
+                slides[currentSlide].style.display = 'flex';
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                slides[currentSlide].style.display = 'none';
+                currentSlide--;
+                slides[currentSlide].style.display = 'flex';
+            }
+        }
+
+        document.getElementById('download-pdf').addEventListener('click', function() {
+            downloadPDF('ezdrink-1mc-presentation.pdf');
+        });
+
+        function downloadPDF(filename) {
+            showStatus('Generating PDF...', 'loading');
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'px',
+                    format: [1920, 1080]
+                });
+
+                let slideIndex = 0;
+
+                function processNextSlide() {
+                    if (slideIndex >= slides.length) {
+                        pdf.save(filename);
+                        showStatus('PDF downloaded successfully!', 'success');
+                        return;
+                    }
+
+                    const slide = slides[slideIndex];
+                    
+                    html2canvas(slide, {
+                        scale: 1,
+                        width: 1920,
+                        height: 1080,
+                        useCORS: true,
+                        logging: false,
+                        allowTaint: true,
+                        backgroundColor: '#0f0c09'
+                    }).then(function(canvas) {
+                        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                        
+                        if (slideIndex > 0) {
+                            pdf.addPage();
+                        }
+                        
+                        pdf.addImage(imgData, 'JPEG', 0, 0, 1920, 1080);
+                        
+                        slideIndex++;
+                        setTimeout(processNextSlide, 100);
+                    }).catch(function(error) {
+                        console.error('Error processing slide:', error);
+                        showStatus('Error generating PDF. Please try again.', 'error');
+                    });
+                }
+
+                processNextSlide();
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                showStatus('Error generating PDF. Please try again.', 'error');
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type;
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

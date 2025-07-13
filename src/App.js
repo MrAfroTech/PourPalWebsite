@@ -19,6 +19,7 @@ import DemoPage from './components/DemoPage';
 import IncreaseRevenue from './components/IncreaseRevenue';
 import ReduceExpenses from './components/ReduceExpenses';
 import CashFinderPage from './components/CashFinderPage';
+import WineWalkMap from './components/wineWalkMap';
 
 // QR Tracker component
 const QRTracker = () => {
@@ -101,7 +102,8 @@ const AppContent = () => {
   // Check if the current path is a standalone page without navbar or footer
   const isDownloadPage = location.pathname === '/download';
   const isCashFinderPage = location.pathname === '/cash-finder';
-  const hideNavbar = isDownloadPage || isCashFinderPage;
+  const isWineWalkPage = location.pathname === '/wine-walk';
+  const hideNavbar = isDownloadPage || isCashFinderPage || isWineWalkPage;
 
   // Auto-display video popup when site loads
   useEffect(() => {
@@ -172,11 +174,11 @@ const AppContent = () => {
           </>
         } />
         <Route path="/demo" element={<DemoPage />} />
-       
         <Route path="/increase-revenue" element={<IncreaseRevenue />} />
         <Route path="/reduce-expenses" element={<ReduceExpenses />} />
         <Route path="/download" element={<AppDownloadSplash />} />
         <Route path="/cash-finder" element={<CashFinderPage />} />
+        <Route path="/wine-walk" element={<WineWalkMap />} />
         {/* You could add a QR tracking dashboard route here */}
         {/* <Route path="/qr-tracking" element={<QRTrackingDashboard />} /> */}
       </Routes>

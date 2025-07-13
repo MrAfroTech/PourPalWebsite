@@ -1,0 +1,619 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ezDrink Value Framework - PDF Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* Base styles with 5% font size reduction */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(ellipse at center, #2c251d 0%, #1a1410 40%, #0f0c09 100%);
+      color: #ffffff;
+      line-height: 1.5;
+      font-size: 95%; /* Global font size reduction */
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #0a0a0a;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(224, 184, 65, 0.2);
+    }
+
+    /* Header */
+    .email-header {
+      padding: 28px; /* Slightly reduced padding */
+      text-align: center;
+      background: linear-gradient(rgba(10, 10, 10, 0.95), rgba(10, 10, 10, 0.95)), 
+                  radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15), transparent 40%),
+                  radial-gradient(circle at 70% 60%, rgba(184, 134, 11, 0.1), transparent 50%);
+      border-bottom: 1px solid rgba(224, 184, 65, 0.2);
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 40px; /* Reduced from 42px */
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #D4AF37;
+      display: inline-block;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.3);
+    }
+
+    .tagline {
+      font-size: 15px; /* Reduced from 16px */
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
+    }
+
+    /* Content */
+    .email-content {
+      padding: 28px; /* Slightly reduced padding */
+    }
+
+    .headline {
+      font-size: 26px; /* Reduced from 28px */
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 23px; /* Slightly reduced margin */
+      color: #D4AF37;
+      text-align: center;
+    }
+
+    .message {
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 24px;
+      font-size: 15px; /* Reduced from 16px */
+      line-height: 1.5;
+    }
+
+    .highlight {
+      color: #D4AF37;
+      font-weight: 600;
+    }
+
+    /* Value Sections */
+    .value-section {
+      background: rgba(25, 22, 18, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 12px;
+      padding: 19px; /* Reduced from 20px */
+      margin-bottom: 24px; /* Reduced from 25px */
+    }
+    
+    /* Very subtle margin adjustments */
+    .value-section:first-of-type {
+      margin-bottom: 55px; /* Just enough to force page break */
+    }
+    
+    /* Target the ROI section */
+    .value-section:nth-of-type(2) {
+      margin-bottom: 40px; /* Minimal margin increase */
+    }
+
+    .section-title {
+      font-size: 19px; /* Reduced from 20px */
+      font-weight: 700;
+      color: #D4AF37;
+      margin-top: 0;
+      margin-bottom: 14px; /* Reduced from 15px */
+    }
+
+    /* Stats */
+    .stats-container {
+      display: flex;
+      justify-content: space-between;
+      margin: 24px 0; /* Reduced from 25px */
+      flex-wrap: wrap;
+      gap: 14px; /* Reduced from 15px */
+    }
+
+    .stat-box {
+      background: rgba(25, 22, 18, 0.8);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 8px;
+      padding: 14px; /* Reduced from 15px */
+      text-align: center;
+      flex: 1;
+      min-width: 114px; /* Reduced from 120px */
+    }
+
+    .stat-value {
+      font-size: 27px; /* Reduced from 28px */
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #D4AF37;
+    }
+
+    .stat-label {
+      font-size: 13px; /* Reduced from 14px */
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Feature Lists */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .feature-list li {
+      padding-left: 24px; /* Reduced from 25px */
+      position: relative;
+      margin-bottom: 11px; /* Reduced from 12px */
+      line-height: 1.4;
+      font-size: 14px; /* Reduced from 15px */
+    }
+
+    .feature-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #D4AF37;
+      font-weight: 700;
+    }
+
+    .pricing-highlight {
+      text-align: center;
+      font-size: 21px; /* Reduced from 22px */
+      font-weight: 700;
+      color: #D4AF37;
+      margin: 19px 0; /* Reduced from 20px */
+    }
+
+    .highlight-tag {
+      display: inline-block;
+      background-color: #D4AF37;
+      color: #0a0a0a;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin: 0 3px;
+    }
+
+    /* Call to Action */
+    .cta-section {
+      text-align: center;
+      margin-top: 48px; /* Reduced from 50px */
+      padding: 38px; /* Reduced from 40px */
+      background: rgba(212, 175, 55, 0.1);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cta-section::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(212, 175, 55, 0.1) 50%, transparent 60%);
+      animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .cta-title {
+      font-size: 23px; /* Reduced from 24px */
+      font-weight: 700;
+      color: #D4AF37;
+      margin-bottom: 14px; /* Reduced from 15px */
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-text {
+      font-size: 15px; /* Reduced from 16px */
+      margin-bottom: 19px; /* Reduced from 20px */
+      color: rgba(255, 255, 255, 0.9);
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 14px 38px; /* Reduced from 15px 40px */
+      background: #2c3a4f;
+      border: 2px solid #D4AF37;
+      color: #D4AF37;
+      font-size: 15px; /* Reduced from 16px */
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .contact-info {
+      font-size: 15px; /* Reduced from 16px */
+      font-weight: 600;
+      color: #D4AF37;
+      margin-top: 14px; /* Reduced from 15px */
+      text-align: center;
+    }
+
+    /* Footer */
+    .email-footer {
+      padding: 19px 28px; /* Reduced from 20px 30px */
+      background-color: rgba(0, 0, 0, 0.4);
+      text-align: center;
+      border-top: 1px solid rgba(224, 184, 65, 0.1);
+    }
+
+    .footer-text {
+      font-size: 11px; /* Reduced from 12px */
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 5px;
+    }
+
+    /* PDF Generator Specific Styles */
+    .download-toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 12, 9, 0.95);
+      padding: 10px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      text-align: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .toolbar-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .toolbar-title {
+      font-family: 'Bebas Neue', sans-serif;
+      color: #D4AF37;
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .download-btn {
+      background: #D4AF37;
+      color: #0a0a0a;
+      border: none;
+      padding: 10px 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      letter-spacing: 0.5px;
+    }
+
+    .download-btn svg {
+      margin-right: 8px;
+    }
+
+    .download-btn:hover {
+      background: #B8860B;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(212, 175, 55, 0.5);
+    }
+
+    .page-content {
+      padding-top: 60px;
+    }
+
+    .status-message {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      z-index: 1000;
+      font-weight: 600;
+      display: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+    }
+
+    .status-message.success {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .status-message.error {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .status-message.loading {
+      background-color: #2196F3;
+      color: white;
+    }
+    
+    /* Page break control styles */
+    .page-break {
+      page-break-before: always;
+      height: 0;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Add a class to indicate sections that should stay together */
+    .keep-together {
+      page-break-inside: avoid;
+    }
+    
+    /* This new style adds margin before the Flexible Implementation section to move it down 1 inch */
+    .flexible-implementation-spacing {
+      margin-top: 96px; /* 1 inch = 96px */
+    }
+  </style>
+</head>
+<body>
+  <!-- Fixed download toolbar -->
+  <div class="download-toolbar">
+    <div class="toolbar-container">
+      <h1 class="toolbar-title">ezDrink Value Framework</h1>
+      <button id="download-pdf" class="download-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+          <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+        </svg>
+        Download PDF
+      </button>
+    </div>
+  </div>
+
+  <div id="status-message" class="status-message"></div>
+
+  <div class="page-content">
+    <div class="container">
+      <div class="email-container" id="pdf-content">
+        <div class="email-header">
+          <div class="logo">EZDRINK</div>
+          <p class="tagline">Value Framework</p>
+        </div>
+  
+        <div class="email-content">
+          <h1 class="headline">WHY CUSTOM SOLUTIONS DELIVER BETTER RESULTS</h1>
+          
+          <div class="value-section keep-together">
+            <h3 class="section-title">The ezDrink Triple-Value Promise</h3>
+            
+            <ul class="feature-list">
+              <li><strong class="highlight">SAVINGS TOOL</strong> — Reduce wasted inventory, decrease labor costs, and minimize order errors</li>
+              <li><strong class="highlight">REVENUE TOOL</strong> — Boost check averages, increase transaction volume, and drive repeat business</li>
+              <li><strong class="highlight">EFFICIENCY TOOL</strong> — Transform chaotic rushes into streamlined service and maximize staff productivity</li>
+            </ul>
+            
+            <div class="stats-container">
+              <div class="stat-box">
+                <div class="stat-value">20%+</div>
+                <div class="stat-label">HIGHER GUEST SPEND</div>
+              </div>
+              
+              <div class="stat-box">
+                <div class="stat-value">30-40%</div>
+                <div class="stat-label">LESS BAR CONGESTION</div>
+              </div>
+              
+              <div class="stat-box">
+                <div class="stat-value">25%</div>
+                <div class="stat-label">HIGHER TIP AVERAGES</div>
+              </div>
+            </div>
+            
+            <p class="message" style="text-align: center; font-weight: 600;">
+              Coffee gives your staff a temporary energy boost.<br>
+              ezDrink gives your entire business a <span class="highlight">permanent revenue boost</span>.
+            </p>
+          </div>
+          
+          <!-- Page break before ROI section -->
+          <div class="page-break"></div>
+          
+          <div class="value-section keep-together">
+            <h3 class="section-title">Return On Investment Perspective</h3>
+            
+            <p class="message">When you think about ezDrink in terms of ROI rather than cost:</p>
+            
+            <div class="stats-container">
+              <div class="stat-box">
+                <div class="stat-value">$3K-8K</div>
+                <div class="stat-label">POTENTIAL MONTHLY GAIN</div>
+              </div>
+              
+              <div class="stat-box">
+                <div class="stat-value">22-28%</div>
+                <div class="stat-label">PEAK HOUR INCREASE</div>
+              </div>
+            </div>
+            
+            <p class="message">Most venues see substantial revenue impact based on order volume and check size:<br>
+            <strong class="highlight">Meaningful returns within the first month of implementation</strong></p>
+          </div>
+          
+          <div class="value-section keep-together">
+            <h3 class="section-title">Why We Need to See Your Operation</h3>
+            
+            <p class="message">Our Central Florida research has shown that successful implementation requires understanding your unique venue.</p>
+            
+            <ul class="feature-list">
+              <li><strong>Physical layout</strong> — Bar design impacts ordering flow</li>
+              <li><strong>Peak hour patterns</strong> — Each venue has unique pressure points</li>
+              <li><strong>Staff dynamics</strong> — Your team's workflow informs our approach</li>
+              <li><strong>Customer demographics</strong> — Different clientele need different interfaces</li>
+            </ul>
+            
+            <p class="message">This is why we insist on a brief 20-minute in-person assessment. It's not a sales tactic – it's the foundation of your success.</p>
+          </div>
+          
+          <!-- Page break before Implementation Options -->
+          <div class="page-break"></div>
+          
+          <!-- Added div with margin-top to push the section down by 1 inch (96px) -->
+          <div class="flexible-implementation-spacing"></div>
+          
+          <div class="cta-container keep-together">
+            <h3 class="section-title">Flexible Implementation Options</h3>
+            
+            <p class="message">We've designed our pricing to fit your business:</p>
+            
+            <div class="pricing-highlight">Startup packages as low as <span class="highlight-tag">$499</span> for qualifying venues</div>
+            
+            <ul class="feature-list" style="max-width: 450px; margin: 0 auto;">
+              <li><strong>Risk-free 21-day pilot program</strong> option (no setup fee during trial)</li>
+              <li>Setup investment quickly offset by transaction revenue</li>
+              <li>Options to pass transaction fees directly to customers</li>
+              <li>No expensive hardware — works with your existing tablets</li>
+            </ul>
+          </div>
+                           
+          <div class="contact-info">
+            Maurice Sanders | 305-434-0738 | maurice.sanders@ezdrink.us
+          </div>
+        </div>
+  
+        <div class="email-footer">
+          <p class="footer-text">© 2025 ezDrink. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Script for PDF generation - using jsPDF directly -->
+  <script>
+    // Download function for Value Framework
+    document.getElementById('download-pdf').addEventListener('click', function() {
+      downloadPDF('ezdrink-value-framework.pdf');
+    });
+    
+    function downloadPDF(filename) {
+      // Show loading message
+      showStatus('Generating PDF...', 'loading');
+      
+      try {
+        const { jsPDF } = window.jspdf;
+        
+        // Get content to convert
+        const element = document.getElementById('pdf-content');
+        
+        // Use html2canvas for conversion
+        html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          allowTaint: true,
+          backgroundColor: '#0a0a0a'
+        }).then(function(canvas) {
+          // Create PDF instance
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'px',
+            format: 'letter'
+          });
+          
+          // Get dimensions
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const imgWidth = pdf.internal.pageSize.getWidth();
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          
+          // Add black background to first page
+          pdf.setFillColor(10, 10, 10);
+          pdf.rect(0, 0, imgWidth, pageHeight, 'F');
+          
+          // Variables for adding image across multiple pages
+          let position = 0;
+          let heightLeft = imgHeight;
+          
+          // Add to first page
+          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+          
+          // Create additional pages if needed
+          while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            
+            // Add new page
+            pdf.addPage();
+            
+            // Add black background to new page
+            pdf.setFillColor(10, 10, 10);
+            pdf.rect(0, 0, imgWidth, pageHeight, 'F');
+            
+            // Add image with negative position to show the next portion
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            
+            heightLeft -= pageHeight;
+          }
+          
+          // Save the PDF
+          pdf.save(filename);
+          
+          // Show success message
+          showStatus('PDF downloaded successfully!', 'success');
+        }).catch(function(error) {
+          console.error('Error creating canvas:', error);
+          showStatus('Error generating PDF. Please try again.', 'error');
+        });
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        showStatus('Error generating PDF. Please try again.', 'error');
+      }
+    }
+    
+    function showStatus(message, type) {
+      const statusMessage = document.getElementById('status-message');
+      statusMessage.textContent = message;
+      statusMessage.className = 'status-message ' + type;
+      statusMessage.style.display = 'block';
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        statusMessage.style.display = 'none';
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

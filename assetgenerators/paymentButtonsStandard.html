@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Method Buttons</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #0f1623;
+      color: white;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .container {
+      background-color: #1a2534;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #f0b90b;
+    }
+    
+    .payment-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    
+    .payment-button {
+      border: 2px solid #2c3a4f;
+      background-color: #2c3a4f;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      color: white;
+    }
+    
+    .payment-button:hover {
+      border-color: #3d4e69;
+      background-color: #3d4e69;
+    }
+    
+    .payment-button.selected {
+      background-color: rgba(240, 185, 11, 0.1);
+      border-color: #f0b90b;
+    }
+    
+    .icon {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    
+    .download-btn {
+      background-color: #f0b90b;
+      color: #0f1623;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    
+    .download-btn:hover {
+      background-color: #e0ae0c;
+    }
+    
+    .code-section {
+      background-color: #0f1623;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 30px;
+      overflow: auto;
+      display: none; /* Hide code section by default */
+    }
+    
+    pre {
+      margin: 0;
+      color: #eee;
+      white-space: pre-wrap;
+    }
+    
+    .show-code {
+      background-color: #2c3a4f;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      padding: 12px 20px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    
+    .theme-toggle {
+      background-color: #2c3a4f;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      padding: 12px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Payment Method Buttons</h1>
+    
+    <div class="payment-options">
+      <button class="payment-button selected" id="credit-debit">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+          <line x1="1" y1="10" x2="23" y2="10"></line>
+        </svg>
+        Credit/Debit Card
+      </button>
+      
+      <button class="payment-button" id="apple-pay">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.6,12.9c0-1.4,0.7-2.6,2.2-3.5c-0.8-1.2-2.1-1.9-3.7-2c-1.5-0.1-3.1,0.9-3.9,0.9c-0.8,0-2.1-0.9-3.4-0.9c-1.8,0-3.4,1-4.2,2.6c-1.8,3.2-0.5,7.8,1.3,10.4c0.9,1.2,1.9,2.6,3.2,2.6c1.3-0.1,1.8-0.8,3.3-0.8c1.5,0,2,0.8,3.3,0.8c1.4,0,2.2-1.2,3.1-2.5c0.6-0.9,1.1-1.9,1.5-2.9C17.9,15.1,17.6,14,17.6,12.9L17.6,12.9z"/>
+          <path d="M14.5,4.4c0.7-0.9,1.1-2.1,1-3.4c-1.2,0.1-2.2,0.7-2.9,1.6c-0.7,0.8-1.1,1.9-1,3.1C12.7,5.7,13.7,5.1,14.5,4.4z"/>
+        </svg>
+        Apple Pay
+      </button>
+      
+      <button class="payment-button" id="google-pay">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.5,7.5h-17C2.7,7.5,2,8.2,2,9v6c0,0.8,0.7,1.5,1.5,1.5h17c0.8,0,1.5-0.7,1.5-1.5V9C22,8.2,21.3,7.5,20.5,7.5z M13,14.5c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S14.1,14.5,13,14.5z M18,14.5c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S19.1,14.5,18,14.5z"/>
+        </svg>
+        Google Pay
+      </button>
+      
+      <button class="payment-button" id="paypal">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.5,6c0.3,0,0.5,0.2,0.5,0.4c0,0.3-0.1,0.8-0.2,1.5c-0.9,4.9-3.9,6.6-8.5,6.6h-1.6c-0.4,0-0.7,0.3-0.8,0.7l-0.7,4.2c-0.1,0.3-0.3,0.6-0.7,0.6H4.5c-0.3,0-0.5-0.2-0.5-0.4C4,19.2,7,4.3,7,4.3C7.1,3.8,7.4,3.5,8,3.5h7C17.9,3.5,19,4.5,19.5,6z"/>
+          <path opacity="0.6" d="M7.7,14.5c-0.1,0-0.1,0-0.1,0.1l-1,6.3c0,0.1,0.1,0.2,0.2,0.2h1.6c0.3,0,0.6-0.2,0.7-0.6l0.7-4.2c0.1-0.4,0.4-0.7,0.8-0.7h1.6c3.5,0,6-1.5,7.4-4.7c-1,2.3-3.7,3.7-7.5,3.7L7.7,14.5z"/>
+        </svg>
+        PayPal
+      </button>
+      
+      <button class="payment-button" id="crypto">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11.767 19.089c4.924.868 9.458-2.422 10.126-7.344.667-4.922-2.776-9.454-7.7-10.322-4.924-.868-9.458 2.422-10.126 7.344-.667 4.922 2.776 9.454 7.7 10.322zm-.404-15.982l.93 5.258-2.2.388.664 3.766 2.194-.387.928 5.259 2.2-.388-.928-5.259 1.1-.194.929 5.259 2.2-.388-.93-5.259c1.15-.387 1.633-.97 1.462-2.325-.16-1.32-1.1-1.735-2.267-1.539l.327 1.908-1.1.194-.327-1.909-2.198.387-.327-1.909-2.2.388.326 1.909-2.195.387-.665-3.766-2.2.388z"/>
+        </svg>
+        Cryptocurrency
+      </button>
+    </div>
+    
+    <div class="code-section">
+      <pre id="button-code"><!-- Button HTML Code will appear here --></pre>
+    </div>
+    
+    <div class="controls">
+      <button class="theme-toggle" id="theme-toggle">Toggle Dark/Light Theme</button>
+      <button class="show-code" id="show-code">Show/Hide Code</button>
+      <button class="download-btn" id="download-btn">Download Selected Button</button>
+    </div>
+  </div>
+
+  <script>
+    // Button selection
+    const buttons = document.querySelectorAll('.payment-button');
+    let selectedButton = document.querySelector('.payment-button.selected');
+    const codeDisplay = document.getElementById('button-code');
+    const codeSection = document.querySelector('.code-section');
+    const downloadBtn = document.getElementById('download-btn');
+    const themeToggle = document.getElementById('theme-toggle');
+    const showCodeBtn = document.getElementById('show-code');
+    
+    // Set theme variable first
+    let isDarkTheme = true;
+    
+    // Initial code generation
+    generateButtonCode();
+    
+    // Handle button selection
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        selectedButton.classList.remove('selected');
+        button.classList.add('selected');
+        selectedButton = button;
+        generateButtonCode();
+      });
+    });
+    
+    // Toggle between dark and light theme
+    themeToggle.addEventListener('click', () => {
+      isDarkTheme = !isDarkTheme;
+      generateButtonCode();
+    });
+    
+    // Toggle code visibility
+    showCodeBtn.addEventListener('click', () => {
+      codeSection.style.display = codeSection.style.display === 'none' ? 'block' : 'none';
+    });
+    
+    // Generate button code based on selection
+    function generateButtonCode() {
+      const buttonId = selectedButton.id;
+      const themeClass = isDarkTheme ? 'dark' : 'light';
+      
+      let iconSvg = selectedButton.querySelector('svg').outerHTML;
+      
+      const buttonCode = `
+<!-- Payment Button - ${buttonId} - ${themeClass} theme -->
+<style>
+  .payment-btn-${themeClass} {
+    background-color: ${isDarkTheme ? '#2c3a4f' : '#f7f7f7'};
+    border: 2px solid ${isDarkTheme ? '#3d4e69' : '#e0e0e0'};
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    color: ${isDarkTheme ? 'white' : '#333'};
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: all 0.2s ease;
+  }
+  
+  .payment-btn-${themeClass}:hover {
+    background-color: ${isDarkTheme ? '#3d4e69' : '#efefef'};
+    border-color: ${isDarkTheme ? '#4e6182' : '#d0d0d0'};
+  }
+  
+  .payment-btn-${themeClass}.selected {
+    background-color: ${isDarkTheme ? 'rgba(240, 185, 11, 0.1)' : 'rgba(240, 185, 11, 0.08)'};
+    border-color: ${isDarkTheme ? '#f0b90b' : '#e0a800'};
+  }
+  
+  .payment-btn-${themeClass} .icon {
+    width: 24px;
+    height: 24px;
+    ${!isDarkTheme && buttonId !== 'crypto' ? 'color: #333;' : ''}
+  }
+</style>
+
+<button class="payment-btn-${themeClass}" id="${buttonId}-button">
+  ${iconSvg}
+  ${selectedButton.textContent.trim()}
+</button>`;
+      
+      codeDisplay.textContent = buttonCode;
+    }
+    
+    // Download button functionality
+    downloadBtn.addEventListener('click', () => {
+      const buttonCode = codeDisplay.textContent;
+      const blob = new Blob([buttonCode], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${selectedButton.id}-payment-button.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>

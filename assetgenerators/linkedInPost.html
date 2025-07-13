@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EzDrink for Bars & Nightclubs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #1a1a1a;
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+    }
+
+    .infographic-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1410 50%, #2c251d 100%);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    .infographic-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 15% 25%, rgba(212, 175, 55, 0.1), transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(184, 134, 11, 0.08), transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      padding: 50px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 72px;
+      color: #D4AF37;
+      margin-bottom: 15px;
+      text-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+    }
+
+    .headline {
+      font-size: 36px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .subheadline {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 400;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+
+    .problem-section {
+      background: rgba(139, 0, 0, 0.1);
+      border: 2px solid #8B0000;
+      border-radius: 20px;
+      padding: 30px;
+      position: relative;
+    }
+
+    .solution-section {
+      background: rgba(212, 175, 55, 0.1);
+      border: 2px solid #D4AF37;
+      border-radius: 20px;
+      padding: 30px;
+      position: relative;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .problem-title {
+      color: #FF6B6B;
+    }
+
+    .solution-title {
+      color: #D4AF37;
+    }
+
+    .pain-point {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      border-left: 4px solid #FF6B6B;
+    }
+
+    .solution-point {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      border-left: 4px solid #D4AF37;
+    }
+
+    .icon {
+      font-size: 24px;
+      margin-right: 15px;
+      margin-top: 3px;
+    }
+
+    .problem-icon {
+      color: #FF6B6B;
+    }
+
+    .solution-icon {
+      color: #D4AF37;
+    }
+
+    .point-text {
+      flex: 1;
+    }
+
+    .point-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .point-description {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+    }
+
+    .stats-banner {
+      background: linear-gradient(90deg, #D4AF37, #B8860B);
+      margin: 50px -50px;
+      padding: 40px 50px;
+      text-align: center;
+    }
+
+    .stats-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #0a0a0a;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+    }
+
+    .stat-box {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 48px;
+      font-weight: 900;
+      color: #0a0a0a;
+      margin-bottom: 5px;
+      font-family: 'Bebas Neue', sans-serif;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(10, 10, 10, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .roi-section {
+      background: rgba(25, 22, 18, 0.6);
+      border: 2px solid #D4AF37;
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .roi-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #D4AF37;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .roi-text {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .roi-highlight {
+      font-size: 24px;
+      font-weight: 700;
+      color: #D4AF37;
+      margin: 20px 0;
+    }
+
+    .cta-section {
+      text-align: center;
+      padding: 40px;
+      background: rgba(212, 175, 55, 0.1);
+      border-radius: 20px;
+      border: 2px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .cta-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #D4AF37;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    .cta-text {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 25px;
+    }
+
+    .contact-info {
+      font-size: 20px;
+      font-weight: 600;
+      color: #D4AF37;
+    }
+
+    .download-controls {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .download-btn {
+      background: #D4AF37;
+      color: #0a0a0a;
+      border: none;
+      padding: 15px 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: uppercase;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .download-btn:hover {
+      background: #B8860B;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .glow-accent {
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #D4AF37, transparent, #D4AF37);
+      border-radius: 22px;
+      z-index: -1;
+      opacity: 0.3;
+      animation: pulse 3s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    @media (max-width: 768px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .content {
+        padding: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="download-controls">
+    <button onclick="downloadImage()" class="download-btn">Download Bar Owner Infographic</button>
+    <p style="color: #666; margin-top: 10px; font-size: 14px;">Perfect for social media sharing</p>
+  </div>
+
+  <div class="infographic-container" id="bar-infographic">
+    <div class="content">
+      <div class="header">
+        <div class="logo">EzDrink</div>
+        <h1 class="headline">Transform Your Bar Operations</h1>
+        <p class="subheadline">The Smart Solution Every Bar & Nightclub Owner Needs</p>
+      </div>
+
+      <div class="main-grid">
+        <div class="problem-section">
+          <div class="glow-accent"></div>
+          <h2 class="section-title problem-title">🔥 Burning Problems</h2>
+          
+          <div class="pain-point">
+            <div class="icon problem-icon">⏰</div>
+            <div class="point-text">
+              <div class="point-title">Endless Bar Lines</div>
+              <div class="point-description">Customers walk away frustrated, losing you $200-500 per busy night</div>
+            </div>
+          </div>
+
+          <div class="pain-point">
+            <div class="icon problem-icon">😤</div>
+            <div class="point-text">
+              <div class="point-title">Overwhelmed Staff</div>
+              <div class="point-description">Bartenders stressed during rush, leading to mistakes & slower service</div>
+            </div>
+          </div>
+
+          <div class="pain-point">
+            <div class="icon problem-icon">💸</div>
+            <div class="point-text">
+              <div class="point-title">Lost Revenue</div>
+              <div class="point-description">Peak hours capped by how fast staff can take orders manually</div>
+            </div>
+          </div>
+
+          <div class="pain-point">
+            <div class="icon problem-icon">📱</div>
+            <div class="point-text">
+              <div class="point-title">Outdated Systems</div>
+              <div class="point-description">Cash-only or clunky POS systems killing your profit margins</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="solution-section">
+          <div class="glow-accent"></div>
+          <h2 class="section-title solution-title">✨ EzDrink Solutions</h2>
+          
+          <div class="solution-point">
+            <div class="icon solution-icon">🚀</div>
+            <div class="point-text">
+              <div class="point-title">Mobile Ordering</div>
+              <div class="point-description">Customers order via smartphone - no more waiting in lines</div>
+            </div>
+          </div>
+
+          <div class="solution-point">
+            <div class="icon solution-icon">⚡</div>
+            <div class="point-text">
+              <div class="point-title">Streamlined Workflow</div>
+              <div class="point-description">Orders go straight to bartenders - organized & prioritized</div>
+            </div>
+          </div>
+
+          <div class="solution-point">
+            <div class="icon solution-icon">💰</div>
+            <div class="point-text">
+              <div class="point-title">Increased Sales</div>
+              <div class="point-description">Serve 40% more customers during peak hours</div>
+            </div>
+          </div>
+
+          <div class="solution-point">
+            <div class="icon solution-icon">📊</div>
+            <div class="point-text">
+              <div class="point-title">Smart Analytics</div>
+              <div class="point-description">Real-time data on bestsellers, peak times & customer preferences</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-banner">
+        <h2 class="stats-title">Impact for Bar Owners</h2>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-number">40%</div>
+            <div class="stat-label">More Drinks Served</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">65%</div>
+            <div class="stat-label">Shorter Wait Times</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">25%</div>
+            <div class="stat-label">Higher Tips</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">30%</div>
+            <div class="stat-label">Revenue Boost</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="roi-section">
+        <h2 class="roi-title">💡 The Smart Investment</h2>
+        <p class="roi-text">
+          Based on industry analysis and similar marketplace solutions, the average bar could see $3,000-$8,000 additional monthly revenue potential.
+        </p>
+        <div class="roi-highlight">
+          Estimated setup ROI within 2-4 weeks based on industry benchmarks
+        </div>
+      </div>
+
+      <div class="cta-section">
+        <h2 class="cta-title">Ready to Transform Your Bar?</h2>
+        <p class="cta-text">
+          Free consultation • Custom setup • Risk-free trial available
+        </p>
+        <div class="contact-info">
+          maurice.sanders@ezdrink.us | 305-434-0738
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function downloadImage() {
+      const infographic = document.getElementById('bar-infographic');
+      
+      html2canvas(infographic, {
+        width: 1080,
+        height: infographic.offsetHeight,
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false
+      }).then(canvas => {
+        // Create download link
+        const link = document.createElement('a');
+        link.download = 'ezdrink-bar-nightclub-infographic.png';
+        link.href = canvas.toDataURL('image/png');
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        console.log('Bar infographic downloaded successfully!');
+      }).catch(err => {
+        console.error('Error generating infographic:', err);
+      });
+    }
+  </script>
+</body>
+</html>
