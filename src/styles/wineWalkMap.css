@@ -67,13 +67,18 @@
     font-size: 14px;
 }
 
+.wine-walk-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .wine-walk-btn-primary {
     background: linear-gradient(135deg, #d4af37, #f5d76e, #926f34);
     color: #0a0a0a;
     border: none;
 }
 
-.wine-walk-btn-primary:hover {
+.wine-walk-btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
@@ -84,7 +89,99 @@
     border: 1px solid rgba(224, 184, 65, 0.3);
 }
 
-.wine-walk-btn-secondary:hover {
+.wine-walk-btn-secondary:hover:not(:disabled) {
+    background: rgba(212, 175, 55, 0.1); /* Wine Walk Map Styles */
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.wine-walk-container {
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    min-height: 100vh;
+    color: #ffffff;
+    background: linear-gradient(rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.95)), 
+                radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.08), transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(184, 134, 11, 0.05), transparent 50%);
+}
+
+.wine-walk-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wine-walk-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.wine-walk-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #d4af37, #f5d76e, #926f34);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+.wine-walk-header p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+}
+
+.wine-walk-controls {
+    background-color: #0a0a0a;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(224, 184, 65, 0.1);
+    margin-bottom: 20px;
+}
+
+.wine-walk-button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.wine-walk-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.wine-walk-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.wine-walk-btn-primary {
+    background: linear-gradient(135deg, #d4af37, #f5d76e, #926f34);
+    color: #0a0a0a;
+    border: none;
+}
+
+.wine-walk-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.wine-walk-btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(224, 184, 65, 0.3);
+}
+
+.wine-walk-btn-secondary:hover:not(:disabled) {
     background: rgba(212, 175, 55, 0.1);
     border-color: #d4af37;
 }
@@ -220,6 +317,12 @@
     font-size: 14px;
     color: #1976d2;
     display: none;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @media (max-width: 768px) {
