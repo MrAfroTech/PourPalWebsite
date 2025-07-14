@@ -25,7 +25,8 @@ const WineWalkMap = () => {
     const mapRef = useRef(null);
     const scriptRef = useRef(null);
     const loadingRef = useRef(false);
-    const initializingRef = useRef(false); // Prevent multiple initializations
+    const initializingRef = useRef(false);
+    const mapInitializedRef = useRef(false); // New ref to track initialization
     const [map, setMap] = useState(null);
     const [userMarker, setUserMarker] = useState(null);
     const [watchId, setWatchId] = useState(null);
@@ -98,6 +99,7 @@ const WineWalkMap = () => {
             // Reset refs
             loadingRef.current = false;
             initializingRef.current = false;
+            mapInitializedRef.current = false;
         };
     }, [watchId, locationMarkers, userMarker]);
 
@@ -197,27 +199,10 @@ const WineWalkMap = () => {
         };
     }, []);
 
-    // Helper function to create marker content for AdvancedMarkerElement
-    const createMarkerContent = useCallback((icon) => {
-        const markerElement = document.createElement('div');
-        markerElement.style.cssText = `
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            border: 3px solid #d4af37;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        `;
-        markerElement.textContent = icon;
-        return markerElement;
-    }, []);
-
     const addLocationMarkers = useCallback(async (mapInstance) => {
         if (!mapInstance || !window.google || !window.google.maps || !componentMounted) return;
+        
+        console.log('Adding location markers to map');
         
         // Clear existing markers safely
         locationMarkers.forEach(marker => {
@@ -241,7 +226,6 @@ const WineWalkMap = () => {
                     lng: location.lng + (index * 0.0005)
                 };
                 
-                // Use legacy Marker for better stability
                 const marker = new window.google.maps.Marker({
                     position: position,
                     map: mapInstance,
@@ -255,7 +239,6 @@ const WineWalkMap = () => {
                 });
                 
                 marker.addListener('click', () => {
-                    // Close all other info windows
                     newMarkers.forEach(m => {
                         if (m.infoWindow && m.infoWindow.close) {
                             try {
@@ -298,22 +281,42 @@ const WineWalkMap = () => {
         }
     }, [locations, locationMarkers, getMarkerIcon, createInfoWindowContent, componentMounted]);
 
+    // FIXED initMap function
     const initMap = useCallback(() => {
-        if (!window.google || !window.google.maps || !mapRef.current || !componentMounted) {
+        console.log('initMap called', {
+            hasGoogle: !!(window.google && window.google.maps && window.google.maps.Map),
+            hasMapRef: !!mapRef.current,
+            componentMounted,
+            isInitializing: initializingRef.current,
+            hasMap: !!map,
+            mapInitialized: mapInitializedRef.current
+        });
+
+        if (!window.google || 
+            !window.google.maps || 
+            !window.google.maps.Map ||
+            !mapRef.current || 
+            !componentMounted) {
+            console.log('initMap: Prerequisites not met');
             return;
         }
         
-        if (initializingRef.current) {
-            console.log('Map already initializing...');
+        if (initializingRef.current || mapInitializedRef.current) {
+            console.log('initMap: Already initializing or initialized');
+            return;
+        }
+        
+        if (map) {
+            console.log('initMap: Map already exists');
             return;
         }
         
         initializingRef.current = true;
+        console.log('initMap: Starting map initialization');
         
         try {
             const defaultCenter = { lat: 28.5493, lng: -81.7731 };
             
-            // Use basic configuration to avoid conflicts
             const mapInstance = new window.google.maps.Map(mapRef.current, {
                 zoom: 16,
                 center: defaultCenter,
@@ -325,48 +328,48 @@ const WineWalkMap = () => {
                 mapTypeControl: true,
                 streetViewControl: true,
                 fullscreenControl: true,
-                zoomControl: true
-                // Remove mapId to avoid conflicts with styles
+                zoomControl: true,
+                gestureHandling: 'auto',
+                clickableIcons: false
             });
             
-            if (componentMounted) {
-                setMap(mapInstance);
-                
-                if (locations.length > 0) {
-                    addLocationMarkers(mapInstance);
+            // Wait for map to be ready
+            window.google.maps.event.addListenerOnce(mapInstance, 'idle', () => {
+                console.log('Map is ready and idle');
+                mapInitializedRef.current = true;
+                if (componentMounted) {
+                    setMap(mapInstance);
+                    showStatus('Interactive Google Maps loaded successfully!', 'success');
+                    
+                    // Add markers after map is fully ready
+                    if (locations.length > 0) {
+                        setTimeout(() => {
+                            addLocationMarkers(mapInstance);
+                        }, 500);
+                    }
                 }
-                
-                showStatus('Interactive Google Maps loaded successfully!', 'success');
-            }
+            });
+            
         } catch (error) {
             console.error('Error initializing map:', error);
             if (componentMounted) {
-                showStatus('Error loading Google Maps', 'error');
+                showStatus('Error loading Google Maps: ' + error.message, 'error');
             }
         } finally {
             initializingRef.current = false;
         }
-    }, [locations, addLocationMarkers, showStatus, componentMounted]);
+    }, [componentMounted, map, locations, addLocationMarkers, showStatus]);
 
-    const checkExistingGoogleMaps = useCallback(() => {
-        // Check if Google Maps is already loaded anywhere in the application
-        if (window.google && window.google.maps) {
-            console.log('Google Maps already loaded, using existing instance');
-            return true;
-        }
-        
-        // Check for existing script tags
-        const existingScripts = document.querySelectorAll('script[src*="maps.googleapis.com"]');
-        if (existingScripts.length > 0) {
-            console.log('Google Maps script already exists, waiting for load...');
-            return 'loading';
-        }
-        
-        return false;
-    }, []);
-
+    // FIXED loadGoogleMaps function
     const loadGoogleMaps = useCallback(() => {
         if (!componentMounted) return;
+        
+        console.log('loadGoogleMaps called', {
+            demoMode: config.DEMO_MODE,
+            hasApiKey: !!config.GOOGLE_MAPS_API_KEY,
+            isLoading: loadingRef.current,
+            hasGoogleMaps: !!(window.google && window.google.maps)
+        });
         
         if (config.DEMO_MODE) {
             setMapsLoaded(true);
@@ -375,40 +378,52 @@ const WineWalkMap = () => {
             return;
         }
 
-        const existingMaps = checkExistingGoogleMaps();
-        
-        // If Google Maps is already loaded, use it
-        if (existingMaps === true) {
+        // Check if Google Maps is already loaded
+        if (window.google && window.google.maps && window.google.maps.Map) {
+            console.log('Google Maps already loaded, using existing instance');
             setMapsLoaded(true);
-            setTimeout(() => initMap(), 100); // Small delay to ensure component is ready
+            setTimeout(() => initMap(), 100);
             return;
         }
         
-        // If currently loading, wait
-        if (existingMaps === 'loading') {
-            const checkInterval = setInterval(() => {
-                if (window.google && window.google.maps) {
-                    clearInterval(checkInterval);
+        // Prevent multiple loads with a more robust check
+        if (loadingRef.current) {
+            console.log('Google Maps already loading...');
+            return;
+        }
+
+        // Check for existing script
+        const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+        if (existingScript) {
+            console.log('Google Maps script already exists, waiting for load...');
+            loadingRef.current = true;
+            
+            // Set up a listener for when it finishes loading
+            let attempts = 0;
+            const maxAttempts = 30; // 15 seconds with 500ms intervals
+            
+            const checkGoogleMaps = () => {
+                attempts++;
+                if (window.google && window.google.maps && window.google.maps.Map) {
+                    loadingRef.current = false;
                     if (componentMounted) {
                         setMapsLoaded(true);
                         setTimeout(() => initMap(), 100);
                     }
+                } else if (attempts < maxAttempts) {
+                    setTimeout(checkGoogleMaps, 500);
+                } else {
+                    // Timeout
+                    loadingRef.current = false;
+                    console.error('Google Maps loading timeout');
+                    if (componentMounted) {
+                        showStatus('Google Maps loading timeout. Please refresh the page.', 'error');
+                        setMapsLoaded(true);
+                    }
                 }
-            }, 100);
+            };
             
-            // Timeout after 10 seconds
-            setTimeout(() => {
-                clearInterval(checkInterval);
-                if (!window.google && componentMounted) {
-                    showStatus('Google Maps loading timeout', 'error');
-                }
-            }, 10000);
-            return;
-        }
-        
-        // Prevent multiple loads
-        if (loadingRef.current) {
-            console.log('Google Maps already loading...');
+            setTimeout(checkGoogleMaps, 500);
             return;
         }
         
@@ -422,11 +437,27 @@ const WineWalkMap = () => {
         loadingRef.current = true;
         showStatus('Loading Google Maps...', 'success');
         
-        // Create unique callback function name
+        // Create unique callback function name to avoid conflicts
         const callbackName = 'initGoogleMaps_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         
-        window[callbackName] = () => {
+        // Set a timeout to prevent infinite loading
+        const loadTimeout = setTimeout(() => {
             loadingRef.current = false;
+            console.error('Google Maps loading timeout after 15 seconds');
+            if (componentMounted) {
+                showStatus('Google Maps loading timeout. Please refresh the page.', 'error');
+                setMapsLoaded(true);
+            }
+            // Clean up callback
+            if (window[callbackName]) {
+                delete window[callbackName];
+            }
+        }, 15000);
+        
+        window[callbackName] = () => {
+            clearTimeout(loadTimeout);
+            loadingRef.current = false;
+            console.log('Google Maps script loaded successfully');
             if (componentMounted) {
                 setMapsLoaded(true);
                 setTimeout(() => initMap(), 100);
@@ -437,11 +468,12 @@ const WineWalkMap = () => {
         };
         
         const script = document.createElement('script');
-        // Remove the marker library to avoid conflicts
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=${callbackName}`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=${callbackName}&v=3.56`;
         script.async = true;
         script.defer = true;
+        
         script.onerror = () => {
+            clearTimeout(loadTimeout);
             loadingRef.current = false;
             console.error('Failed to load Google Maps API - check your API key and billing settings');
             if (componentMounted) {
@@ -449,16 +481,17 @@ const WineWalkMap = () => {
                 setMapsLoaded(true);
             }
             // Clean up callback
-            delete window[callbackName];
-            if (scriptRef.current && scriptRef.current.parentNode) {
-                scriptRef.current.parentNode.removeChild(scriptRef.current);
+            if (window[callbackName]) {
+                delete window[callbackName];
             }
-            scriptRef.current = null;
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
         };
         
         scriptRef.current = script;
         document.head.appendChild(script);
-    }, [initMap, showStatus, config, componentMounted, checkExistingGoogleMaps]);
+    }, [initMap, showStatus, config, componentMounted]);
 
     const getCategoryType = useCallback((category) => {
         const categoryMap = {
@@ -555,24 +588,50 @@ const WineWalkMap = () => {
         }
     }, [getCategoryType, formatHours, showStatus, loadDefaultLocations, componentMounted]);
 
+    // FIXED useEffect - simplified dependencies
     useEffect(() => {
         if (!componentMounted) return;
-        loadLocationsFromJSON();
-        // Delay the map loading slightly to ensure component is fully mounted
-        const timer = setTimeout(() => {
-            if (componentMounted) {
-                loadGoogleMaps();
-            }
-        }, 100);
         
-        return () => clearTimeout(timer);
-    }, [loadLocationsFromJSON, loadGoogleMaps, componentMounted]);
+        let mounted = true;
+        
+        const initialize = async () => {
+            try {
+                console.log('Initializing component...');
+                // Load locations first
+                loadLocationsFromJSON();
+                
+                // Then load maps after a small delay
+                setTimeout(() => {
+                    if (mounted && componentMounted) {
+                        loadGoogleMaps();
+                    }
+                }, 100);
+            } catch (error) {
+                console.error('Error initializing map component:', error);
+                if (mounted && componentMounted) {
+                    showStatus('Error initializing map', 'error');
+                }
+            }
+        };
+        
+        initialize();
+        
+        return () => {
+            mounted = false;
+        };
+    }, [componentMounted]); // Only depend on componentMounted
 
+    // Separate useEffect for when locations and maps are ready
     useEffect(() => {
         if (!config.DEMO_MODE && map && locations.length > 0 && mapsLoaded && componentMounted) {
-            addLocationMarkers(map);
+            console.log('Adding markers to existing map');
+            const timer = setTimeout(() => {
+                addLocationMarkers(map);
+            }, 100);
+            
+            return () => clearTimeout(timer);
         }
-    }, [locations, map, mapsLoaded, addLocationMarkers, config.DEMO_MODE, componentMounted]);
+    }, [locations.length, map, mapsLoaded, componentMounted, config.DEMO_MODE]);
 
     const calculateDistance = useCallback((pos1, pos2) => {
         const R = 6371;
@@ -818,7 +877,7 @@ const WineWalkMap = () => {
         <div className="wine-walk-container">
             <div className="wine-walk-inner">
                 <div className="wine-walk-header">
-                    <h1>🍽️ Clermont Food & Drink Walk</h1>
+                    <h1>🍽️ DowntownClermont Wine Walk</h1>
                     <p>Discover the best local establishments within walking distance</p>
                     {wineWalkData.search_center && (
                         <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
