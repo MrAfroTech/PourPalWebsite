@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.43365f3f.css",
-    "main.js": "/static/js/main.a40fb00d.js",
-    "static/media/bar-background.svg": "/static/media/bar-background.318949524b0658d2aaa0.svg",
-    "static/media/ez-logo-ultra-thin.svg": "/static/media/ez-logo-ultra-thin.c4e8fad09ff5a576be0e4f2c9550c8be.svg",
-    "index.html": "/index.html",
-    "main.43365f3f.css.map": "/static/css/main.43365f3f.css.map",
-    "main.a40fb00d.js.map": "/static/js/main.a40fb00d.js.map"
+    "main.css": "./static/css/main.f42038ca.css",
+    "main.js": "./static/js/main.0d8991ef.js",
+    "static/media/bar-background.svg": "./static/media/bar-background.318949524b0658d2aaa0.svg",
+    "static/media/ez-logo-ultra-thin.svg": "./static/media/ez-logo-ultra-thin.c4e8fad09ff5a576be0e4f2c9550c8be.svg",
+    "index.html": "./index.html",
+    "main.f42038ca.css.map": "./static/css/main.f42038ca.css.map",
+    "main.0d8991ef.js.map": "./static/js/main.0d8991ef.js.map"
   },
   "entrypoints": [
-    "static/css/main.43365f3f.css",
-    "static/js/main.a40fb00d.js"
+    "static/css/main.f42038ca.css",
+    "static/js/main.0d8991ef.js"
   ]
 }

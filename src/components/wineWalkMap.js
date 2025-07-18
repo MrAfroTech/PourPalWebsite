@@ -1169,7 +1169,7 @@ const loadLocationsFromJSON = useCallback(() => {
                         fontSize: '14px',
                         color: 'rgba(255, 255, 255, 0.7)'
                     }}>
-                        <div>Clermonnnnt Food & Drink Walk</div>
+                        <div>Clermont Food & Drink Walk</div>
                         <div style={{marginTop: '5px'}}>
                             Search center: {wineWalkData.search_center.address}
                         </div>
