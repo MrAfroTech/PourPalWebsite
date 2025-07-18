@@ -11,3 +11,6 @@ dist/
 ezdrink-postal-elements/
 *.log
 .DS_Store
+public/*.mp4
+public/*.mov
+public/*.webm
