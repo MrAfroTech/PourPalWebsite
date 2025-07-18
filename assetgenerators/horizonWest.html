@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon West Kids Expo - QR Code Flyer</title>
+    <!-- Include html2canvas and jsPDF libraries for downloading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Add QRious library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flyer-container {
+            background: white;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 8x10 Flyer */
+        .flyer-8x10 {
+            width: 640px;
+            height: 800px;
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 50%, #2c5aa0 100%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        /* Background decorations */
+        .flyer-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(255, 193, 7, 0.15), transparent 40%), 
+                        radial-gradient(circle at 80% 70%, rgba(76, 175, 80, 0.1), transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(255, 87, 34, 0.08), transparent 60%);
+            z-index: 1;
+        }
+
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 25px 25px;
+            z-index: 2;
+        }
+
+        .main-headline {
+            font-size: 28px;
+            font-weight: 900;
+            color: #ffc107;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .event-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 8px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .sub-headline {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .date-info {
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffc107;
+            z-index: 10;
+            position: relative;
+        }
+
+        .qr-section {
+            background: transparent;
+            border-radius: 0;
+            padding: 20px;
+            margin: 15px 0;
+            border: none;
+            box-shadow: none;
+            z-index: 10;
+            position: relative;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: #fff;
+            margin: 0 auto;
+            border-radius: 15px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 4px solid #ffc107;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .benefits-list {
+            text-align: center;
+            margin: 15px 0;
+            z-index: 10;
+            position: relative;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .benefit-icon {
+            color: #ffc107;
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .sponsors-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 10;
+            position: relative;
+        }
+
+        .sponsors-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffc107;
+            margin-bottom: 8px;
+        }
+
+        .sponsor-name {
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: white;
+        }
+
+        .presenting-sponsor {
+            font-weight: bold;
+            color: #ffc107;
+        }
+
+        .event-info {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            opacity: 0.9;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .flyer-title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .download-section {
+            margin: 30px 0;
+            text-align: center;
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(135deg, #357abd, #2c5aa0);
+        }
+
+        .resolution-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .resolution-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .resolution-btn.active {
+            background-color: #4a90e2;
+            color: white;
+            border-color: #357abd;
+        }
+
+        .specs {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .status-message {
+            text-align: center;
+            margin: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .status-message.success {
+            background-color: #e6f7e6;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
+        .status-message.error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+
+        .status-message.loading {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+
+        @media (max-width: 768px) {
+            .flyer-8x10 {
+                width: 90vw;
+                height: auto;
+                min-height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 8x10 Flyer -->
+    <h2 class="flyer-title">8" x 10" Horizon West Kids Expo Flyer</h2>
+    <div class="flyer-container">
+        <div class="flyer-8x10" id="flyer-8x10">
+            <div class="flyer-background"></div>
+            <div class="grid-pattern"></div>
+            
+            <div class="main-headline">🎪 Your Guide to Family Fun!</div>
+            <div class="event-title">Horizon West Kids Expo</div>
+            <div class="sub-headline">Interactive Expo Map</div>
+            
+            <div class="date-info">📅 July 23rd - Gymnasium</div>
+            
+            <div class="qr-section">
+                <div class="qr-code" id="qr-code-container">
+                    <img src="kidsexpoqrcode.png" alt="QR Code for Kids Expo Map" style="width: 100%; height: 100%; border-radius: 8px; object-fit: contain;">
+                </div>
+            </div>
+            
+            <div class="benefits-list">
+                <div class="benefit-item">
+                    <span class="benefit-icon">🏢</span>
+                    <span>Find all participating businesses</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">📍</span>
+                    <span>Navigate the gymnasium layout</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">ℹ️</span>
+                    <span>Get detailed business information</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">⭐</span>
+                    <span>Save your favorite vendors</span>
+                </div>
+            </div>
+            
+            /*
+            <div class="event-info">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">
+                    Powered by <span style="color: #ffc107;">Ez</span><span style="color: white;">Drink</span>
+                </div>
+                <div style="font-size: 12px; color: #ffc107; margin-bottom: 6px;">ezdrink.us</div>
+                <div style="font-size: 10px; font-style: italic; opacity: 0.9;">
+                    <span style="color: #ffc107;">"Smarter systems</span> <span style="color: white;">leading to better</span> <span style="color: #ffc107;">experiences for all"</span>
+                </div>
+            </div>
+            */
+        </div>
+    </div>
+
+    <div class="download-section">
+        <h3>Ready to Print Files</h3>
+        <p>Download high-resolution versions ready for professional printing:</p>
+        
+        <div class="resolution-options">
+            <button class="resolution-btn" data-dpi="300">300 DPI</button>
+            <button class="resolution-btn active" data-dpi="600">600 DPI</button>
+            <button class="resolution-btn" data-dpi="900">900 DPI</button>
+        </div>
+        
+        <div id="status-message" class="status-message"></div>
+        
+        <div style="margin: 20px 0;">
+            <button id="download8x10-png" class="download-btn">Download PNG</button>
+            <button id="download8x10-pdf" class="download-btn">Download PDF</button>
+        </div>
+        
+        <div class="specs">
+            <strong>Print Specifications:</strong><br>
+            • 8x10 Flyer: Print-ready at selected DPI<br>
+            • PNG Format: High-resolution raster image, best for digital use<br>
+            • PDF Format: Vector-based, best for professional printing<br>
+            • Color Mode: RGB for digital, convert to CMYK for offset printing<br>
+            • Ready for professional printing
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">
+            <strong>Note:</strong> QR code automatically generated and ready for printing.
+            The QR code links to your Kids Expo interactive map.
+        </p>
+    </div>
+
+    <script>
+        // Current resolution setting
+        let currentDPI = 600;
+        const statusMessage = document.getElementById('status-message');
+        
+        // Check if QR code image loads when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const qrImage = document.getElementById('qr-code-image');
+            
+            qrImage.addEventListener('load', function() {
+                console.log('QR code image loaded successfully');
+                showStatus('QR code loaded successfully!', 'success');
+            });
+            
+            qrImage.addEventListener('error', function() {
+                console.error('Failed to load QR code image');
+                showStatus('QR code image failed to load. Please check the file path.', 'error');
+            });
+        });
+        
+        // Update resolution based on button clicks
+        document.querySelectorAll('.resolution-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.resolution-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Set the DPI
+                currentDPI = parseInt(this.getAttribute('data-dpi'));
+                
+                // Show confirmation message
+                showStatus(`Resolution set to ${currentDPI} DPI`, 'success');
+            });
+        });
+        
+        // Download functions for both PNG and PDF
+        document.getElementById('download8x10-png').addEventListener('click', function() {
+            downloadFlyer('flyer-8x10', `HorizonWestKidsExpo_Flyer_8x10_${currentDPI}DPI.png`, 'png');
+        });
+        
+        document.getElementById('download8x10-pdf').addEventListener('click', function() {
+            downloadFlyer('flyer-8x10', `HorizonWestKidsExpo_Flyer_8x10_${currentDPI}DPI.pdf`, 'pdf');
+        });
+        
+        function downloadFlyer(elementId, filename, format) {
+            // Show loading message
+            showStatus(`Generating ${currentDPI} DPI ${format.toUpperCase()}...`, 'loading');
+            
+            // Flyer dimensions in pixels at the selected DPI
+            // Size is 8" x 10"
+            const width = Math.round(8 * currentDPI);
+            const height = Math.round(10 * currentDPI);
+            
+            // Options for html2canvas
+            const options = {
+                scale: currentDPI / 96, // Scale up from base 96 DPI
+                backgroundColor: '#4a90e2',
+                logging: false,
+                useCORS: true,
+                allowTaint: true
+            };
+            
+            // Generate the canvas
+            html2canvas(document.getElementById(elementId), options).then(function(canvas) {
+                // Create a new canvas with the right dimensions
+                const finalCanvas = document.createElement('canvas');
+                finalCanvas.width = width;
+                finalCanvas.height = height;
+                const ctx = finalCanvas.getContext('2d');
+                
+                // Draw the image to the canvas, filling the entire dimensions
+                ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, width, height);
+                
+                try {
+                    if (format === 'png') {
+                        // PNG Download
+                        const link = document.createElement('a');
+                        link.download = filename;
+                        link.href = finalCanvas.toDataURL('image/png');
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        showStatus(`Downloaded ${filename}`, 'success');
+                    } else if (format === 'pdf') {
+                        // PDF Download using jsPDF
+                        const imgData = finalCanvas.toDataURL('image/png');
+                        
+                        // Create PDF with exact dimensions (8" x 10")
+                        const { jsPDF } = window.jspdf;
+                        const pdf = new jsPDF({
+                            orientation: 'portrait',
+                            unit: 'in',
+                            format: [8, 10]
+                        });
+                        
+                        // Add the image to PDF, fitting exactly
+                        pdf.addImage(imgData, 'PNG', 0, 0, 8, 10);
+                        
+                        // Save the PDF
+                        pdf.save(filename);
+                        
+                        showStatus(`Downloaded ${filename}`, 'success');
+                    }
+                } catch (error) {
+                    console.error('Error generating download:', error);
+                    showStatus(`Error generating ${format.toUpperCase()}. Try a lower DPI setting.`, 'error');
+                }
+            }).catch(function(error) {
+                console.error('Error with html2canvas:', error);
+                showStatus('Error generating image. Please try again.', 'error');
+            });
+        }
+        
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type;
+            statusMessage.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

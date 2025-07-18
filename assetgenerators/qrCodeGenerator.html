@@ -196,8 +196,10 @@
         }
         
         .qr-container {
-            width: 200px;
-            height: 200px;
+            width: fit-content;
+            height: fit-content;
+            min-width: 150px;
+            min-height: 150px;
             background-color: transparent; /* Changed from white to transparent */
             padding: 0; /* Changed from 10px to 0 */
             border-radius: 0; /* Changed from 8px to 0 */
@@ -377,6 +379,13 @@
     border: none !important;
     box-shadow: none !important;
 }
+
+.qr-container canvas {
+    width: 200px !important;
+    height: 200px !important;
+    image-rendering: pixelated !important;
+}
+
 .qr-item-image canvas {
     display: block !important;
     margin: 0 !important;
@@ -1208,7 +1217,7 @@ function updateRecentCodes() {
     // Get QR data matrix
     const tempQr = new QRious({
         value: qrCode.url,
-        size: 200,
+        size: 210,
         foreground: qrCode.foreground,
         background: 'transparent', // Always use transparent background for SVG
         padding: 0

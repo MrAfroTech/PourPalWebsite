@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tent Fabric Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at center, #2c251d 0%, #1a1410 40%, #0f0c09 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ffffff;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #0a0a0a;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            border: 1px solid #D4AF37;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            color: #000000;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .download-controls {
+            background: #1a1a1a;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            color: #000000;
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .calculator-content {
+            padding: 40px;
+            background: #0a0a0a;
+        }
+        
+        .input-section {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid #333;
+        }
+        
+        .input-section h2 {
+            color: #D4AF37;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+        
+        .input-group input, .input-group select {
+            padding: 12px 15px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+            color: #000000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .results-section {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 2px solid #D4AF37;
+        }
+        
+        .results-section h2 {
+            color: #D4AF37;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        .tent-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .spec-card {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .spec-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #D4AF37;
+            margin-bottom: 5px;
+        }
+        
+        .spec-label {
+            font-size: 0.9rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .fabric-requirements {
+            margin-top: 30px;
+        }
+        
+        .fabric-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #2a2a2a;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .fabric-table th {
+            background: #D4AF37;
+            color: #000000;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .fabric-table td {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            color: #ffffff;
+        }
+        
+        .fabric-table tr:hover {
+            background: #333;
+        }
+        
+        .recommended {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #D4AF37;
+        }
+        
+        .recommended td {
+            font-weight: 600;
+            color: #D4AF37;
+        }
+        
+        .notes {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid #D4AF37;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .notes h3 {
+            color: #D4AF37;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .notes ul {
+            margin-left: 20px;
+            color: #ffffff;
+        }
+        
+        .notes li {
+            margin-bottom: 5px;
+        }
+        
+        .tent-diagram {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        
+        .tent-svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .status-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-weight: 600;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-message.success {
+            background: #D4AF37;
+            color: #000000;
+        }
+        
+        .status-message.error {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .status-message.loading {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .calculator-content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="status-message" class="status-message"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🏕️ Tent Fabric Calculator</h1>
+            <p>Calculate exactly how much fabric you need for your custom tent top</p>
+        </div>
+        
+        <div class="download-controls">
+            <button class="download-btn" onclick="downloadPNG()">📷 Download PNG</button>
+            <button class="download-btn" onclick="downloadPDF()">📄 Download PDF</button>
+        </div>
+        
+        <div class="calculator-content" id="calculator-content">
+            <div class="input-section">
+                <h2>🔧 Tent Specifications</h2>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="tentLength">Tent Length (feet)</label>
+                        <input type="number" id="tentLength" value="10" min="1" max="50" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label for="tentWidth">Tent Width (feet)</label>
+                        <input type="number" id="tentWidth" value="10" min="1" max="50" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label for="peakHeight">Peak Height (feet)</label>
+                        <input type="number" id="peakHeight" value="10" min="5" max="20" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label for="tentStyle">Tent Style</label>
+                        <select id="tentStyle">
+                            <option value="pyramid">Pyramid (4 triangles)</option>
+                            <option value="ridge">Ridge (2 triangles + 2 trapezoids)</option>
+                            <option value="dome">Dome (complex curves)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="calculate-btn" onclick="calculateFabric()">🧮 Calculate Fabric Requirements</button>
+            </div>
+            
+            <div class="results-section" id="results" style="display: none;">
+                <h2>📋 Calculation Results</h2>
+                
+                <div class="tent-specs" id="tentSpecs">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+                
+                <div class="tent-diagram">
+                    <h3>Tent Structure Diagram</h3>
+                    <svg class="tent-svg" viewBox="0 0 400 300" id="tentDiagram">
+                        <!-- Dynamic SVG will be inserted here -->
+                    </svg>
+                </div>
+                
+                <div class="fabric-requirements">
+                    <h3>📏 Fabric Requirements by Width</h3>
+                    <table class="fabric-table" id="fabricTable">
+                        <!-- Dynamic content will be inserted here -->
+                    </table>
+                </div>
+                
+                <div class="notes">
+                    <h3>📝 Important Notes</h3>
+                    <ul>
+                        <li>Based on actual 48HourPrint template dimensions (119" × 84.28" bleed zone)</li>
+                        <li>Template already includes seam allowances and bleed zones</li>
+                        <li>10% waste factor included for cutting and handling</li>
+                        <li>Choose outdoor/canvas fabric for weather resistance</li>
+                        <li>Template safe zone: 119" × 78.55" for artwork placement</li>
+                        <li>Each panel prints separately and connects at tent peak</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function calculateFabric() {
+            const length = parseFloat(document.getElementById('tentLength').value);
+            const width = parseFloat(document.getElementById('tentWidth').value);
+            const peakHeight = parseFloat(document.getElementById('peakHeight').value);
+            const tentStyle = document.getElementById('tentStyle').value;
+            
+            if (!length || !width || !peakHeight) {
+                showStatus('Please fill in all tent dimensions', 'error');
+                return;
+            }
+            
+            // Convert to inches
+            const lengthInches = length * 12;
+            const widthInches = width * 12;
+            const peakHeightInches = peakHeight * 12;
+            
+            let totalArea = 0;
+            let panelDetails = '';
+            
+            if (tentStyle === 'pyramid') {
+                // Use ACTUAL 48HourPrint template dimensions
+                const templateSafeWidth = 119; // inches from template
+                const templateSafeHeight = 78.55; // inches from template  
+                const templateBleedWidth = 119; // inches from template
+                const templateBleedHeight = 84.28; // inches from template
+                
+                // Calculate area using template bleed dimensions (includes built-in allowances)
+                const triangleArea = 0.5 * templateBleedWidth * templateBleedHeight;
+                totalArea = triangleArea * 4;
+                
+                panelDetails = `4 triangular panels per 48HourPrint template: ${(templateBleedWidth/12).toFixed(1)}' base × ${(templateBleedHeight/12).toFixed(1)}' height`;
+                
+                // Update diagram with actual template dimensions
+                updateTemplateAccurateDiagram(templateSafeWidth/12, templateSafeHeight/12);
+                
+            } else if (tentStyle === 'ridge') {
+                // Ridge tent: 2 triangular ends + 2 rectangular sides
+                const triangleArea = 0.5 * widthInches * peakHeightInches;
+                const rectangleArea = lengthInches * peakHeightInches;
+                totalArea = (triangleArea * 2) + (rectangleArea * 2);
+                
+                panelDetails = `2 triangular ends (${width}' × ${peakHeight}') + 2 rectangular sides (${length}' × ${peakHeight}')`;
+                
+            } else if (tentStyle === 'dome') {
+                // Simplified dome calculation (approximate)
+                const radius = Math.max(lengthInches, widthInches) / 2;
+                const surfaceArea = 2 * Math.PI * radius * radius; // Hemisphere surface area
+                totalArea = surfaceArea;
+                
+                panelDetails = `Dome approximation: hemisphere with ${(radius/12).toFixed(1)}' radius`;
+            }
+            
+            // Add only 10% waste factor (template already includes bleed/seam allowances)
+            const wasteFactor = 1.10; // 10% waste
+            
+            const adjustedArea = totalArea * wasteFactor;
+            
+            // Calculate fabric requirements
+            const fabricWidths = [
+                {width: 45, name: 'Standard Cotton', cost: '$8-12/yard'},
+                {width: 54, name: 'Home Decorator', cost: '$12-18/yard'},
+                {width: 60, name: 'Outdoor Canvas', cost: '$15-25/yard', recommended: true},
+                {width: 72, name: 'Wide Outdoor', cost: '$20-35/yard'}
+            ];
+            
+            // Update display
+            displayResults(length, width, peakHeight, adjustedArea, panelDetails, fabricWidths);
+            
+            document.getElementById('results').style.display = 'block';
+            showStatus('Calculation completed successfully!', 'success');
+        }
+        
+        function displayResults(length, width, peakHeight, totalArea, panelDetails, fabricWidths) {
+            // Update tent specs
+            const specsHTML = `
+                <div class="spec-card">
+                    <div class="spec-value">${length}' × ${width}'</div>
+                    <div class="spec-label">Base Dimensions</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-value">${peakHeight}'</div>
+                    <div class="spec-label">Peak Height</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-value">${(totalArea / 144).toFixed(1)} sq ft</div>
+                    <div class="spec-label">Total Fabric Area</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-value">${panelDetails.split(':')[0]}</div>
+                    <div class="spec-label">Panel Configuration</div>
+                </div>
+            `;
+            document.getElementById('tentSpecs').innerHTML = specsHTML;
+            
+            // Update fabric table
+            let tableHTML = `
+                <thead>
+                    <tr>
+                        <th>Fabric Width</th>
+                        <th>Type</th>
+                        <th>Yards Needed</th>
+                        <th>Typical Cost Range</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            fabricWidths.forEach(fabric => {
+                const lengthNeeded = totalArea / fabric.width;
+                const yardsNeeded = lengthNeeded / 36;
+                const rowClass = fabric.recommended ? 'recommended' : '';
+                
+                tableHTML += `
+                    <tr class="${rowClass}">
+                        <td>${fabric.width}" wide</td>
+                        <td>${fabric.name}${fabric.recommended ? ' ⭐ RECOMMENDED' : ''}</td>
+                        <td><strong>${yardsNeeded.toFixed(1)} yards</strong></td>
+                        <td>${fabric.cost}</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += '</tbody>';
+            document.getElementById('fabricTable').innerHTML = tableHTML;
+        }
+        
+        function updateTemplateAccurateDiagram(templateWidth, templateHeight) {
+            const svg = document.getElementById('tentDiagram');
+            svg.innerHTML = `
+                <!-- Template Triangle (actual 48HourPrint dimensions) -->
+                <polygon points="200,50 100,250 300,250" fill="none" stroke="#D4AF37" stroke-width="3"/>
+                
+                <!-- Template safe zone -->
+                <polygon points="200,60 110,230 290,230" fill="none" stroke="#00ff00" stroke-width="1" stroke-dasharray="5,5"/>
+                
+                <!-- Panel connection points -->
+                <circle cx="200" cy="50" r="6" fill="#D4AF37"/>
+                <circle cx="100" cy="250" r="4" fill="#D4AF37"/>
+                <circle cx="300" cy="250" r="4" fill="#D4AF37"/>
+                
+                <!-- Dimension labels -->
+                <text x="200" y="40" text-anchor="middle" font-size="12" fill="#D4AF37" font-weight="bold">Tent Peak</text>
+                <text x="200" y="280" text-anchor="middle" font-size="14" fill="#ffffff">${templateWidth.toFixed(1)}' × ${templateHeight.toFixed(1)}' per panel</text>
+                
+                <!-- Template info -->
+                <text x="200" y="300" text-anchor="middle" font-size="10" fill="#D4AF37">48HourPrint Template Dimensions</text>
+                <text x="200" y="315" text-anchor="middle" font-size="9" fill="#ffffff">Safe Zone: 119" × 78.55" | Bleed Zone: 119" × 84.28"</text>
+                
+                <!-- Green line indicator -->
+                <text x="350" y="160" font-size="8" fill="#00ff00">Safe Zone</text>
+                <line x1="340" y1="165" x2="290" y2="190" stroke="#00ff00" stroke-width="1"/>
+            `;
+        }
+        
+        function downloadPNG() {
+            showStatus('Generating PNG...', 'loading');
+            
+            const element = document.getElementById('calculator-content');
+            
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: 'white',
+                width: element.offsetWidth,
+                height: element.offsetHeight
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'tent-fabric-calculator.png';
+                link.href = canvas.toDataURL('image/png');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showStatus('PNG downloaded successfully!', 'success');
+            }).catch(error => {
+                console.error('Error generating PNG:', error);
+                showStatus('Error generating PNG. Please try again.', 'error');
+            });
+        }
+        
+        function downloadPDF() {
+            showStatus('Generating PDF...', 'loading');
+            
+            const element = document.getElementById('calculator-content');
+            
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: 'white'
+            }).then(canvas => {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const imgWidth = 210; // A4 width in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                // Add first page
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= 297; // A4 height in mm
+                
+                // Add additional pages if needed
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= 297;
+                }
+                
+                pdf.save('tent-fabric-calculator.pdf');
+                showStatus('PDF downloaded successfully!', 'success');
+            }).catch(error => {
+                console.error('Error generating PDF:', error);
+                showStatus('Error generating PDF. Please try again.', 'error');
+            });
+        }
+        
+        function showStatus(message, type) {
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type;
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 4000);
+        }
+        
+        // Calculate initial values on page load
+        window.addEventListener('load', function() {
+            calculateFabric();
+        });
+    </script>
+</body>
+</html>

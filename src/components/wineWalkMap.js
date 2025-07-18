@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import '../styles/wineWalkMap.css';
+import '../styles/WineWalkMap.css';
 import wineWalkData from '../data/wineWalkLocations.json';
 
 const WineWalkMap = () => {
@@ -542,19 +542,40 @@ const WineWalkMap = () => {
         }
     }, [componentMounted]);
 
-    const loadLocationsFromJSON = useCallback(() => {
-        if (!componentMounted) return;
+    // Replace your loadLocationsFromJSON function with this updated version:
+const loadLocationsFromJSON = useCallback(() => {
+    if (!componentMounted) return;
+    
+    console.log('🔍 Raw wineWalkData:', wineWalkData);
+    
+    try {
+        let locationsData = [];
         
-        try {
-            let locationsData = [];
-            if (wineWalkData && wineWalkData.establishments) {
-                locationsData = wineWalkData.establishments.map((establishment, index) => ({
+        if (wineWalkData && wineWalkData.establishments) {
+            console.log('📍 Found establishments in JSON:', wineWalkData.establishments.length);
+            
+            // Process each establishment from your JSON
+            locationsData = wineWalkData.establishments.map((establishment, index) => {
+                console.log(`Processing establishment ${index + 1}:`, establishment.name);
+                
+                // Extract coordinates from the establishment
+                const lat = establishment.coordinates?.latitude || 
+                           establishment.lat || 
+                           (wineWalkData.search_center?.coordinates?.latitude || 28.5493);
+                           
+                const lng = establishment.coordinates?.longitude || 
+                           establishment.lng || 
+                           (wineWalkData.search_center?.coordinates?.longitude || -81.7731);
+                
+                console.log(`📍 Coordinates for ${establishment.name}:`, { lat, lng });
+                
+                return {
                     id: index + 1,
                     name: establishment.name,
                     address: establishment.address,
                     type: getCategoryType(establishment.category),
-                    lat: wineWalkData.search_center?.coordinates?.latitude || 28.5493,
-                    lng: wineWalkData.search_center?.coordinates?.longitude || -81.7731,
+                    lat: lat,
+                    lng: lng,
                     description: establishment.description,
                     phone: establishment.phone,
                     website: establishment.website,
@@ -564,30 +585,39 @@ const WineWalkMap = () => {
                     category: establishment.category,
                     specialties: establishment.specialties,
                     distance_from_center: establishment.distance_from_center
-                }));
-            } else if (wineWalkData && wineWalkData.locations) {
-                locationsData = wineWalkData.locations;
-            } else {
-                throw new Error('No locations or establishments found in JSON file');
-            }
+                };
+            });
             
-            if (locationsData.length > 0) {
-                const sortedLocations = locationsData.sort((a, b) => {
-                    return (a.order || a.id) - (b.order || b.id);
-                });
-                setLocations(sortedLocations);
-                showStatus(`Loaded ${sortedLocations.length} local establishments!`, 'success');
-                console.log('Loaded locations:', sortedLocations);
-            } else {
-                throw new Error('No valid locations found');
-            }
-        } catch (error) {
-            console.error('Failed to load locations from JSON:', error);
-            showStatus('Loading default locations (JSON file issue)', 'error');
-            loadDefaultLocations();
+            console.log('✅ Processed locations with coordinates:', locationsData);
+            
+        } else if (wineWalkData && wineWalkData.locations) {
+            console.log('📍 Found locations array in JSON:', wineWalkData.locations.length);
+            locationsData = wineWalkData.locations;
+        } else {
+            console.error('❌ No establishments or locations found in JSON structure');
+            console.log('JSON structure:', Object.keys(wineWalkData || {}));
+            throw new Error('No locations or establishments found in JSON file');
         }
-    }, [getCategoryType, formatHours, showStatus, loadDefaultLocations, componentMounted]);
-
+        
+        if (locationsData.length > 0) {
+            const sortedLocations = locationsData.sort((a, b) => {
+                return (a.order || a.id) - (b.order || b.id);
+            });
+            
+            console.log(`🎯 Setting ${sortedLocations.length} locations on map`);
+            setLocations(sortedLocations);
+            showStatus(`Loaded ${sortedLocations.length} local establishments!`, 'success');
+            
+        } else {
+            throw new Error('No valid locations found after processing');
+        }
+    } catch (error) {
+        console.error('❌ Failed to load locations from JSON:', error);
+        console.log('🔧 Falling back to default location');
+        showStatus('Loading default locations (JSON file issue)', 'error');
+        loadDefaultLocations();
+    }
+}, [getCategoryType, formatHours, showStatus, loadDefaultLocations, componentMounted]);
     // FIXED useEffect - simplified dependencies
     useEffect(() => {
         if (!componentMounted) return;
@@ -1139,7 +1169,7 @@ const WineWalkMap = () => {
                         fontSize: '14px',
                         color: 'rgba(255, 255, 255, 0.7)'
                     }}>
-                        <div>Clermont Food & Drink Walk</div>
+                        <div>Clermonnnnt Food & Drink Walk</div>
                         <div style={{marginTop: '5px'}}>
                             Search center: {wineWalkData.search_center.address}
                         </div>
