@@ -5,3 +5,9 @@ node_modules/
 .vercel
 .env
 backend/.env
+node_modules/
+build/
+dist/
+ezdrink-postal-elements/
+*.log
+.DS_Store
