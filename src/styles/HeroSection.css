@@ -147,7 +147,7 @@
     gap: 20px;
   }
   
-  .primary-button, .secondary-button {
+  .primary-button, .secondary-button, .ezfest-button {
     padding: 14px 28px;
     border-radius: 50px;
     font-size: 16px;
@@ -176,6 +176,18 @@
   .secondary-button:hover {
     background: rgba(212, 175, 55, 0.1);
     transform: translateY(-3px);
+  }
+
+  .ezfest-button {
+    background: linear-gradient(135deg, #ff6b35, #ff8c42);
+    color: white;
+    border: 2px solid #ff6b35;
+  }
+
+  .ezfest-button:hover {
+    background: linear-gradient(135deg, #ff8c42, #ff6b35);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 15px rgba(255, 107, 53, 0.3);
   }
   
   /* ==============
@@ -496,7 +508,7 @@
   }
   
   /* ==============
-     MENU POPUP
+     MENU POPUP - UPDATED WITH MOBILE FIXES
      ============== */
   
   .menu-popup-overlay {
@@ -508,9 +520,12 @@
     background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Changed from center to flex-start */
+    padding-top: 120px; /* Add top padding to move popup down */
     z-index: 1000;
-    padding: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
   }
   
   .menu-popup {
@@ -518,7 +533,7 @@
     border-radius: 16px;
     width: 90%;
     max-width: 600px;
-    max-height: 80vh;
+    max-height: 85vh; /* Reduced from 80vh to give more space */
     overflow-y: auto;
     position: relative;
     color: #fff;
@@ -709,21 +724,58 @@
       width: 150px;
     }
     
+    .video-element {
+      transition: opacity 0.5s ease;
+    }
+    
+    /* MOBILE POPUP FIXES */
+    .menu-popup-overlay {
+      padding: 5px; /* Even less padding on small screens */
+    }
+    
     .menu-popup {
-      padding: 25px 20px;
-      width: 95%;
+      padding: 20px 15px; /* Reduce padding on mobile */
+      width: 95%; /* Use more screen width */
+      max-height: 90vh; /* Use more screen height */
+      border-radius: 12px; /* Smaller border radius */
     }
     
     .menu-popup h2 {
-      font-size: 24px;
+      font-size: 22px; /* Smaller title */
+      margin-bottom: 10px;
+    }
+    
+    .menu-popup .subtitle {
+      font-size: 14px; /* Smaller subtitle */
+      margin-bottom: 20px;
     }
     
     .popup-content h3 {
-      font-size: 18px;
+      font-size: 18px; /* Smaller section headers */
+      margin: 20px 0 12px;
     }
     
-    .video-element {
-      transition: opacity 0.5s ease;
+    .popup-content p,
+    .popup-content li {
+      font-size: 14px; /* Smaller body text */
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    
+    .popup-content ul, 
+    .popup-content ol {
+      padding-left: 18px; /* Less indentation */
+      margin: 12px 0;
+    }
+    
+    .phone-click-action {
+      padding: 12px 15px; /* Less padding */
+      margin: 20px 0;
+    }
+    
+    .popup-button {
+      padding: 12px 16px; /* Smaller button padding */
+      font-size: 15px; /* Slightly smaller button text */
     }
   }
   
@@ -749,5 +801,99 @@
     .phone-frame {
       width: 240px;
       height: 480px;
+    }
+    
+    /* EXTRA SMALL MOBILE POPUP FIXES */
+    .menu-popup-overlay {
+      padding: 2px;
+    }
+    
+    .menu-popup {
+      padding: 15px 12px; /* Even smaller padding */
+      width: 98%; /* Almost full width */
+      max-height: 95vh; /* Use even more screen height */
+      border-radius: 8px; /* Even smaller border radius */
+    }
+    
+    .menu-popup h2 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    
+    .menu-popup .subtitle {
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+    
+    .popup-content h3 {
+      font-size: 16px;
+      margin: 15px 0 10px;
+    }
+    
+    .popup-content p,
+    .popup-content li {
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    
+    .close-popup {
+      top: 8px;
+      right: 8px;
+      width: 25px;
+      height: 25px;
+      font-size: 18px;
+    }
+    
+    .phone-click-action {
+      padding: 10px 12px;
+      margin: 15px 0;
+    }
+    
+    .phone-click-action p {
+      font-size: 13px;
+    }
+    
+    .popup-button {
+      padding: 10px 14px;
+      font-size: 14px;
+    }
+  }
+  
+  /* Landscape orientation on small screens */
+  @media screen and (max-height: 600px) and (orientation: landscape) {
+    .menu-popup {
+      max-height: 95vh;
+      padding: 10px 15px;
+    }
+    
+    .menu-popup h2 {
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    
+    .menu-popup .subtitle {
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+    
+    .popup-content h3 {
+      font-size: 14px;
+      margin: 10px 0 8px;
+    }
+    
+    .popup-content p,
+    .popup-content li {
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .phone-click-action {
+      padding: 8px 10px;
+      margin: 10px 0;
+    }
+    
+    .popup-button {
+      padding: 8px 12px;
+      font-size: 13px;
     }
   }

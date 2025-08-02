@@ -263,6 +263,7 @@ const HeroSection = ({ onOpenPopup }) => {
         <div className="hero-cta fade-in">
           <button className="primary-button" onClick={onOpenPopup}>Are You Ready?</button>
           <button className="secondary-button" onClick={() => window.location.href = '/demo'}>Watch It In Action →</button>
+          <button className="ezfest-button" onClick={() => window.location.href = '/ezfest'}>🎪 Join EzFest →</button>
         </div>
       </div>
       

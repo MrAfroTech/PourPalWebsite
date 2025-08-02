@@ -21,6 +21,9 @@ import ReduceExpenses from './components/ReduceExpenses';
 import CashFinderPage from './components/CashFinderPage';
 import WineWalkMap from './components/WineWalkMap';
 import KidsExpoMap from './components/KidsExpoMap';
+import EzDrinkSignup from './components/EzDrinkSignup';
+import SignupSuccess from './components/SignupSuccess';
+import EzFestSignup from './components/EzFestSignup';
 
 
 // QR Tracker component
@@ -107,7 +110,10 @@ const AppContent = () => {
   // AFTER:
 const isWineWalkPage = location.pathname === '/wine-walk';
 const isKidsExpoPage = location.pathname === '/kids-expo';
-const hideNavbar = isDownloadPage || isCashFinderPage || isWineWalkPage || isKidsExpoPage;
+const isSignupPage = location.pathname === '/signup';
+const isSignupSuccessPage = location.pathname === '/signup-success';
+const isEzFestPage = location.pathname === '/ezfest';
+const hideNavbar = isDownloadPage || isCashFinderPage || isWineWalkPage || isKidsExpoPage || isSignupPage || isSignupSuccessPage || isEzFestPage;
 
   // Auto-display video popup when site loads
   useEffect(() => {
@@ -184,6 +190,9 @@ const hideNavbar = isDownloadPage || isCashFinderPage || isWineWalkPage || isKid
         <Route path="/cash-finder" element={<CashFinderPage />} />
         <Route path="/wine-walk" element={<WineWalkMap />} />
         <Route path="/kids-expo" element={<KidsExpoMap />} />
+        <Route path="/signup" element={<EzDrinkSignup />} />
+        <Route path="/signup-success" element={<SignupSuccess />} />
+        <Route path="/ezfest" element={<EzFestSignup />} />
 
 
         {/* You could add a QR tracking dashboard route here */}

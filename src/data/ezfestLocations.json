@@ -1,0 +1,106 @@
+{
+  "foodTrucks": [
+    {
+      "id": 1,
+      "name": "Taco Fiesta Express",
+      "type": "Mexican",
+      "description": "Authentic street tacos and burritos made fresh daily",
+      "lat": 40.7128,
+      "lng": -74.0060,
+      "menu": ["Street Tacos", "Burritos", "Quesadillas", "Horchata"],
+      "rating": 4.8,
+      "waitTime": "5-10 min",
+      "icon": "🌮"
+    },
+    {
+      "id": 2,
+      "name": "Burger Barn",
+      "type": "American",
+      "description": "Gourmet burgers and loaded fries with premium ingredients",
+      "lat": 40.7135,
+      "lng": -74.0055,
+      "menu": ["Classic Burger", "Bacon Cheeseburger", "Loaded Fries", "Milkshakes"],
+      "rating": 4.6,
+      "waitTime": "8-12 min",
+      "icon": "🍔"
+    },
+    {
+      "id": 3,
+      "name": "Pizza Mobile",
+      "type": "Italian",
+      "description": "Fresh wood-fired pizza by the slice with authentic toppings",
+      "lat": 40.7140,
+      "lng": -74.0065,
+      "menu": ["Margherita", "Pepperoni", "Veggie Supreme", "Garlic Knots"],
+      "rating": 4.7,
+      "waitTime": "3-7 min",
+      "icon": "🍕"
+    },
+    {
+      "id": 4,
+      "name": "Asian Fusion",
+      "type": "Asian",
+      "description": "Pan-Asian street food favorites with bold flavors",
+      "lat": 40.7132,
+      "lng": -74.0070,
+      "menu": ["Pad Thai", "Dumplings", "Bao Buns", "Bubble Tea"],
+      "rating": 4.9,
+      "waitTime": "10-15 min",
+      "icon": "🥢"
+    },
+    {
+      "id": 5,
+      "name": "Ice Cream Dream",
+      "type": "Dessert",
+      "description": "Artisanal ice cream and sundaes with unique flavors",
+      "lat": 40.7145,
+      "lng": -74.0050,
+      "menu": ["Vanilla Bean", "Chocolate Fudge", "Strawberry", "Sundaes"],
+      "rating": 4.5,
+      "waitTime": "2-5 min",
+      "icon": "🍦"
+    },
+    {
+      "id": 6,
+      "name": "Veggie Delight",
+      "type": "Vegetarian",
+      "description": "Plant-based comfort food that satisfies everyone",
+      "lat": 40.7125,
+      "lng": -74.0075,
+      "menu": ["Veggie Burger", "Falafel Wrap", "Quinoa Bowl", "Smoothies"],
+      "rating": 4.4,
+      "waitTime": "7-12 min",
+      "icon": "🥬"
+    },
+    {
+      "id": 7,
+      "name": "BBQ Smokehouse",
+      "type": "BBQ",
+      "description": "Slow-smoked BBQ with all the traditional sides",
+      "lat": 40.7138,
+      "lng": -74.0045,
+      "menu": ["Brisket Sandwich", "Pulled Pork", "Ribs", "Mac & Cheese"],
+      "rating": 4.9,
+      "waitTime": "12-18 min",
+      "icon": "🍖"
+    },
+    {
+      "id": 8,
+      "name": "Seafood Shack",
+      "type": "Seafood",
+      "description": "Fresh seafood with coastal flavors and crispy sides",
+      "lat": 40.7142,
+      "lng": -74.0080,
+      "menu": ["Fish Tacos", "Lobster Roll", "Crab Cakes", "Clam Chowder"],
+      "rating": 4.7,
+      "waitTime": "8-15 min",
+      "icon": "🦐"
+    }
+  ],
+  "festivalInfo": {
+    "name": "EzFest",
+    "date": "September 15-17, 2024",
+    "location": "Central Park, New York",
+    "description": "The ultimate food festival experience with the best food trucks, live music, and entertainment."
+  }
+} 

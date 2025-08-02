@@ -907,7 +907,7 @@ const loadLocationsFromJSON = useCallback(() => {
         <div className="wine-walk-container">
             <div className="wine-walk-inner">
                 <div className="wine-walk-header">
-                    <h1>🍽️ DowntownClermont Wine Walk</h1>
+                    <h1>🍽️ Wine Tour</h1>
                     <p>Discover the best local establishments within walking distance</p>
                     {wineWalkData.search_center && (
                         <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
@@ -1169,7 +1169,7 @@ const loadLocationsFromJSON = useCallback(() => {
                         fontSize: '14px',
                         color: 'rgba(255, 255, 255, 0.7)'
                     }}>
-                        <div>Clermont Food & Drink Walk</div>
+                        <div>Food & Drink Walk</div>
                         <div style={{marginTop: '5px'}}>
                             Search center: {wineWalkData.search_center.address}
                         </div>

@@ -581,6 +581,14 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    /* Hide the clunky gymnasium overlays on mobile */
+    .gymnasium-entrance,
+    .gymnasium-stage,
+    .gymnasium-food-court,
+    .gymnasium-registration {
+        display: none;
+    }
+    
     .kids-expo-container {
         padding: 10px;
     }
@@ -626,15 +634,6 @@
     
     .booth-icon {
         font-size: 20px;
-    }
-    
-    .gymnasium-food-court,
-    .gymnasium-registration {
-        writing-mode: horizontal-tb;
-        text-orientation: unset;
-        transform: none;
-        position: relative;
-        margin: 10px;
     }
     
     .sponsors-grid,
