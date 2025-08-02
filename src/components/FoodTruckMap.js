@@ -137,17 +137,137 @@ const FoodTruckMap = () => {
     }, [componentMounted]);
 
     const getMarkerIcon = useCallback((type) => {
-        // Return default marker for food trucks
-        return null;
+        // Create custom food truck markers with better visibility
+        const icons = {
+            'Mexican': '🌮',
+            'American': '🍔',
+            'Italian': '🍕',
+            'Asian': '🥢',
+            'Dessert': '🍦',
+            'Vegetarian': '🥬',
+            'BBQ': '🍖',
+            'Seafood': '🦐'
+        };
+        const icon = icons[type] || '🍽️';
+        
+        // Create a more reliable custom marker
+        return {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+                    <!-- Main circle -->
+                    <circle cx="30" cy="30" r="25" fill="#ffffff" stroke="#28a745" stroke-width="4"/>
+                    <!-- Inner circle -->
+                    <circle cx="30" cy="30" r="20" fill="#f8f9fa" stroke="#20c997" stroke-width="2"/>
+                    <!-- Food icon -->
+                    <text x="30" y="38" text-anchor="middle" font-size="20" font-family="Arial, sans-serif">${icon}</text>
+                    <!-- Top dot -->
+                    <circle cx="30" cy="12" r="4" fill="#28a745"/>
+                    <!-- Shadow -->
+                    <ellipse cx="30" cy="58" rx="20" ry="4" fill="rgba(0,0,0,0.1)"/>
+                </svg>
+            `),
+            scaledSize: new window.google.maps.Size(60, 60),
+            anchor: new window.google.maps.Point(30, 30)
+        };
     }, []);
 
     const createInfoWindowContent = useCallback((location) => {
         return `
-            <div style="padding: 10px; max-width: 200px;">
-                <h3 style="margin: 0 0 5px 0; color: #333;">${location.icon} ${location.name}</h3>
-                <p style="margin: 0 0 5px 0; color: #666; font-size: 12px;">${location.category}</p>
-                <p style="margin: 0 0 5px 0; color: #888; font-size: 11px;">⭐ ${location.rating}</p>
-                <p style="margin: 0; color: #666; font-size: 11px;">⏱️ ${location.waitTime}</p>
+            <div style="padding: 15px; max-width: 350px; font-family: Arial, sans-serif;">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <span style="font-size: 24px; margin-right: 10px;">${location.icon}</span>
+                    <div>
+                        <h3 style="margin: 0; color: #333; font-size: 16px; font-weight: bold;">
+                            ${location.name}
+                        </h3>
+                        <div style="color: #d4af37; font-size: 12px; font-weight: bold; margin-top: 2px;">
+                            ${location.category}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    <div style="color: #666; font-size: 13px; line-height: 1.4;">
+                        ${location.description}
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <div style="text-align: center;">
+                        <div style="color: #ffd700; font-size: 14px; font-weight: bold;">⭐ ${location.rating}</div>
+                        <div style="color: #666; font-size: 11px;">Rating</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: #28a745; font-size: 14px; font-weight: bold;">⏱️ ${location.waitTime}</div>
+                        <div style="color: #666; font-size: 11px;">Wait Time</div>
+                    </div>
+                </div>
+                
+                ${location.menu && location.menu.length > 0 ? `
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #333; font-size: 12px; font-weight: bold; margin-bottom: 5px;">
+                            🍽️ Popular Items:
+                        </div>
+                        <div style="color: #666; font-size: 11px; line-height: 1.3;">
+                            ${location.menu.slice(0, 4).join(' • ')}
+                            ${location.menu.length > 4 ? '...' : ''}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${location.address ? `
+                    <div style="margin-bottom: 12px; padding: 8px; background: #f8f9fa; border-radius: 6px;">
+                        <div style="color: #333; font-size: 11px; font-weight: bold; margin-bottom: 3px;">
+                            📍 Location:
+                        </div>
+                        <div style="color: #666; font-size: 11px;">
+                            ${location.address}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                    <button 
+                        onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}', '_blank')"
+                        style="
+                            background: linear-gradient(135deg, #28a745, #20c997);
+                            color: white;
+                            border: none;
+                            padding: 10px 16px;
+                            border-radius: 20px;
+                            font-size: 13px;
+                            font-weight: bold;
+                            cursor: pointer;
+                            flex: 1;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                            transition: all 0.2s ease;
+                        "
+                        onmouseover="this.style.transform='scale(1.05)'"
+                        onmouseout="this.style.transform='scale(1)'"
+                    >
+                        🗺️ Directions
+                    </button>
+                    <button 
+                        onclick="alert('Order functionality coming soon!')"
+                        style="
+                            background: linear-gradient(135deg, #ffc107, #fd7e14);
+                            color: white;
+                            border: none;
+                            padding: 10px 16px;
+                            border-radius: 20px;
+                            font-size: 13px;
+                            font-weight: bold;
+                            cursor: pointer;
+                            flex: 1;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                            transition: all 0.2s ease;
+                        "
+                        onmouseover="this.style.transform='scale(1.05)'"
+                        onmouseout="this.style.transform='scale(1)'"
+                    >
+                        🍽️ Order
+                    </button>
+                </div>
             </div>
         `;
     }, []);
@@ -184,7 +304,12 @@ const FoodTruckMap = () => {
                     map: mapInstance,
                     title: location.name,
                     icon: getMarkerIcon(location.type),
-                    animation: window.google.maps.Animation.DROP
+                    animation: window.google.maps.Animation.DROP,
+                    label: {
+                        text: location.icon,
+                        fontSize: '16px',
+                        fontWeight: 'bold'
+                    }
                 });
                 
                 const infoWindow = new window.google.maps.InfoWindow({
@@ -610,17 +735,39 @@ const FoodTruckMap = () => {
                             </div>
                         ) : (
                             locations.map((location, index) => (
-                                <div key={location.id || index} className="wine-walk-location-item">
+                                <div key={location.id || index} className="wine-walk-location-item" 
+                                     style={{ cursor: 'pointer' }}
+                                     onClick={() => {
+                                         // Find the corresponding marker and trigger its info window
+                                         const marker = locationMarkers.find(m => m.title === location.name);
+                                         if (marker && marker.infoWindow) {
+                                             // Close all other info windows first
+                                             locationMarkers.forEach(m => {
+                                                 if (m.infoWindow && m.infoWindow.close) {
+                                                     try {
+                                                         m.infoWindow.close();
+                                                     } catch (error) {
+                                                         console.warn('Error closing info window:', error);
+                                                     }
+                                                 }
+                                             });
+                                             // Open this marker's info window
+                                             marker.infoWindow.open(map, marker);
+                                             // Pan to the marker
+                                             map.panTo(marker.getPosition());
+                                             map.setZoom(18);
+                                         }
+                                     }}>
                                     <div className="wine-walk-location-info">
                                         <div className="wine-walk-location-name">
                                             {location.icon} {location.name}
                                             <span style={{color: '#ffd700', marginLeft: '8px'}}>⭐ {location.rating}</span>
                                         </div>
-                                        {/* Address is hidden for food trucks */}
+                                        
                                         {location.category && (
                                             <div style={{
                                                 fontSize: '12px', 
-                                                color: '#ffd700', 
+                                                color: '#28a745', 
                                                 marginTop: '2px',
                                                 fontWeight: 'bold'
                                             }}>
@@ -646,7 +793,7 @@ const FoodTruckMap = () => {
                                                 marginTop: '6px',
                                                 fontStyle: 'italic'
                                             }}>
-                                                Menu: {location.menu.slice(0, 3).join(', ')}
+                                                🍽️ {location.menu.slice(0, 3).join(', ')}
                                                 {location.menu.length > 3 && '...'}
                                             </div>
                                         )}
@@ -658,8 +805,13 @@ const FoodTruckMap = () => {
                                             marginTop: '8px'
                                         }}>
                                             {location.waitTime && (
-                                                <div style={{fontSize: '12px', color: '#666'}}>
+                                                <div style={{fontSize: '12px', color: '#28a745', fontWeight: 'bold'}}>
                                                     ⏱️ {location.waitTime}
+                                                </div>
+                                            )}
+                                            {location.address && (
+                                                <div style={{fontSize: '11px', color: '#666'}}>
+                                                    📍 {location.address.split(',')[0]}
                                                 </div>
                                             )}
                                         </div>
@@ -668,9 +820,21 @@ const FoodTruckMap = () => {
                                     <div className="wine-walk-location-actions">
                                         <button 
                                             className="wine-walk-btn wine-walk-btn-primary wine-walk-btn-small"
-                                            onClick={() => setStatus({ message: `Viewing menu for ${location.name}`, type: 'success', visible: true })}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setStatus({ message: `Opening menu for ${location.name}`, type: 'success', visible: true });
+                                            }}
                                         >
                                             View Menu
+                                        </button>
+                                        <button 
+                                            className="wine-walk-btn wine-walk-btn-secondary wine-walk-btn-small"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.open(`https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}`, '_blank');
+                                            }}
+                                        >
+                                            Directions
                                         </button>
                                     </div>
                                 </div>
