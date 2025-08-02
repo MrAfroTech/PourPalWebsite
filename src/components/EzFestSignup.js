@@ -908,17 +908,152 @@ const loadLocationsFromJSON = useCallback(() => {
             <div className="wine-walk-inner" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', alignItems: 'start' }}>
                 {/* Vendor Signup Form - Left Side */}
                 <div style={{
-                    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                    background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
                     padding: '40px',
                     borderRadius: '15px',
                     color: 'white',
-                    height: 'fit-content'
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column'
                 }}>
+                    {/* Promotional Box */}
+                    <div style={{
+                        background: 'linear-gradient(135deg, #d4af37 0%, #f5d76e 100%)',
+                        padding: '25px',
+                        borderRadius: '12px',
+                        marginBottom: '30px',
+                        textAlign: 'center',
+                        color: '#0a0a0a',
+                        boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                        border: '2px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                        <h3 style={{
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            color: '#0a0a0a'
+                        }}>
+                            🚫 Stop Losing Sales to Long Lines
+                        </h3>
+                        
+                        <p style={{
+                            fontSize: '16px',
+                            lineHeight: '1.6',
+                            marginBottom: '15px',
+                            color: '#0a0a0a',
+                            fontWeight: '500'
+                        }}>
+                            Customers abandon your line after 8 minutes. That's <strong>$20-30 walking away every few minutes</strong>.
+                        </p>
+                        
+                        <div style={{
+                            background: '#dc3545',
+                            color: 'white',
+                            padding: '12px 20px',
+                            borderRadius: '8px',
+                            fontSize: '16px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
+                        }}>
+                            ⚠️ At busy fairs, you're bleeding money:
+                        </div>
+                        
+                        <ul style={{
+                            fontSize: '15px',
+                            lineHeight: '1.5',
+                            marginBottom: '20px',
+                            color: '#0a0a0a',
+                            textAlign: 'left',
+                            paddingLeft: '20px'
+                        }}>
+                            <li style={{ marginBottom: '8px' }}>Long lines scare off new customers</li>
+                            <li style={{ marginBottom: '8px' }}>Families can't find your booth and give up</li>
+                            <li style={{ marginBottom: '8px' }}>Peak hours = overwhelmed staff = frustrated customers</li>
+                        </ul>
+                        
+                        <div style={{
+                            background: '#28a745',
+                            color: 'white',
+                            padding: '15px 20px',
+                            borderRadius: '8px',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
+                        }}>
+                            ✅ Seamless Captures Those Lost Sales
+                        </div>
+                        
+                        <p style={{
+                            fontSize: '16px',
+                            lineHeight: '1.6',
+                            marginBottom: '15px',
+                            color: '#0a0a0a',
+                            fontWeight: '500'
+                        }}>
+                            Customers scan your QR code from anywhere at the fair. Order while walking to you. <strong>Skip the line entirely.</strong>
+                        </p>
+                        
+                        <div style={{
+                            background: '#ff6b35',
+                            color: 'white',
+                            padding: '12px 20px',
+                            borderRadius: '25px',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                            display: 'inline-block',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
+                        }}>
+                            💰 Result: $300-600 more revenue per day. Zero line abandonment.
+                        </div>
+                        
+                        <div style={{
+                            background: '#d4af37',
+                            color: '#0a0a0a',
+                            padding: '15px 20px',
+                            borderRadius: '8px',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(212, 175, 55, 0.3)'
+                        }}>
+                            🚀 One Setup. Every Event. Forever.
+                        </div>
+                        
+                        <p style={{
+                            fontSize: '16px',
+                            lineHeight: '1.6',
+                            marginBottom: '15px',
+                            color: '#0a0a0a',
+                            fontWeight: '500'
+                        }}>
+                            Sign up once. Works at every fair, festival, and event you do. Your customers can always find you and order instantly — no matter how busy or crowded.
+                        </p>
+                        
+                        <div style={{
+                            background: '#ff6b35',
+                            color: 'white',
+                            padding: '12px 20px',
+                            borderRadius: '25px',
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                            display: 'inline-block',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
+                        }}>
+                            💰 Stop watching money walk away.
+                        </div>
+                        
+
+                    </div>
+
                     <h2 style={{ textAlign: 'center', marginBottom: '30px', fontSize: '28px' }}>
                         🎪 Vendor Registration
                     </h2>
                     
-                    <form style={{ maxWidth: '600px', margin: '0 auto' }}>
+                    <form style={{ maxWidth: '600px', margin: '0 auto', flex: '1', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                             <div>
                                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
@@ -1303,7 +1438,7 @@ const loadLocationsFromJSON = useCallback(() => {
                             </div>
                         </div>
 
-                        <div style={{ textAlign: 'center' }}>
+                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
                             <button 
                                 type="submit"
                                 style={{
@@ -1340,8 +1475,8 @@ const loadLocationsFromJSON = useCallback(() => {
                 {/* Map Section - Right Side */}
                 <div style={{ height: '100%' }}>
                     <div className="wine-walk-header">
-                    <h1>🍽️ Wine Tour</h1>
-                    <p>Discover the best local establishments within walking distance</p>
+                        <h1>🎪 EzFest</h1>
+                        <p>Discover the best food trucks and vendors at the festival</p>
                     {wineWalkData.search_center && (
                         <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
                             Explore {wineWalkData.total_establishments} establishments within {wineWalkData.search_center.radius} of downtown Clermont
