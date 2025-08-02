@@ -905,14 +905,14 @@ const loadLocationsFromJSON = useCallback(() => {
 
     return (
         <div className="wine-walk-container">
-            <div className="wine-walk-inner">
-                {/* Vendor Signup Form */}
+            <div className="wine-walk-inner" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', alignItems: 'start' }}>
+                {/* Vendor Signup Form - Left Side */}
                 <div style={{
                     background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
                     padding: '40px',
                     borderRadius: '15px',
-                    marginBottom: '30px',
-                    color: 'white'
+                    color: 'white',
+                    height: 'fit-content'
                 }}>
                     <h2 style={{ textAlign: 'center', marginBottom: '30px', fontSize: '28px' }}>
                         🎪 Vendor Registration
@@ -1185,6 +1185,15 @@ const loadLocationsFromJSON = useCallback(() => {
                                 </label>
                                 <select 
                                     required
+                                    id="plan-select"
+                                    onChange={(e) => {
+                                        const creditCardSection = document.getElementById('credit-card-section');
+                                        if (e.target.value === 'pro' || e.target.value === 'ultimate') {
+                                            creditCardSection.style.display = 'block';
+                                        } else {
+                                            creditCardSection.style.display = 'none';
+                                        }
+                                    }}
                                     style={{
                                         width: '100%',
                                         padding: '12px',
@@ -1328,7 +1337,9 @@ const loadLocationsFromJSON = useCallback(() => {
                     </form>
                 </div>
 
-                <div className="wine-walk-header">
+                {/* Map Section - Right Side */}
+                <div style={{ height: '100%' }}>
+                    <div className="wine-walk-header">
                     <h1>🍽️ Wine Tour</h1>
                     <p>Discover the best local establishments within walking distance</p>
                     {wineWalkData.search_center && (
@@ -1580,8 +1591,9 @@ const loadLocationsFromJSON = useCallback(() => {
                         )}
                     </div>
                 </div>
+            </div>
 
-                {wineWalkData.search_center && (
+            {wineWalkData.search_center && (
                     <div style={{
                         textAlign: 'center',
                         marginTop: '30px',
