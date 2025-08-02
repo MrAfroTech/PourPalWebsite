@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import '../styles/WineWalkMap.css';
-import ezfestLocations from '../data/ezfestLocations.json';
+import wineWalkData from '../data/wineWalkLocations.json';
 
-const FoodTruckMap = () => {
+const EzDrinkSignup = () => {
     // Configuration from environment variables with proper fallbacks
     const DEMO_MODE = process.env.REACT_APP_DEMO_MODE === 'false' ? false : true;
     const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "";
@@ -50,7 +50,7 @@ const FoodTruckMap = () => {
     useEffect(() => {
         if (!componentMounted) return;
         
-        console.log('🎪 Food Truck Map Configuration:', {
+        console.log('🗺️ Wine Walk Map Configuration:', {
             'Raw Environment Variables': {
                 REACT_APP_DEMO_MODE: process.env.REACT_APP_DEMO_MODE,
                 REACT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? 'SET' : 'NOT SET',
@@ -202,7 +202,7 @@ const FoodTruckMap = () => {
     const addLocationMarkers = useCallback(async (mapInstance) => {
         if (!mapInstance || !window.google || !window.google.maps || !componentMounted) return;
         
-        console.log('Adding food truck markers to map');
+        console.log('Adding location markers to map');
         
         // Clear existing markers safely
         locationMarkers.forEach(marker => {
@@ -546,54 +546,57 @@ const FoodTruckMap = () => {
 const loadLocationsFromJSON = useCallback(() => {
     if (!componentMounted) return;
     
-    console.log('🔍 Raw ezfestLocations:', ezfestLocations);
+    console.log('🔍 Raw wineWalkData:', wineWalkData);
     
     try {
         let locationsData = [];
         
-        if (ezfestLocations && ezfestLocations.foodTrucks) {
-            console.log('📍 Found food trucks in JSON:', ezfestLocations.foodTrucks.length);
+        if (wineWalkData && wineWalkData.establishments) {
+            console.log('📍 Found establishments in JSON:', wineWalkData.establishments.length);
             
-            // Process each food truck from your JSON
-            locationsData = ezfestLocations.foodTrucks.map((truck, index) => {
-                console.log(`Processing food truck ${index + 1}:`, truck.name);
+            // Process each establishment from your JSON
+            locationsData = wineWalkData.establishments.map((establishment, index) => {
+                console.log(`Processing establishment ${index + 1}:`, establishment.name);
                 
-                // Extract coordinates from the food truck
-                const lat = truck.lat || 28.5493;
-                const lng = truck.lng || -81.7731;
+                // Extract coordinates from the establishment
+                const lat = establishment.coordinates?.latitude || 
+                           establishment.lat || 
+                           (wineWalkData.search_center?.coordinates?.latitude || 28.5493);
+                           
+                const lng = establishment.coordinates?.longitude || 
+                           establishment.lng || 
+                           (wineWalkData.search_center?.coordinates?.longitude || -81.7731);
                 
-                console.log(`📍 Coordinates for ${truck.name}:`, { lat, lng });
+                console.log(`📍 Coordinates for ${establishment.name}:`, { lat, lng });
                 
                 return {
                     id: index + 1,
-                    name: truck.name,
-                    address: truck.address,
-                    type: getCategoryType(truck.type),
+                    name: establishment.name,
+                    address: establishment.address,
+                    type: getCategoryType(establishment.category),
                     lat: lat,
                     lng: lng,
-                    description: truck.description,
-                    phone: truck.phone,
-                    website: truck.website,
-                    hours: formatHours(truck.hours),
-                    featured: truck.rating >= 4.5,
+                    description: establishment.description,
+                    phone: establishment.phone,
+                    website: establishment.website,
+                    hours: formatHours(establishment.hours),
+                    featured: establishment.specialties && establishment.specialties.length > 2,
                     order: index + 1,
-                    category: truck.type,
-                    specialties: truck.menu,
-                    rating: truck.rating,
-                    waitTime: truck.waitTime,
-                    icon: truck.icon
+                    category: establishment.category,
+                    specialties: establishment.specialties,
+                    distance_from_center: establishment.distance_from_center
                 };
             });
             
             console.log('✅ Processed locations with coordinates:', locationsData);
             
-        } else if (ezfestLocations && ezfestLocations.locations) {
-            console.log('📍 Found locations array in JSON:', ezfestLocations.locations.length);
-            locationsData = ezfestLocations.locations;
+        } else if (wineWalkData && wineWalkData.locations) {
+            console.log('📍 Found locations array in JSON:', wineWalkData.locations.length);
+            locationsData = wineWalkData.locations;
         } else {
-            console.error('❌ No food trucks or locations found in JSON structure');
-            console.log('JSON structure:', Object.keys(ezfestLocations || {}));
-            throw new Error('No food trucks or locations found in JSON file');
+            console.error('❌ No establishments or locations found in JSON structure');
+            console.log('JSON structure:', Object.keys(wineWalkData || {}));
+            throw new Error('No locations or establishments found in JSON file');
         }
         
         if (locationsData.length > 0) {
@@ -601,17 +604,17 @@ const loadLocationsFromJSON = useCallback(() => {
                 return (a.order || a.id) - (b.order || b.id);
             });
             
-            console.log(`🎯 Setting ${sortedLocations.length} food trucks on map`);
+            console.log(`🎯 Setting ${sortedLocations.length} locations on map`);
             setLocations(sortedLocations);
-            showStatus(`Loaded ${sortedLocations.length} food trucks!`, 'success');
+            showStatus(`Loaded ${sortedLocations.length} local establishments!`, 'success');
             
         } else {
-            throw new Error('No valid food trucks found after processing');
+            throw new Error('No valid locations found after processing');
         }
     } catch (error) {
-        console.error('❌ Failed to load food trucks from JSON:', error);
+        console.error('❌ Failed to load locations from JSON:', error);
         console.log('🔧 Falling back to default location');
-        showStatus('Loading default food trucks (JSON file issue)', 'error');
+        showStatus('Loading default locations (JSON file issue)', 'error');
         loadDefaultLocations();
     }
 }, [getCategoryType, formatHours, showStatus, loadDefaultLocations, componentMounted]);
@@ -623,7 +626,7 @@ const loadLocationsFromJSON = useCallback(() => {
         
         const initialize = async () => {
             try {
-                console.log('Initializing food truck component...');
+                console.log('Initializing component...');
                 // Load locations first
                 loadLocationsFromJSON();
                 
@@ -903,12 +906,434 @@ const loadLocationsFromJSON = useCallback(() => {
     return (
         <div className="wine-walk-container">
             <div className="wine-walk-inner">
+                {/* Vendor Signup Form */}
+                <div style={{
+                    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                    padding: '40px',
+                    borderRadius: '15px',
+                    marginBottom: '30px',
+                    color: 'white'
+                }}>
+                    <h2 style={{ textAlign: 'center', marginBottom: '30px', fontSize: '28px' }}>
+                        🎪 Vendor Registration
+                    </h2>
+                    
+                    <form style={{ maxWidth: '600px', margin: '0 auto' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Vendor Name *
+                                </label>
+                                <input 
+                                    type="text" 
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                    placeholder="Your name"
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Business Name *
+                                </label>
+                                <input 
+                                    type="text" 
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                    placeholder="Your business name"
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Vendor Type *
+                                </label>
+                                <select 
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                >
+                                    <option value="">Select vendor type</option>
+                                    <option value="food-truck">Food Truck</option>
+                                    <option value="arts-crafts">Arts & Crafts</option>
+                                    <option value="jewelry">Jewelry</option>
+                                    <option value="clothing">Clothing</option>
+                                    <option value="home-decor">Home Decor</option>
+                                    <option value="beauty">Beauty & Wellness</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="services">Services</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Cuisine Type
+                                </label>
+                                <select 
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                >
+                                    <option value="">Select cuisine (if food truck)</option>
+                                    <option value="mexican">Mexican</option>
+                                    <option value="pizza">Pizza</option>
+                                    <option value="jamaican">Jamaican</option>
+                                    <option value="desserts">Desserts</option>
+                                    <option value="bbq">BBQ</option>
+                                    <option value="asian">Asian</option>
+                                    <option value="mediterranean">Mediterranean</option>
+                                    <option value="american">American</option>
+                                    <option value="vegetarian">Vegetarian</option>
+                                    <option value="seafood">Seafood</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Email *
+                                </label>
+                                <input 
+                                    type="email" 
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                    placeholder="your@email.com"
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Phone Number *
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                    placeholder="(555) 123-4567"
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                POS System
+                            </label>
+                            <select 
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    fontSize: '16px'
+                                }}
+                            >
+                                <option value="">Select your POS system</option>
+                                <option value="square">Square</option>
+                                <option value="stripe">Stripe</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="clover">Clover</option>
+                                <option value="toast">Toast</option>
+                                <option value="lightspeed">Lightspeed</option>
+                                <option value="shopify">Shopify</option>
+                                <option value="none">No POS system</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        {/* Pricing Plans Section */}
+                        <div style={{ 
+                            marginBottom: '20px', 
+                            padding: '20px', 
+                            background: 'rgba(212, 175, 55, 0.1)', 
+                            borderRadius: '12px',
+                            border: '1px solid rgba(212, 175, 55, 0.3)'
+                        }}>
+                            <h3 style={{ 
+                                textAlign: 'center', 
+                                marginBottom: '20px', 
+                                color: '#d4af37',
+                                fontSize: '20px'
+                            }}>
+                                🎪 Choose Your Plan
+                            </h3>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px' }}>
+                                {/* Free Plan */}
+                                <div style={{
+                                    background: 'rgba(26, 26, 26, 0.8)',
+                                    border: '2px solid rgba(212, 175, 55, 0.3)',
+                                    borderRadius: '8px',
+                                    padding: '15px',
+                                    textAlign: 'center',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s ease'
+                                }}>
+                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>⭐ Free Plan</div>
+                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$0</div>
+                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Forever Free</div>
+                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
+                                        <div>✓ List your menu on festival map</div>
+                                        <div>✓ Basic vendor info showcase</div>
+                                        <div>✓ Event notifications</div>
+                                        <div>✓ Personalized QR code</div>
+                                    </div>
+                                </div>
+
+                                {/* Pro Plan */}
+                                <div style={{
+                                    background: 'rgba(26, 26, 26, 0.8)',
+                                    border: '2px solid rgba(212, 175, 55, 0.3)',
+                                    borderRadius: '8px',
+                                    padding: '15px',
+                                    textAlign: 'center',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s ease'
+                                }}>
+                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>💼 Pro Plan</div>
+                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$39.99</div>
+                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Per Month</div>
+                                    <div style={{ 
+                                        background: '#ff6b35', 
+                                        color: 'white', 
+                                        fontSize: '10px', 
+                                        fontWeight: 'bold', 
+                                        padding: '3px 6px', 
+                                        borderRadius: '8px', 
+                                        marginBottom: '8px' 
+                                    }}>
+                                        🎉 2 MONTHS FREE
+                                    </div>
+                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
+                                        <div>✓ All Free features</div>
+                                        <div>✓ Mobile orders & payments</div>
+                                        <div>✓ Real-time tracking</div>
+                                        <div>✓ Sales analytics</div>
+                                    </div>
+                                </div>
+
+                                {/* Ultimate Plan */}
+                                <div style={{
+                                    background: 'rgba(26, 26, 26, 0.8)',
+                                    border: '2px solid rgba(212, 175, 55, 0.3)',
+                                    borderRadius: '8px',
+                                    padding: '15px',
+                                    textAlign: 'center',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s ease'
+                                }}>
+                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>🚀 Ultimate Plan</div>
+                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$79.99</div>
+                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Per Month</div>
+                                    <div style={{ 
+                                        background: '#ff6b35', 
+                                        color: 'white', 
+                                        fontSize: '10px', 
+                                        fontWeight: 'bold', 
+                                        padding: '3px 6px', 
+                                        borderRadius: '8px', 
+                                        marginBottom: '8px' 
+                                    }}>
+                                        🎉 2 MONTHS FREE
+                                    </div>
+                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
+                                        <div>✓ All Pro features</div>
+                                        <div>✓ Priority vendor visibility</div>
+                                        <div>✓ Advanced analytics</div>
+                                        <div>✓ Priority support</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '15px' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Select Your Plan *
+                                </label>
+                                <select 
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                >
+                                    <option value="">Choose your plan</option>
+                                    <option value="free">⭐ Free Plan - $0/month</option>
+                                    <option value="pro">💼 Pro Plan - $39.99/month (2 months free!)</option>
+                                    <option value="ultimate">🚀 Ultimate Plan - $79.99/month (2 months free!)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Credit Card Section - Only show for Pro/Ultimate */}
+                        <div id="credit-card-section" style={{ 
+                            marginBottom: '20px',
+                            padding: '20px',
+                            background: 'rgba(40, 167, 69, 0.1)',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(40, 167, 69, 0.3)',
+                            display: 'none'
+                        }}>
+                            <h4 style={{ 
+                                textAlign: 'center', 
+                                marginBottom: '15px', 
+                                color: '#28a745',
+                                fontSize: '18px'
+                            }}>
+                                💳 Payment Information
+                            </h4>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                        Card Number *
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        required
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="1234 5678 9012 3456"
+                                    />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                        Expiry Date *
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        required
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="MM/YY"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                        CVV *
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        required
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="123"
+                                    />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                        Name on Card *
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        required
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="John Doe"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{ textAlign: 'center' }}>
+                            <button 
+                                type="submit"
+                                style={{
+                                    background: 'linear-gradient(135deg, #d4af37, #f5d76e)',
+                                    color: '#0a0a0a',
+                                    border: 'none',
+                                    padding: '15px 40px',
+                                    borderRadius: '25px',
+                                    fontSize: '18px',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                    boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                                    transition: 'all 0.3s ease'
+                                }}
+                                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                            >
+                                🚀 Register as Vendor
+                            </button>
+                        </div>
+
+                        <div style={{ 
+                            textAlign: 'center', 
+                            marginTop: '20px', 
+                            fontSize: '14px', 
+                            opacity: 0.8 
+                        }}>
+                            <p>Registration includes CRM integration and Stripe payment processing</p>
+                            <p>We'll contact you within 24 hours to complete your setup</p>
+                        </div>
+                    </form>
+                </div>
+
                 <div className="wine-walk-header">
-                    <h1>🎪 Food Truck Festival</h1>
-                    <p>Discover the best food trucks in Clermont</p>
-                    {ezfestLocations.foodTrucks && (
+                    <h1>🍽️ Wine Tour</h1>
+                    <p>Discover the best local establishments within walking distance</p>
+                    {wineWalkData.search_center && (
                         <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
-                            Explore {ezfestLocations.foodTrucks.length} food trucks serving amazing cuisine
+                            Explore {wineWalkData.total_establishments} establishments within {wineWalkData.search_center.radius} of downtown Clermont
                         </div>
                     )}
                     {/* Configuration Status */}
@@ -943,13 +1368,13 @@ const loadLocationsFromJSON = useCallback(() => {
                             onClick={findNearestLocation}
                             disabled={!userLocation}
                         >
-                            🎯 Find Nearest Food Truck
+                            🎯 Find Nearest Location
                         </button>
                         <button 
                             className="wine-walk-btn wine-walk-btn-secondary" 
                             onClick={showAllLocations}
                         >
-                            🗺️ Show All Food Trucks
+                            🗺️ Show All Locations
                         </button>
                     </div>
                     
@@ -1048,7 +1473,7 @@ const loadLocationsFromJSON = useCallback(() => {
                 </div>
 
                 <div className="wine-walk-location-list">
-                    <h3>Food Trucks ({locations.length})</h3>
+                    <h3>Local Establishments ({locations.length})</h3>
                     <div>
                         {locations.length === 0 ? (
                             <div style={{
@@ -1057,7 +1482,7 @@ const loadLocationsFromJSON = useCallback(() => {
                                 color: '#666',
                                 fontStyle: 'italic'
                             }}>
-                                No food trucks loaded. Check your ezfestLocations.json file.
+                                No locations loaded. Check your wineWalkLocations.json file.
                             </div>
                         ) : (
                             locations.map((location, index) => (
@@ -1166,13 +1591,13 @@ const loadLocationsFromJSON = useCallback(() => {
                         fontSize: '14px',
                         color: 'rgba(255, 255, 255, 0.7)'
                     }}>
-                                        <div>🎪 EzFest Food Truck Festival</div>
-                <div style={{marginTop: '5px'}}>
-                    Location: {ezfestLocations.festivalInfo.location}
-                </div>
-                <div style={{marginTop: '5px'}}>
-                    Date: {ezfestLocations.festivalInfo.date}
-                </div>
+                        <div>Food & Drink Walk</div>
+                        <div style={{marginTop: '5px'}}>
+                            Search center: {wineWalkData.search_center.address}
+                        </div>
+                        <div style={{marginTop: '5px'}}>
+                            Search date: {wineWalkData.search_date}
+                        </div>
                         <div style={{marginTop: '5px', fontSize: '12px', opacity: 0.6}}>
                             Environment: {process.env.NODE_ENV} | Mode: {config.DEMO_MODE ? 'Demo' : 'Live'}
                         </div>
@@ -1183,4 +1608,4 @@ const loadLocationsFromJSON = useCallback(() => {
     );
 };
 
-export default FoodTruckMap;
+export default EzDrinkSignup;
