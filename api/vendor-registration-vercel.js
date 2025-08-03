@@ -1,5 +1,5 @@
-// Klaviyo configuration
-const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
+// Klaviyo configuration - temporarily hardcoded for testing
+const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY || 'pk_6811fc9f50361d1357c49b1bd91a029acc';
 const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID || 'TJr6rx'; // Fallback to the specific list ID
 
 // Debug environment variables at module level
