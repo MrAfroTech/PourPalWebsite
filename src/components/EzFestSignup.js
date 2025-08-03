@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import '../styles/WineWalkMap.css';
-import wineWalkData from '../data/wineWalkLocations.json';
+import ezfestLocations from '../data/ezfestLocations.json';
 
 const EzFestSignup = () => {
     // Configuration from environment variables with proper fallbacks
@@ -26,7 +26,7 @@ const EzFestSignup = () => {
     const scriptRef = useRef(null);
     const loadingRef = useRef(false);
     const initializingRef = useRef(false);
-    const mapInitializedRef = useRef(false); // New ref to track initialization
+    const mapInitializedRef = useRef(false);
     const [map, setMap] = useState(null);
     const [userMarker, setUserMarker] = useState(null);
     const [watchId, setWatchId] = useState(null);
@@ -46,34 +46,13 @@ const EzFestSignup = () => {
         };
     }, []);
 
-    // Log configuration on component mount
-    useEffect(() => {
-        if (!componentMounted) return;
-        
-        console.log('🗺️ Wine Walk Map Configuration:', {
-            'Raw Environment Variables': {
-                REACT_APP_DEMO_MODE: process.env.REACT_APP_DEMO_MODE,
-                REACT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? 'SET' : 'NOT SET',
-                REACT_APP_ENABLE_CONTINUOUS_TRACKING: process.env.REACT_APP_ENABLE_CONTINUOUS_TRACKING,
-                NODE_ENV: process.env.NODE_ENV
-            },
-            'Final Configuration': {
-                DEMO_MODE: config.DEMO_MODE,
-                HAS_API_KEY: !!config.GOOGLE_MAPS_API_KEY,
-                CONTINUOUS_TRACKING: config.ENABLE_CONTINUOUS_TRACKING
-            }
-        });
-    }, [config, componentMounted]);
-
     // Cleanup function
     useEffect(() => {
         return () => {
-            // Clean up geolocation
             if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
             }
             
-            // Clean up markers safely
             if (locationMarkers.length > 0) {
                 locationMarkers.forEach(marker => {
                     try {
@@ -96,7 +75,6 @@ const EzFestSignup = () => {
                 }
             }
 
-            // Reset refs
             loadingRef.current = false;
             initializingRef.current = false;
             mapInitializedRef.current = false;
@@ -133,9 +111,6 @@ const EzFestSignup = () => {
                     ${getLocationIcon(location.type)} ${location.name}
                     ${location.featured ? ' ⭐' : ''}
                 </h4>
-                <p style="margin: 4px 0; font-size: 13px; color: #666;">
-                    ${location.address}
-                </p>
                 ${location.category ? `
                     <p style="margin: 4px 0; font-size: 12px; color: #d4af37; font-weight: bold;">
                         ${location.category}
@@ -281,16 +256,8 @@ const EzFestSignup = () => {
         }
     }, [locations, locationMarkers, getMarkerIcon, createInfoWindowContent, componentMounted]);
 
-    // FIXED initMap function
     const initMap = useCallback(() => {
-        console.log('initMap called', {
-            hasGoogle: !!(window.google && window.google.maps && window.google.maps.Map),
-            hasMapRef: !!mapRef.current,
-            componentMounted,
-            isInitializing: initializingRef.current,
-            hasMap: !!map,
-            mapInitialized: mapInitializedRef.current
-        });
+        console.log('initMap called');
 
         if (!window.google || 
             !window.google.maps || 
@@ -360,7 +327,6 @@ const EzFestSignup = () => {
         }
     }, [componentMounted, map, locations, addLocationMarkers, showStatus]);
 
-    // FIXED loadGoogleMaps function
     const loadGoogleMaps = useCallback(() => {
         if (!componentMounted) return;
         
@@ -386,7 +352,7 @@ const EzFestSignup = () => {
             return;
         }
         
-        // Prevent multiple loads with a more robust check
+        // Prevent multiple loads
         if (loadingRef.current) {
             console.log('Google Maps already loading...');
             return;
@@ -398,9 +364,8 @@ const EzFestSignup = () => {
             console.log('Google Maps script already exists, waiting for load...');
             loadingRef.current = true;
             
-            // Set up a listener for when it finishes loading
             let attempts = 0;
-            const maxAttempts = 30; // 15 seconds with 500ms intervals
+            const maxAttempts = 30;
             
             const checkGoogleMaps = () => {
                 attempts++;
@@ -413,7 +378,6 @@ const EzFestSignup = () => {
                 } else if (attempts < maxAttempts) {
                     setTimeout(checkGoogleMaps, 500);
                 } else {
-                    // Timeout
                     loadingRef.current = false;
                     console.error('Google Maps loading timeout');
                     if (componentMounted) {
@@ -437,10 +401,8 @@ const EzFestSignup = () => {
         loadingRef.current = true;
         showStatus('Loading Google Maps...', 'success');
         
-        // Create unique callback function name to avoid conflicts
         const callbackName = 'initGoogleMaps_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         
-        // Set a timeout to prevent infinite loading
         const loadTimeout = setTimeout(() => {
             loadingRef.current = false;
             console.error('Google Maps loading timeout after 15 seconds');
@@ -448,7 +410,6 @@ const EzFestSignup = () => {
                 showStatus('Google Maps loading timeout. Please refresh the page.', 'error');
                 setMapsLoaded(true);
             }
-            // Clean up callback
             if (window[callbackName]) {
                 delete window[callbackName];
             }
@@ -463,7 +424,6 @@ const EzFestSignup = () => {
                 setTimeout(() => initMap(), 100);
                 showStatus('Google Maps loaded successfully!', 'success');
             }
-            // Clean up callback
             delete window[callbackName];
         };
         
@@ -480,7 +440,6 @@ const EzFestSignup = () => {
                 showStatus('Failed to load Google Maps. Check your API key, billing, and internet connection.', 'error');
                 setMapsLoaded(true);
             }
-            // Clean up callback
             if (window[callbackName]) {
                 delete window[callbackName];
             }
@@ -493,132 +452,87 @@ const EzFestSignup = () => {
         document.head.appendChild(script);
     }, [initMap, showStatus, config, componentMounted]);
 
-    const getCategoryType = useCallback((category) => {
-        const categoryMap = {
-            'Bar/Cocktail Lounge': 'bar',
-            'BBQ Restaurant': 'restaurant',
-            'Brewery/Restaurant': 'brewery',
-            'Waterfront Restaurant/Bar': 'restaurant',
-            'Mexican Restaurant/Bar': 'restaurant',
-            'Fine Dining Restaurant/Bar': 'restaurant',
-            'Restaurant': 'restaurant',
-            'Bar': 'bar',
-            'Brewery': 'brewery',
-            'Winery': 'winery'
-        };
-        return categoryMap[category] || 'restaurant';
-    }, []);
-
-    const formatHours = useCallback((hours) => {
-        if (!hours) return null;
-        if (typeof hours === 'string') return hours;
-        if (hours.monday_thursday) {
-            return `Mon-Thu: ${hours.monday_thursday}, Fri-Sat: ${hours.friday_saturday || hours.monday_thursday}, Sun: ${hours.sunday || hours.monday_thursday}`;
-        }
-        if (hours.sunday_monday) {
-            return `Sun-Mon: ${hours.sunday_monday}, Tue-Wed: ${hours.tuesday_wednesday}, Thu: ${hours.thursday}, Fri-Sat: ${hours.friday_saturday}`;
-        }
-        return 'See website for hours';
-    }, []);
-
-    const loadDefaultLocations = useCallback(() => {
-        const defaultLocations = [
-            {
-                id: 1,
-                name: "The Roasted Spirit",
-                address: "756 W Montrose Street, Clermont, FL 34711",
-                type: "bar",
-                lat: 28.5493,
-                lng: -81.7731,
-                description: "Elevated spirits bar",
-                hours: "Daily 11:00 AM - 11:00 PM",
-                featured: true,
-                order: 1
+    const loadLocationsFromJSON = useCallback(() => {
+        if (!componentMounted) return;
+        
+        console.log('🔍 Raw ezfestLocations:', ezfestLocations);
+        
+        try {
+            let locationsData = [];
+            
+            if (ezfestLocations && ezfestLocations.foodTrucks) {
+                console.log('📍 Found food trucks in JSON:', ezfestLocations.foodTrucks.length);
+                
+                locationsData = ezfestLocations.foodTrucks.map((foodTruck, index) => {
+                    console.log(`Processing food truck ${index + 1}:`, foodTruck.name);
+                    
+                    const lat = foodTruck.lat || 28.5493;
+                    const lng = foodTruck.lng || -81.7731;
+                    
+                    console.log(`📍 Coordinates for ${foodTruck.name}:`, { lat, lng });
+                    
+                    return {
+                        id: foodTruck.id || index + 1,
+                        name: foodTruck.name,
+                        address: foodTruck.address || 'Clermont, FL',
+                        type: foodTruck.type,
+                        lat: lat,
+                        lng: lng,
+                        description: foodTruck.description,
+                        phone: foodTruck.phone,
+                        website: foodTruck.website,
+                        hours: foodTruck.hours,
+                        featured: foodTruck.menu && foodTruck.menu.length > 2,
+                        order: index + 1,
+                        category: foodTruck.type,
+                        specialties: foodTruck.menu,
+                        rating: foodTruck.rating,
+                        waitTime: foodTruck.waitTime,
+                        icon: foodTruck.icon
+                    };
+                });
+                
+                console.log('✅ Processed food trucks with coordinates:', locationsData);
+                
+            } else {
+                console.error('❌ No food trucks found in JSON structure');
+                console.log('JSON structure:', Object.keys(ezfestLocations || {}));
+                throw new Error('No food trucks found in JSON file');
             }
-        ];
-        if (componentMounted) {
+            
+            if (locationsData.length > 0) {
+                const sortedLocations = locationsData.sort((a, b) => {
+                    return (a.order || a.id) - (b.order || b.id);
+                });
+                
+                console.log(`🎯 Setting ${sortedLocations.length} food trucks on map`);
+                setLocations(sortedLocations);
+                showStatus(`Loaded ${sortedLocations.length} food trucks!`, 'success');
+                
+            } else {
+                throw new Error('No valid locations found after processing');
+            }
+        } catch (error) {
+            console.error('❌ Failed to load locations from JSON:', error);
+            console.log('🔧 Falling back to default location');
+            showStatus('Loading default locations (JSON file issue)', 'error');
+            
+            const defaultLocations = [
+                {
+                    id: 1,
+                    name: "Taco Fiesta Express",
+                    type: "restaurant",
+                    lat: 28.5493,
+                    lng: -81.7731,
+                    description: "Authentic street tacos and burritos made fresh daily",
+                    featured: true,
+                    order: 1
+                }
+            ];
             setLocations(defaultLocations);
-            console.log('Loaded default locations:', defaultLocations);
         }
-    }, [componentMounted]);
+    }, [showStatus, componentMounted]);
 
-    // Replace your loadLocationsFromJSON function with this updated version:
-const loadLocationsFromJSON = useCallback(() => {
-    if (!componentMounted) return;
-    
-    console.log('🔍 Raw wineWalkData:', wineWalkData);
-    
-    try {
-        let locationsData = [];
-        
-        if (wineWalkData && wineWalkData.establishments) {
-            console.log('📍 Found establishments in JSON:', wineWalkData.establishments.length);
-            
-            // Process each establishment from your JSON
-            locationsData = wineWalkData.establishments.map((establishment, index) => {
-                console.log(`Processing establishment ${index + 1}:`, establishment.name);
-                
-                // Extract coordinates from the establishment
-                const lat = establishment.coordinates?.latitude || 
-                           establishment.lat || 
-                           (wineWalkData.search_center?.coordinates?.latitude || 28.5493);
-                           
-                const lng = establishment.coordinates?.longitude || 
-                           establishment.lng || 
-                           (wineWalkData.search_center?.coordinates?.longitude || -81.7731);
-                
-                console.log(`📍 Coordinates for ${establishment.name}:`, { lat, lng });
-                
-                return {
-                    id: index + 1,
-                    name: establishment.name,
-                    address: establishment.address,
-                    type: getCategoryType(establishment.category),
-                    lat: lat,
-                    lng: lng,
-                    description: establishment.description,
-                    phone: establishment.phone,
-                    website: establishment.website,
-                    hours: formatHours(establishment.hours),
-                    featured: establishment.specialties && establishment.specialties.length > 2,
-                    order: index + 1,
-                    category: establishment.category,
-                    specialties: establishment.specialties,
-                    distance_from_center: establishment.distance_from_center
-                };
-            });
-            
-            console.log('✅ Processed locations with coordinates:', locationsData);
-            
-        } else if (wineWalkData && wineWalkData.locations) {
-            console.log('📍 Found locations array in JSON:', wineWalkData.locations.length);
-            locationsData = wineWalkData.locations;
-        } else {
-            console.error('❌ No establishments or locations found in JSON structure');
-            console.log('JSON structure:', Object.keys(wineWalkData || {}));
-            throw new Error('No locations or establishments found in JSON file');
-        }
-        
-        if (locationsData.length > 0) {
-            const sortedLocations = locationsData.sort((a, b) => {
-                return (a.order || a.id) - (b.order || b.id);
-            });
-            
-            console.log(`🎯 Setting ${sortedLocations.length} locations on map`);
-            setLocations(sortedLocations);
-            showStatus(`Loaded ${sortedLocations.length} local establishments!`, 'success');
-            
-        } else {
-            throw new Error('No valid locations found after processing');
-        }
-    } catch (error) {
-        console.error('❌ Failed to load locations from JSON:', error);
-        console.log('🔧 Falling back to default location');
-        showStatus('Loading default locations (JSON file issue)', 'error');
-        loadDefaultLocations();
-    }
-}, [getCategoryType, formatHours, showStatus, loadDefaultLocations, componentMounted]);
-    // FIXED useEffect - simplified dependencies
     useEffect(() => {
         if (!componentMounted) return;
         
@@ -627,10 +541,8 @@ const loadLocationsFromJSON = useCallback(() => {
         const initialize = async () => {
             try {
                 console.log('Initializing component...');
-                // Load locations first
                 loadLocationsFromJSON();
                 
-                // Then load maps after a small delay
                 setTimeout(() => {
                     if (mounted && componentMounted) {
                         loadGoogleMaps();
@@ -649,9 +561,8 @@ const loadLocationsFromJSON = useCallback(() => {
         return () => {
             mounted = false;
         };
-    }, [componentMounted]); // Only depend on componentMounted
+    }, [componentMounted]);
 
-    // Separate useEffect for when locations and maps are ready
     useEffect(() => {
         if (!config.DEMO_MODE && map && locations.length > 0 && mapsLoaded && componentMounted) {
             console.log('Adding markers to existing map');
@@ -692,7 +603,6 @@ const loadLocationsFromJSON = useCallback(() => {
         console.log('User position updated:', newUserLocation);
         showStatus(`Location updated! Accuracy: ${Math.round(accuracy)}m`, 'success');
         
-        // Only update map marker if not in demo mode
         if (!config.DEMO_MODE && map && window.google) {
             try {
                 if (userMarker) {
@@ -898,7 +808,6 @@ const loadLocationsFromJSON = useCallback(() => {
         return distance.toFixed(1);
     }, [userLocation, calculateDistance]);
 
-    // Don't render anything until component is mounted
     if (!componentMounted) {
         return null;
     }
@@ -906,720 +815,148 @@ const loadLocationsFromJSON = useCallback(() => {
     return (
         <div className="wine-walk-container">
             <div className="wine-walk-inner" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', alignItems: 'start' }}>
-                {/* Vendor Signup Form - Left Side */}
-                <div style={{
-                    background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
-                    padding: '40px',
-                    borderRadius: '15px',
-                    color: 'white',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column'
-                }}>
-                    {/* Promotional Box */}
-                    <div style={{
-                        background: 'linear-gradient(135deg, #d4af37 0%, #f5d76e 100%)',
-                        padding: '25px',
-                        borderRadius: '12px',
-                        marginBottom: '30px',
-                        textAlign: 'center',
-                        color: '#0a0a0a',
-                        boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
-                        border: '2px solid rgba(255, 255, 255, 0.2)'
-                    }}>
-                        <h3 style={{
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                            marginBottom: '15px',
-                            color: '#0a0a0a'
-                        }}>
-                            🚫 Stop Losing Sales to Long Lines
-                        </h3>
-                        
-                        <p style={{
-                            fontSize: '16px',
-                            lineHeight: '1.6',
-                            marginBottom: '15px',
-                            color: '#0a0a0a',
-                            fontWeight: '500'
-                        }}>
-                            Customers abandon your line after 8 minutes. That's <strong>$20-30 walking away every few minutes</strong>.
-                        </p>
-                        
-                        <div style={{
-                            background: '#dc3545',
-                            color: 'white',
-                            padding: '12px 20px',
-                            borderRadius: '8px',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
-                        }}>
-                            ⚠️ At busy fairs, you're bleeding money:
-                        </div>
-                        
-                        <ul style={{
-                            fontSize: '15px',
-                            lineHeight: '1.5',
-                            marginBottom: '20px',
-                            color: '#0a0a0a',
-                            textAlign: 'left',
-                            paddingLeft: '20px'
-                        }}>
-                            <li style={{ marginBottom: '8px' }}>Long lines scare off new customers</li>
-                            <li style={{ marginBottom: '8px' }}>Families can't find your booth and give up</li>
-                            <li style={{ marginBottom: '8px' }}>Peak hours = overwhelmed staff = frustrated customers</li>
-                        </ul>
-                        
-                        <div style={{
-                            background: '#28a745',
-                            color: 'white',
-                            padding: '15px 20px',
-                            borderRadius: '8px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
-                        }}>
-                            ✅ Seamless Captures Those Lost Sales
-                        </div>
-                        
-                        <p style={{
-                            fontSize: '16px',
-                            lineHeight: '1.6',
-                            marginBottom: '15px',
-                            color: '#0a0a0a',
-                            fontWeight: '500'
-                        }}>
-                            Customers scan your QR code from anywhere at the fair. Order while walking to you. <strong>Skip the line entirely.</strong>
-                        </p>
-                        
-                        <div style={{
-                            background: '#ff6b35',
-                            color: 'white',
-                            padding: '12px 20px',
-                            borderRadius: '25px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            display: 'inline-block',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
-                        }}>
-                            💰 Result: $300-600 more revenue per day. Zero line abandonment.
-                        </div>
-                        
-                        <div style={{
-                            background: '#d4af37',
-                            color: '#0a0a0a',
-                            padding: '15px 20px',
-                            borderRadius: '8px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(212, 175, 55, 0.3)'
-                        }}>
-                            🚀 One Setup. Every Event. Forever.
-                        </div>
-                        
-                        <p style={{
-                            fontSize: '16px',
-                            lineHeight: '1.6',
-                            marginBottom: '15px',
-                            color: '#0a0a0a',
-                            fontWeight: '500'
-                        }}>
-                            Sign up once. Works at every fair, festival, and event you do. Your customers can always find you and order instantly — no matter how busy or crowded.
-                        </p>
-                        
-                        <div style={{
-                            background: '#ff6b35',
-                            color: 'white',
-                            padding: '12px 20px',
-                            borderRadius: '25px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            display: 'inline-block',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
-                        }}>
-                            💰 Stop watching money walk away.
-                        </div>
-                        
-
-                    </div>
-
-                    <h2 style={{ textAlign: 'center', marginBottom: '30px', fontSize: '28px' }}>
-                        🎪 Vendor Registration
-                    </h2>
-                    
-                    <form style={{ maxWidth: '600px', margin: '0 auto', flex: '1', display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Vendor Name *
-                                </label>
-                                <input 
-                                    type="text" 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                    placeholder="Your name"
-                                />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Business Name *
-                                </label>
-                                <input 
-                                    type="text" 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                    placeholder="Your business name"
-                                />
-                            </div>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Vendor Type *
-                                </label>
-                                <select 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    <option value="">Select vendor type</option>
-                                    <option value="food-truck">Food Truck</option>
-                                    <option value="arts-crafts">Arts & Crafts</option>
-                                    <option value="jewelry">Jewelry</option>
-                                    <option value="clothing">Clothing</option>
-                                    <option value="home-decor">Home Decor</option>
-                                    <option value="beauty">Beauty & Wellness</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="services">Services</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Cuisine Type
-                                </label>
-                                <select 
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    <option value="">Select cuisine (if food truck)</option>
-                                    <option value="mexican">Mexican</option>
-                                    <option value="pizza">Pizza</option>
-                                    <option value="jamaican">Jamaican</option>
-                                    <option value="desserts">Desserts</option>
-                                    <option value="bbq">BBQ</option>
-                                    <option value="asian">Asian</option>
-                                    <option value="mediterranean">Mediterranean</option>
-                                    <option value="american">American</option>
-                                    <option value="vegetarian">Vegetarian</option>
-                                    <option value="seafood">Seafood</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Email *
-                                </label>
-                                <input 
-                                    type="email" 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                    placeholder="your@email.com"
-                                />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Phone Number *
-                                </label>
-                                <input 
-                                    type="tel" 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                    placeholder="(555) 123-4567"
-                                />
-                            </div>
-                        </div>
-
-                        <div style={{ marginBottom: '20px' }}>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                POS System
-                            </label>
-                            <select 
-                                style={{
-                                    width: '100%',
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    fontSize: '16px'
-                                }}
-                            >
-                                <option value="">Select your POS system</option>
-                                <option value="square">Square</option>
-                                <option value="stripe">Stripe</option>
-                                <option value="paypal">PayPal</option>
-                                <option value="clover">Clover</option>
-                                <option value="toast">Toast</option>
-                                <option value="lightspeed">Lightspeed</option>
-                                <option value="shopify">Shopify</option>
-                                <option value="none">No POS system</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        {/* Pricing Plans Section */}
-                        <div style={{ 
-                            marginBottom: '20px', 
-                            padding: '20px', 
-                            background: 'rgba(212, 175, 55, 0.1)', 
-                            borderRadius: '12px',
-                            border: '1px solid rgba(212, 175, 55, 0.3)'
-                        }}>
-                            <h3 style={{ 
-                                textAlign: 'center', 
-                                marginBottom: '20px', 
-                                color: '#d4af37',
-                                fontSize: '20px'
-                            }}>
-                                🎪 Choose Your Plan
-                            </h3>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px' }}>
-                                {/* Free Plan */}
-                                <div style={{
-                                    background: 'rgba(26, 26, 26, 0.8)',
-                                    border: '2px solid rgba(212, 175, 55, 0.3)',
-                                    borderRadius: '8px',
-                                    padding: '15px',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>⭐ Free Plan</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$0</div>
-                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Forever Free</div>
-                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div>✓ List your menu on festival map</div>
-                                        <div>✓ Basic vendor info showcase</div>
-                                        <div>✓ Event notifications</div>
-                                        <div>✓ Personalized QR code</div>
-                                    </div>
-                                </div>
-
-                                {/* Pro Plan */}
-                                <div style={{
-                                    background: 'rgba(26, 26, 26, 0.8)',
-                                    border: '2px solid rgba(212, 175, 55, 0.3)',
-                                    borderRadius: '8px',
-                                    padding: '15px',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>💼 Pro Plan</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$39.99</div>
-                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Per Month</div>
-                                    <div style={{ 
-                                        background: '#ff6b35', 
-                                        color: 'white', 
-                                        fontSize: '10px', 
-                                        fontWeight: 'bold', 
-                                        padding: '3px 6px', 
-                                        borderRadius: '8px', 
-                                        marginBottom: '8px' 
-                                    }}>
-                                        🎉 2 MONTHS FREE
-                                    </div>
-                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div>✓ All Free features</div>
-                                        <div>✓ Mobile orders & payments</div>
-                                        <div>✓ Real-time tracking</div>
-                                        <div>✓ Sales analytics</div>
-                                    </div>
-                                </div>
-
-                                {/* Ultimate Plan */}
-                                <div style={{
-                                    background: 'rgba(26, 26, 26, 0.8)',
-                                    border: '2px solid rgba(212, 175, 55, 0.3)',
-                                    borderRadius: '8px',
-                                    padding: '15px',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>🚀 Ultimate Plan</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$79.99</div>
-                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Per Month</div>
-                                    <div style={{ 
-                                        background: '#ff6b35', 
-                                        color: 'white', 
-                                        fontSize: '10px', 
-                                        fontWeight: 'bold', 
-                                        padding: '3px 6px', 
-                                        borderRadius: '8px', 
-                                        marginBottom: '8px' 
-                                    }}>
-                                        🎉 2 MONTHS FREE
-                                    </div>
-                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div>✓ All Pro features</div>
-                                        <div>✓ Priority vendor visibility</div>
-                                        <div>✓ Advanced analytics</div>
-                                        <div>✓ Priority support</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginTop: '15px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Select Your Plan *
-                                </label>
-                                <select 
-                                    required
-                                    id="plan-select"
-                                    onChange={(e) => {
-                                        const creditCardSection = document.getElementById('credit-card-section');
-                                        if (e.target.value === 'pro' || e.target.value === 'ultimate') {
-                                            creditCardSection.style.display = 'block';
-                                        } else {
-                                            creditCardSection.style.display = 'none';
-                                        }
-                                    }}
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    <option value="">Choose your plan</option>
-                                    <option value="free">⭐ Free Plan - $0/month</option>
-                                    <option value="pro">💼 Pro Plan - $39.99/month (2 months free!)</option>
-                                    <option value="ultimate">🚀 Ultimate Plan - $79.99/month (2 months free!)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        {/* Credit Card Section - Only show for Pro/Ultimate */}
-                        <div id="credit-card-section" style={{ 
-                            marginBottom: '20px',
-                            padding: '20px',
-                            background: 'rgba(40, 167, 69, 0.1)',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(40, 167, 69, 0.3)',
-                            display: 'none'
-                        }}>
-                            <h4 style={{ 
-                                textAlign: 'center', 
-                                marginBottom: '15px', 
-                                color: '#28a745',
-                                fontSize: '18px'
-                            }}>
-                                💳 Payment Information
-                            </h4>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                        Card Number *
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                        placeholder="1234 5678 9012 3456"
-                                    />
-                                </div>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                        Expiry Date *
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                        placeholder="MM/YY"
-                                    />
-                                </div>
-                            </div>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                        CVV *
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                        placeholder="123"
-                                    />
-                                </div>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                        Name on Card *
-                                    </label>
-                                    <input 
-                                        type="text" 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                        placeholder="John Doe"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
-                            <button 
-                                type="submit"
-                                style={{
-                                    background: 'linear-gradient(135deg, #d4af37, #f5d76e)',
-                                    color: '#0a0a0a',
-                                    border: 'none',
-                                    padding: '15px 40px',
-                                    borderRadius: '25px',
-                                    fontSize: '18px',
-                                    fontWeight: 'bold',
-                                    cursor: 'pointer',
-                                    boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
-                                    transition: 'all 0.3s ease'
-                                }}
-                                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-                            >
-                                🚀 Register as Vendor
-                            </button>
-                        </div>
-
-                        <div style={{ 
-                            textAlign: 'center', 
-                            marginTop: '20px', 
-                            fontSize: '14px', 
-                            opacity: 0.8 
-                        }}>
-                            <p>Registration includes CRM integration and Stripe payment processing</p>
-                            <p>We'll contact you within 24 hours to complete your setup</p>
-                        </div>
-                    </form>
-                </div>
-
-                {/* Map Section - Right Side */}
+                {/* Map Section - Left Side */}
                 <div style={{ height: '100%' }}>
-                    <div className="wine-walk-header">
-                        <h1>🎪 EzFest</h1>
-                        <p>Discover the best food trucks and vendors at the festival</p>
-                    {wineWalkData.search_center && (
-                        <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
-                            Explore {wineWalkData.total_establishments} establishments within {wineWalkData.search_center.radius} of downtown Clermont
-                        </div>
-                    )}
-                    {/* Configuration Status */}
-                    <div style={{ 
-                        fontSize: '12px', 
-                        opacity: 0.6, 
-                        marginTop: '10px',
-                        padding: '5px 10px',
-                        background: config.DEMO_MODE ? 'rgba(255, 193, 7, 0.1)' : 'rgba(40, 167, 69, 0.1)',
-                        borderRadius: '15px',
-                        display: 'inline-block',
-                        border: config.DEMO_MODE ? '1px solid rgba(255, 193, 7, 0.3)' : '1px solid rgba(40, 167, 69, 0.3)'
+                    <div className="wine-walk-header" style={{
+                        background: 'rgba(212, 175, 55, 0.1)',
+                        padding: '20px',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(212, 175, 55, 0.3)',
+                        marginBottom: '20px'
                     }}>
-                        {config.DEMO_MODE ? '🔧 Demo Mode' : '🌐 Live Mode'} | 
-                        {config.ENABLE_CONTINUOUS_TRACKING ? ' Continuous GPS' : ' Single Location GPS'}
-                        {process.env.NODE_ENV === 'development' && (
-                            <span style={{ marginLeft: '5px', opacity: 0.8 }}>| Dev</span>
+                        <h1 style={{ color: '#d4af37', marginBottom: '10px' }}>🎪 EzFest</h1>
+                        <p style={{ color: 'rgba(255,255,255,0.9)', marginBottom: '10px' }}>Discover the best food trucks and vendors at the festival</p>
+                        {ezfestLocations.foodTrucks && (
+                            <div style={{fontSize: '14px', opacity: 0.8, color: 'rgba(255,255,255,0.7)'}}>
+                                Explore {ezfestLocations.foodTrucks.length} food trucks within 1 mile of downtown Clermont
+                            </div>
                         )}
                     </div>
-                </div>
 
-                <div className="wine-walk-controls">
-                    <div className="wine-walk-button-group">
-                        <button 
-                            className={`wine-walk-btn ${isTracking ? 'wine-walk-btn-secondary' : 'wine-walk-btn-primary'}`}
-                            onClick={isTracking ? stopTracking : startTracking}
-                        >
-                            {isTracking ? '⏹️ Stop Tracking' : '📍 Start GPS Tracking'}
-                        </button>
-                        <button 
-                            className="wine-walk-btn wine-walk-btn-secondary" 
-                            onClick={findNearestLocation}
-                            disabled={!userLocation}
-                        >
-                            🎯 Find Nearest Location
-                        </button>
-                        <button 
-                            className="wine-walk-btn wine-walk-btn-secondary" 
-                            onClick={showAllLocations}
-                        >
-                            🗺️ Show All Locations
-                        </button>
-                    </div>
-                    
-                    {status.visible && (
-                        <div className={`wine-walk-status ${status.type}`}>
-                            {status.message}
+                    <div className="wine-walk-controls">
+                        <div className="wine-walk-button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <button 
+                                className={`wine-walk-btn ${isTracking ? 'wine-walk-btn-secondary' : 'wine-walk-btn-primary'}`}
+                                onClick={isTracking ? stopTracking : startTracking}
+                                style={{ width: '100%' }}
+                            >
+                                {isTracking ? '⏹️ Stop Tracking' : '📍 Start GPS Tracking'}
+                            </button>
+                            <button 
+                                className="wine-walk-btn wine-walk-btn-secondary" 
+                                onClick={findNearestLocation}
+                                disabled={!userLocation}
+                                style={{ width: '100%' }}
+                            >
+                                🎯 Find Nearest Location
+                            </button>
+                            <button 
+                                className="wine-walk-btn wine-walk-btn-secondary" 
+                                onClick={showAllLocations}
+                                style={{ width: '100%' }}
+                            >
+                                🗺️ Show All Locations
+                            </button>
                         </div>
-                    )}
+                        
+                        {status.visible && (
+                            <div className={`wine-walk-status ${status.type}`}>
+                                {status.message}
+                            </div>
+                        )}
 
-                    {userLocation && (
-                        <div style={{
-                            marginTop: '10px', 
-                            padding: '8px', 
-                            background: 'rgba(212, 175, 55, 0.1)', 
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            color: '#e0b841'
-                        }}>
-                            📍 Your location: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
-                        </div>
-                    )}
-                </div>
-
-                <div className="wine-walk-map-container">
-                    <div ref={mapRef} className="wine-walk-map">
-                        {config.DEMO_MODE ? (
+                        {userLocation && (
                             <div style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                                color: 'white',
-                                fontSize: '18px',
-                                textAlign: 'center',
-                                zIndex: 1
+                                marginTop: '10px', 
+                                padding: '8px', 
+                                background: 'rgba(212, 175, 55, 0.1)', 
+                                borderRadius: '6px',
+                                fontSize: '14px',
+                                color: '#e0b841'
                             }}>
-                                <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
-                                <div>Interactive Map (Demo Mode)</div>
-                                <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
-                                    GPS tracking and directions still work!
-                                </div>
-                                <div style={{ fontSize: '12px', marginTop: '20px', opacity: 0.6, maxWidth: '400px' }}>
-                                    Set REACT_APP_DEMO_MODE=false in your .env file for full map functionality
-                                </div>
+                                📍 Your location: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="wine-walk-map-container">
+                        <div ref={mapRef} className="wine-walk-map">
+                            {config.DEMO_MODE ? (
                                 <div style={{
-                                    fontSize: '11px',
-                                    marginTop: '15px',
-                                    padding: '8px 12px',
-                                    background: 'rgba(255, 255, 255, 0.1)',
-                                    borderRadius: '20px',
-                                    opacity: 0.7
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexDirection: 'column',
+                                    color: 'white',
+                                    fontSize: '18px',
+                                    textAlign: 'center',
+                                    zIndex: 1
                                 }}>
-                                    Current: DEMO_MODE = {config.DEMO_MODE.toString()}
+                                    <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
+                                    <div>Interactive Map (Demo Mode)</div>
+                                    <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
+                                        GPS tracking and directions still work!
+                                    </div>
+                                    <div style={{ fontSize: '12px', marginTop: '20px', opacity: 0.6, maxWidth: '400px' }}>
+                                        Set REACT_APP_DEMO_MODE=false in your .env file for full map functionality
+                                    </div>
+                                    <div style={{
+                                        fontSize: '11px',
+                                        marginTop: '15px',
+                                        padding: '8px 12px',
+                                        background: 'rgba(255, 255, 255, 0.1)',
+                                        borderRadius: '20px',
+                                        opacity: 0.7
+                                    }}>
+                                        Current: DEMO_MODE = {config.DEMO_MODE.toString()}
+                                    </div>
                                 </div>
-                            </div>
-                        ) : !mapsLoaded ? (
-                            <div style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                                color: 'white',
-                                fontSize: '18px',
-                                textAlign: 'center',
-                                zIndex: 1
-                            }}>
-                                <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
-                                <div>Loading Google Maps...</div>
-                                <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
-                                    Please wait while we load the interactive map
+                            ) : !mapsLoaded ? (
+                                <div style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexDirection: 'column',
+                                    color: 'white',
+                                    fontSize: '18px',
+                                    textAlign: 'center',
+                                    zIndex: 1
+                                }}>
+                                    <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
+                                    <div>Loading Google Maps...</div>
+                                    <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
+                                        Please wait while we load the interactive map
+                                    </div>
+                                    <div style={{ 
+                                        width: '40px', 
+                                        height: '40px', 
+                                        border: '3px solid rgba(255,255,255,0.3)',
+                                        borderTop: '3px solid white',
+                                        borderRadius: '50%',
+                                        animation: 'spin 1s linear infinite',
+                                        marginTop: '20px'
+                                    }}></div>
                                 </div>
-                                <div style={{ 
-                                    width: '40px', 
-                                    height: '40px', 
-                                    border: '3px solid rgba(255,255,255,0.3)',
-                                    borderTop: '3px solid white',
-                                    borderRadius: '50%',
-                                    animation: 'spin 1s linear infinite',
-                                    marginTop: '20px'
-                                }}></div>
-                            </div>
-                        ) : null}
+                            ) : null}
+                        </div>
                     </div>
                 </div>
 
+                {/* Food Truck List - Right Side */}
                 <div className="wine-walk-location-list">
-                    <h3>Local Establishments ({locations.length})</h3>
+                    <h3>Food Truck Vendors ({locations.length})</h3>
                     <div>
                         {locations.length === 0 ? (
                             <div style={{
@@ -1628,7 +965,7 @@ const loadLocationsFromJSON = useCallback(() => {
                                 color: '#666',
                                 fontStyle: 'italic'
                             }}>
-                                No locations loaded. Check your wineWalkLocations.json file.
+                                No food trucks loaded. Check your ezfestLocations.json file.
                             </div>
                         ) : (
                             locations.map((location, index) => (
@@ -1658,8 +995,7 @@ const loadLocationsFromJSON = useCallback(() => {
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="wine-walk-location-address">{location.address}</div>
-                                        
+
                                         {location.category && (
                                             <div style={{
                                                 fontSize: '12px', 
@@ -1726,30 +1062,6 @@ const loadLocationsFromJSON = useCallback(() => {
                         )}
                     </div>
                 </div>
-            </div>
-
-            {wineWalkData.search_center && (
-                    <div style={{
-                        textAlign: 'center',
-                        marginTop: '30px',
-                        padding: '20px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        borderRadius: '10px',
-                        fontSize: '14px',
-                        color: 'rgba(255, 255, 255, 0.7)'
-                    }}>
-                        <div>Food & Drink Walk</div>
-                        <div style={{marginTop: '5px'}}>
-                            Search center: {wineWalkData.search_center.address}
-                        </div>
-                        <div style={{marginTop: '5px'}}>
-                            Search date: {wineWalkData.search_date}
-                        </div>
-                        <div style={{marginTop: '5px', fontSize: '12px', opacity: 0.6}}>
-                            Environment: {process.env.NODE_ENV} | Mode: {config.DEMO_MODE ? 'Demo' : 'Live'}
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

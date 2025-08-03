@@ -133,9 +133,7 @@ const WineWalkMap = () => {
                     ${getLocationIcon(location.type)} ${location.name}
                     ${location.featured ? ' ⭐' : ''}
                 </h4>
-                <p style="margin: 4px 0; font-size: 13px; color: #666;">
-                    ${location.address}
-                </p>
+                {/* Address display removed */}
                 ${location.category ? `
                     <p style="margin: 4px 0; font-size: 12px; color: #d4af37; font-weight: bold;">
                         ${location.category}
@@ -1090,7 +1088,7 @@ const loadLocationsFromJSON = useCallback(() => {
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="wine-walk-location-address">{location.address}</div>
+                                        {/* Address display removed */}
                                         
                                         {location.category && (
                                             <div style={{

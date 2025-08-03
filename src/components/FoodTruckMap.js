@@ -105,11 +105,11 @@ const FoodTruckMap = () => {
 
     const showStatus = useCallback((message, type) => {
         if (!componentMounted) return;
-        setStatus({ message, type, visible: true });
-        setTimeout(() => {
-            if (componentMounted) {
-                setStatus(prev => ({ ...prev, visible: false }));
-            }
+            setStatus({ message, type, visible: true });
+            setTimeout(() => {
+                if (componentMounted) {
+                    setStatus(prev => ({ ...prev, visible: false }));
+                }
         }, 5000);
     }, [componentMounted]);
 
@@ -133,12 +133,10 @@ const FoodTruckMap = () => {
                     ${getLocationIcon(location.type)} ${location.name}
                     ${location.featured ? ' ⭐' : ''}
                 </h4>
-                <p style="margin: 4px 0; font-size: 13px; color: #666;">
-                    ${location.address}
-                </p>
+                {/* Address display removed */}
                 ${location.category ? `
                     <p style="margin: 4px 0; font-size: 12px; color: #d4af37; font-weight: bold;">
-                        ${location.category}
+                            ${location.category}
                     </p>
                 ` : ''}
                 ${location.description ? `
@@ -156,22 +154,22 @@ const FoodTruckMap = () => {
                         📞 ${location.phone}
                     </p>
                 ` : ''}
-                <button 
-                    onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}', '_blank')"
-                    style="
+                    <button 
+                        onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}', '_blank')"
+                        style="
                         background: linear-gradient(135deg, #d4af37, #f5d76e, #926f34);
                         color: #0a0a0a;
-                        border: none;
+                            border: none;
                         padding: 8px 16px;
-                        border-radius: 20px;
+                            border-radius: 20px;
                         font-size: 12px;
-                        font-weight: bold;
-                        cursor: pointer;
+                            font-weight: bold;
+                            cursor: pointer;
                         margin-top: 8px;
                     "
                 >
                     Get Directions
-                </button>
+                    </button>
             </div>
         `;
     }, [getLocationIcon]);
@@ -291,7 +289,7 @@ const FoodTruckMap = () => {
             hasMap: !!map,
             mapInitialized: mapInitializedRef.current
         });
-
+        
         if (!window.google || 
             !window.google.maps || 
             !window.google.maps.Map ||
@@ -907,9 +905,9 @@ const loadLocationsFromJSON = useCallback(() => {
                     <h1>🎪 Food Truck Festival</h1>
                     <p>Discover the best food trucks in Clermont</p>
                     {ezfestLocations.foodTrucks && (
-                        <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
+                    <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
                             Explore {ezfestLocations.foodTrucks.length} food trucks serving amazing cuisine
-                        </div>
+                    </div>
                     )}
                     {/* Configuration Status */}
                     <div style={{ 
@@ -1087,7 +1085,7 @@ const loadLocationsFromJSON = useCallback(() => {
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="wine-walk-location-address">{location.address}</div>
+                                        {/* Address display removed */}
                                         
                                         {location.category && (
                                             <div style={{
@@ -1157,30 +1155,30 @@ const loadLocationsFromJSON = useCallback(() => {
                 </div>
 
                 {wineWalkData.search_center && (
-                    <div style={{
-                        textAlign: 'center',
-                        marginTop: '30px',
-                        padding: '20px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        borderRadius: '10px',
-                        fontSize: '14px',
-                        color: 'rgba(255, 255, 255, 0.7)'
-                    }}>
-                                        <div>🎪 EzFest Food Truck Festival</div>
-                <div style={{marginTop: '5px'}}>
-                    Location: {ezfestLocations.festivalInfo.location}
-                </div>
-                <div style={{marginTop: '5px'}}>
-                    Date: {ezfestLocations.festivalInfo.date}
-                </div>
-                        <div style={{marginTop: '5px', fontSize: '12px', opacity: 0.6}}>
-                            Environment: {process.env.NODE_ENV} | Mode: {config.DEMO_MODE ? 'Demo' : 'Live'}
-                        </div>
+                <div style={{
+                    textAlign: 'center',
+                    marginTop: '30px',
+                    padding: '20px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: '10px',
+                    fontSize: '14px',
+                    color: 'rgba(255, 255, 255, 0.7)'
+                }}>
+                    <div>🎪 EzFest Food Truck Festival</div>
+                    <div style={{marginTop: '5px'}}>
+                        Location: {ezfestLocations.festivalInfo.location}
                     </div>
+                    <div style={{marginTop: '5px'}}>
+                        Date: {ezfestLocations.festivalInfo.date}
+                    </div>
+                    <div style={{marginTop: '5px', fontSize: '12px', opacity: 0.6}}>
+                            Environment: {process.env.NODE_ENV} | Mode: {config.DEMO_MODE ? 'Demo' : 'Live'}
+                    </div>
+                </div>
                 )}
             </div>
         </div>
     );
 };
 
-export default FoodTruckMap;
+export default FoodTruckMap; 

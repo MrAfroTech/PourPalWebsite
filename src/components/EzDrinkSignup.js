@@ -1,1334 +1,460 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import '../styles/WineWalkMap.css';
-import wineWalkData from '../data/wineWalkLocations.json';
+import React, { useState } from 'react';
 
 const EzDrinkSignup = () => {
-    // Configuration from environment variables with proper fallbacks
-    const DEMO_MODE = process.env.REACT_APP_DEMO_MODE === 'false' ? false : true;
-    const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "";
-    const ENABLE_CONTINUOUS_TRACKING = process.env.REACT_APP_ENABLE_CONTINUOUS_TRACKING === 'true';
-    
-    // Developer override system for quick testing (set to null to use env vars)
-    const DEV_OVERRIDE = {
-        DEMO_MODE: null, // Set to true/false to override, null to use env var
-        GOOGLE_MAPS_API_KEY: null, // Set to your key to override, null to use env var
-        ENABLE_CONTINUOUS_TRACKING: null // Set to true/false to override, null to use env var
+    const [selectedPlan, setSelectedPlan] = useState('');
+
+    const handlePlanChange = (e) => {
+        setSelectedPlan(e.target.value);
+        const creditCardSection = document.getElementById('credit-card-section');
+        if (e.target.value === 'pro' || e.target.value === 'ultimate') {
+            creditCardSection.style.display = 'block';
+        } else {
+            creditCardSection.style.display = 'none';
+        }
     };
-    
-    // Final configuration
-    const config = {
-        DEMO_MODE: DEV_OVERRIDE.DEMO_MODE !== null ? DEV_OVERRIDE.DEMO_MODE : DEMO_MODE,
-        GOOGLE_MAPS_API_KEY: DEV_OVERRIDE.GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY,
-        ENABLE_CONTINUOUS_TRACKING: DEV_OVERRIDE.ENABLE_CONTINUOUS_TRACKING !== null ? DEV_OVERRIDE.ENABLE_CONTINUOUS_TRACKING : ENABLE_CONTINUOUS_TRACKING
-    };
-
-    const mapRef = useRef(null);
-    const scriptRef = useRef(null);
-    const loadingRef = useRef(false);
-    const initializingRef = useRef(false);
-    const mapInitializedRef = useRef(false); // New ref to track initialization
-    const [map, setMap] = useState(null);
-    const [userMarker, setUserMarker] = useState(null);
-    const [watchId, setWatchId] = useState(null);
-    const [isTracking, setIsTracking] = useState(false);
-    const [locations, setLocations] = useState([]);
-    const [locationMarkers, setLocationMarkers] = useState([]);
-    const [userLocation, setUserLocation] = useState(null);
-    const [status, setStatus] = useState({ message: '', type: '', visible: false });
-    const [mapsLoaded, setMapsLoaded] = useState(false);
-    const [componentMounted, setComponentMounted] = useState(false);
-
-    // Mark component as mounted
-    useEffect(() => {
-        setComponentMounted(true);
-        return () => {
-            setComponentMounted(false);
-        };
-    }, []);
-
-    // Log configuration on component mount
-    useEffect(() => {
-        if (!componentMounted) return;
-        
-        console.log('🗺️ Wine Walk Map Configuration:', {
-            'Raw Environment Variables': {
-                REACT_APP_DEMO_MODE: process.env.REACT_APP_DEMO_MODE,
-                REACT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? 'SET' : 'NOT SET',
-                REACT_APP_ENABLE_CONTINUOUS_TRACKING: process.env.REACT_APP_ENABLE_CONTINUOUS_TRACKING,
-                NODE_ENV: process.env.NODE_ENV
-            },
-            'Final Configuration': {
-                DEMO_MODE: config.DEMO_MODE,
-                HAS_API_KEY: !!config.GOOGLE_MAPS_API_KEY,
-                CONTINUOUS_TRACKING: config.ENABLE_CONTINUOUS_TRACKING
-            }
-        });
-    }, [config, componentMounted]);
-
-    // Cleanup function
-    useEffect(() => {
-        return () => {
-            // Clean up geolocation
-            if (watchId) {
-                navigator.geolocation.clearWatch(watchId);
-            }
-            
-            // Clean up markers safely
-            if (locationMarkers.length > 0) {
-                locationMarkers.forEach(marker => {
-                    try {
-                        if (marker && marker.setMap) {
-                            marker.setMap(null);
-                        }
-                    } catch (error) {
-                        console.warn('Error removing location marker:', error);
-                    }
-                });
-            }
-            
-            if (userMarker) {
-                try {
-                    if (userMarker.setMap) {
-                        userMarker.setMap(null);
-                    }
-                } catch (error) {
-                    console.warn('Error removing user marker:', error);
-                }
-            }
-
-            // Reset refs
-            loadingRef.current = false;
-            initializingRef.current = false;
-            mapInitializedRef.current = false;
-        };
-    }, [watchId, locationMarkers, userMarker]);
-
-    const showStatus = useCallback((message, type) => {
-        if (!componentMounted) return;
-        setStatus({ message, type, visible: true });
-        setTimeout(() => {
-            if (componentMounted) {
-                setStatus(prev => ({ ...prev, visible: false }));
-            }
-        }, 5000);
-    }, [componentMounted]);
-
-    const getLocationIcon = useCallback((type) => {
-        const icons = {
-            winery: '🍷',
-            restaurant: '🍽️',
-            shop: '🛍️',
-            checkpoint: '📍',
-            hotel: '🏨',
-            bar: '🍸',
-            brewery: '🍺'
-        };
-        return icons[type] || '🍽️';
-    }, []);
-
-    const createInfoWindowContent = useCallback((location) => {
-        return `
-            <div style="padding: 12px; max-width: 300px;">
-                <h4 style="margin: 0 0 8px 0; color: #333;">
-                    ${getLocationIcon(location.type)} ${location.name}
-                    ${location.featured ? ' ⭐' : ''}
-                </h4>
-                <p style="margin: 4px 0; font-size: 13px; color: #666;">
-                    ${location.address}
-                </p>
-                ${location.category ? `
-                    <p style="margin: 4px 0; font-size: 12px; color: #d4af37; font-weight: bold;">
-                        ${location.category}
-                    </p>
-                ` : ''}
-                ${location.description ? `
-                    <p style="margin: 8px 0; font-size: 12px; line-height: 1.4; color: #555;">
-                        ${location.description}
-                    </p>
-                ` : ''}
-                ${location.hours ? `
-                    <p style="margin: 4px 0; font-size: 11px; color: #666;">
-                        🕒 ${location.hours}
-                    </p>
-                ` : ''}
-                ${location.phone ? `
-                    <p style="margin: 4px 0; font-size: 11px; color: #666;">
-                        📞 ${location.phone}
-                    </p>
-                ` : ''}
-                <button 
-                    onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}', '_blank')"
-                    style="
-                        background: linear-gradient(135deg, #d4af37, #f5d76e, #926f34);
-                        color: #0a0a0a;
-                        border: none;
-                        padding: 8px 16px;
-                        border-radius: 20px;
-                        font-size: 12px;
-                        font-weight: bold;
-                        cursor: pointer;
-                        margin-top: 8px;
-                    "
-                >
-                    Get Directions
-                </button>
-            </div>
-        `;
-    }, [getLocationIcon]);
-
-    const getMarkerIcon = useCallback((type) => {
-        const icons = {
-            winery: '🍷',
-            restaurant: '🍽️',
-            shop: '🛍️',
-            checkpoint: '📍',
-            hotel: '🏨',
-            bar: '🍸',
-            brewery: '🍺'
-        };
-        const icon = icons[type] || '🍽️';
-        return {
-            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-                    <circle cx="20" cy="20" r="18" fill="#ffffff" stroke="#d4af37" stroke-width="3"/>
-                    <text x="20" y="28" text-anchor="middle" font-size="16" fill="#333">${icon}</text>
-                </svg>
-            `),
-            scaledSize: new window.google.maps.Size(40, 40),
-            anchor: new window.google.maps.Point(20, 20)
-        };
-    }, []);
-
-    const addLocationMarkers = useCallback(async (mapInstance) => {
-        if (!mapInstance || !window.google || !window.google.maps || !componentMounted) return;
-        
-        console.log('Adding location markers to map');
-        
-        // Clear existing markers safely
-        locationMarkers.forEach(marker => {
-            if (marker && marker.setMap) {
-                try {
-                    marker.setMap(null);
-                } catch (error) {
-                    console.warn('Error removing marker:', error);
-                }
-            }
-        });
-        
-        const newMarkers = [];
-        
-        // Use legacy markers for stability
-        for (let index = 0; index < locations.length; index++) {
-            const location = locations[index];
-            try {
-                const position = {
-                    lat: location.lat + (index * 0.0005),
-                    lng: location.lng + (index * 0.0005)
-                };
-                
-                const marker = new window.google.maps.Marker({
-                    position: position,
-                    map: mapInstance,
-                    title: location.name,
-                    icon: getMarkerIcon(location.type),
-                    animation: window.google.maps.Animation.DROP
-                });
-                
-                const infoWindow = new window.google.maps.InfoWindow({
-                    content: createInfoWindowContent(location)
-                });
-                
-                marker.addListener('click', () => {
-                    newMarkers.forEach(m => {
-                        if (m.infoWindow && m.infoWindow.close) {
-                            try {
-                                m.infoWindow.close();
-                            } catch (error) {
-                                console.warn('Error closing info window:', error);
-                            }
-                        }
-                    });
-                    infoWindow.open(mapInstance, marker);
-                });
-                
-                marker.infoWindow = infoWindow;
-                newMarkers.push(marker);
-            } catch (error) {
-                console.warn('Error creating marker for location:', location.name, error);
-            }
-        }
-        
-        if (componentMounted) {
-            setLocationMarkers(newMarkers);
-        }
-        
-        if (newMarkers.length > 0) {
-            try {
-                const bounds = new window.google.maps.LatLngBounds();
-                newMarkers.forEach(marker => {
-                    bounds.extend(marker.getPosition());
-                });
-                mapInstance.fitBounds(bounds);
-                
-                window.google.maps.event.addListenerOnce(mapInstance, 'bounds_changed', () => {
-                    if (mapInstance.getZoom() > 18) {
-                        mapInstance.setZoom(18);
-                    }
-                });
-            } catch (error) {
-                console.warn('Error setting map bounds:', error);
-            }
-        }
-    }, [locations, locationMarkers, getMarkerIcon, createInfoWindowContent, componentMounted]);
-
-    // FIXED initMap function
-    const initMap = useCallback(() => {
-        console.log('initMap called', {
-            hasGoogle: !!(window.google && window.google.maps && window.google.maps.Map),
-            hasMapRef: !!mapRef.current,
-            componentMounted,
-            isInitializing: initializingRef.current,
-            hasMap: !!map,
-            mapInitialized: mapInitializedRef.current
-        });
-
-        if (!window.google || 
-            !window.google.maps || 
-            !window.google.maps.Map ||
-            !mapRef.current || 
-            !componentMounted) {
-            console.log('initMap: Prerequisites not met');
-            return;
-        }
-        
-        if (initializingRef.current || mapInitializedRef.current) {
-            console.log('initMap: Already initializing or initialized');
-            return;
-        }
-        
-        if (map) {
-            console.log('initMap: Map already exists');
-            return;
-        }
-        
-        initializingRef.current = true;
-        console.log('initMap: Starting map initialization');
-        
-        try {
-            const defaultCenter = { lat: 28.5493, lng: -81.7731 };
-            
-            const mapInstance = new window.google.maps.Map(mapRef.current, {
-                zoom: 16,
-                center: defaultCenter,
-                styles: [{ 
-                    featureType: 'poi', 
-                    elementType: 'labels', 
-                    stylers: [{ visibility: 'off' }] 
-                }],
-                mapTypeControl: true,
-                streetViewControl: true,
-                fullscreenControl: true,
-                zoomControl: true,
-                gestureHandling: 'auto',
-                clickableIcons: false
-            });
-            
-            // Wait for map to be ready
-            window.google.maps.event.addListenerOnce(mapInstance, 'idle', () => {
-                console.log('Map is ready and idle');
-                mapInitializedRef.current = true;
-                if (componentMounted) {
-                    setMap(mapInstance);
-                    showStatus('Interactive Google Maps loaded successfully!', 'success');
-                    
-                    // Add markers after map is fully ready
-                    if (locations.length > 0) {
-                        setTimeout(() => {
-                            addLocationMarkers(mapInstance);
-                        }, 500);
-                    }
-                }
-            });
-            
-        } catch (error) {
-            console.error('Error initializing map:', error);
-            if (componentMounted) {
-                showStatus('Error loading Google Maps: ' + error.message, 'error');
-            }
-        } finally {
-            initializingRef.current = false;
-        }
-    }, [componentMounted, map, locations, addLocationMarkers, showStatus]);
-
-    // FIXED loadGoogleMaps function
-    const loadGoogleMaps = useCallback(() => {
-        if (!componentMounted) return;
-        
-        console.log('loadGoogleMaps called', {
-            demoMode: config.DEMO_MODE,
-            hasApiKey: !!config.GOOGLE_MAPS_API_KEY,
-            isLoading: loadingRef.current,
-            hasGoogleMaps: !!(window.google && window.google.maps)
-        });
-        
-        if (config.DEMO_MODE) {
-            setMapsLoaded(true);
-            showStatus('Demo mode: Map interface loaded (no API key required)', 'success');
-            console.log('🔧 Running in DEMO MODE - set REACT_APP_DEMO_MODE=false for live Google Maps');
-            return;
-        }
-
-        // Check if Google Maps is already loaded
-        if (window.google && window.google.maps && window.google.maps.Map) {
-            console.log('Google Maps already loaded, using existing instance');
-            setMapsLoaded(true);
-            setTimeout(() => initMap(), 100);
-            return;
-        }
-        
-        // Prevent multiple loads with a more robust check
-        if (loadingRef.current) {
-            console.log('Google Maps already loading...');
-            return;
-        }
-
-        // Check for existing script
-        const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-        if (existingScript) {
-            console.log('Google Maps script already exists, waiting for load...');
-            loadingRef.current = true;
-            
-            // Set up a listener for when it finishes loading
-            let attempts = 0;
-            const maxAttempts = 30; // 15 seconds with 500ms intervals
-            
-            const checkGoogleMaps = () => {
-                attempts++;
-                if (window.google && window.google.maps && window.google.maps.Map) {
-                    loadingRef.current = false;
-                    if (componentMounted) {
-                        setMapsLoaded(true);
-                        setTimeout(() => initMap(), 100);
-                    }
-                } else if (attempts < maxAttempts) {
-                    setTimeout(checkGoogleMaps, 500);
-                } else {
-                    // Timeout
-                    loadingRef.current = false;
-                    console.error('Google Maps loading timeout');
-                    if (componentMounted) {
-                        showStatus('Google Maps loading timeout. Please refresh the page.', 'error');
-                        setMapsLoaded(true);
-                    }
-                }
-            };
-            
-            setTimeout(checkGoogleMaps, 500);
-            return;
-        }
-        
-        if (!config.GOOGLE_MAPS_API_KEY) {
-            console.error('Google Maps API key not found in environment variables');
-            showStatus('Google Maps API key missing. Add REACT_APP_GOOGLE_MAPS_API_KEY to your .env file.', 'error');
-            setMapsLoaded(true);
-            return;
-        }
-        
-        loadingRef.current = true;
-        showStatus('Loading Google Maps...', 'success');
-        
-        // Create unique callback function name to avoid conflicts
-        const callbackName = 'initGoogleMaps_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        
-        // Set a timeout to prevent infinite loading
-        const loadTimeout = setTimeout(() => {
-            loadingRef.current = false;
-            console.error('Google Maps loading timeout after 15 seconds');
-            if (componentMounted) {
-                showStatus('Google Maps loading timeout. Please refresh the page.', 'error');
-                setMapsLoaded(true);
-            }
-            // Clean up callback
-            if (window[callbackName]) {
-                delete window[callbackName];
-            }
-        }, 15000);
-        
-        window[callbackName] = () => {
-            clearTimeout(loadTimeout);
-            loadingRef.current = false;
-            console.log('Google Maps script loaded successfully');
-            if (componentMounted) {
-                setMapsLoaded(true);
-                setTimeout(() => initMap(), 100);
-                showStatus('Google Maps loaded successfully!', 'success');
-            }
-            // Clean up callback
-            delete window[callbackName];
-        };
-        
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${config.GOOGLE_MAPS_API_KEY}&callback=${callbackName}&v=3.56`;
-        script.async = true;
-        script.defer = true;
-        
-        script.onerror = () => {
-            clearTimeout(loadTimeout);
-            loadingRef.current = false;
-            console.error('Failed to load Google Maps API - check your API key and billing settings');
-            if (componentMounted) {
-                showStatus('Failed to load Google Maps. Check your API key, billing, and internet connection.', 'error');
-                setMapsLoaded(true);
-            }
-            // Clean up callback
-            if (window[callbackName]) {
-                delete window[callbackName];
-            }
-            if (script.parentNode) {
-                script.parentNode.removeChild(script);
-            }
-        };
-        
-        scriptRef.current = script;
-        document.head.appendChild(script);
-    }, [initMap, showStatus, config, componentMounted]);
-
-    const getCategoryType = useCallback((category) => {
-        const categoryMap = {
-            'Bar/Cocktail Lounge': 'bar',
-            'BBQ Restaurant': 'restaurant',
-            'Brewery/Restaurant': 'brewery',
-            'Waterfront Restaurant/Bar': 'restaurant',
-            'Mexican Restaurant/Bar': 'restaurant',
-            'Fine Dining Restaurant/Bar': 'restaurant',
-            'Restaurant': 'restaurant',
-            'Bar': 'bar',
-            'Brewery': 'brewery',
-            'Winery': 'winery'
-        };
-        return categoryMap[category] || 'restaurant';
-    }, []);
-
-    const formatHours = useCallback((hours) => {
-        if (!hours) return null;
-        if (typeof hours === 'string') return hours;
-        if (hours.monday_thursday) {
-            return `Mon-Thu: ${hours.monday_thursday}, Fri-Sat: ${hours.friday_saturday || hours.monday_thursday}, Sun: ${hours.sunday || hours.monday_thursday}`;
-        }
-        if (hours.sunday_monday) {
-            return `Sun-Mon: ${hours.sunday_monday}, Tue-Wed: ${hours.tuesday_wednesday}, Thu: ${hours.thursday}, Fri-Sat: ${hours.friday_saturday}`;
-        }
-        return 'See website for hours';
-    }, []);
-
-    const loadDefaultLocations = useCallback(() => {
-        const defaultLocations = [
-            {
-                id: 1,
-                name: "The Roasted Spirit",
-                address: "756 W Montrose Street, Clermont, FL 34711",
-                type: "bar",
-                lat: 28.5493,
-                lng: -81.7731,
-                description: "Elevated spirits bar",
-                hours: "Daily 11:00 AM - 11:00 PM",
-                featured: true,
-                order: 1
-            }
-        ];
-        if (componentMounted) {
-            setLocations(defaultLocations);
-            console.log('Loaded default locations:', defaultLocations);
-        }
-    }, [componentMounted]);
-
-    // Replace your loadLocationsFromJSON function with this updated version:
-const loadLocationsFromJSON = useCallback(() => {
-    if (!componentMounted) return;
-    
-    console.log('🔍 Raw wineWalkData:', wineWalkData);
-    
-    try {
-        let locationsData = [];
-        
-        if (wineWalkData && wineWalkData.establishments) {
-            console.log('📍 Found establishments in JSON:', wineWalkData.establishments.length);
-            
-            // Process each establishment from your JSON
-            locationsData = wineWalkData.establishments.map((establishment, index) => {
-                console.log(`Processing establishment ${index + 1}:`, establishment.name);
-                
-                // Extract coordinates from the establishment
-                const lat = establishment.coordinates?.latitude || 
-                           establishment.lat || 
-                           (wineWalkData.search_center?.coordinates?.latitude || 28.5493);
-                           
-                const lng = establishment.coordinates?.longitude || 
-                           establishment.lng || 
-                           (wineWalkData.search_center?.coordinates?.longitude || -81.7731);
-                
-                console.log(`📍 Coordinates for ${establishment.name}:`, { lat, lng });
-                
-                return {
-                    id: index + 1,
-                    name: establishment.name,
-                    address: establishment.address,
-                    type: getCategoryType(establishment.category),
-                    lat: lat,
-                    lng: lng,
-                    description: establishment.description,
-                    phone: establishment.phone,
-                    website: establishment.website,
-                    hours: formatHours(establishment.hours),
-                    featured: establishment.specialties && establishment.specialties.length > 2,
-                    order: index + 1,
-                    category: establishment.category,
-                    specialties: establishment.specialties,
-                    distance_from_center: establishment.distance_from_center
-                };
-            });
-            
-            console.log('✅ Processed locations with coordinates:', locationsData);
-            
-        } else if (wineWalkData && wineWalkData.locations) {
-            console.log('📍 Found locations array in JSON:', wineWalkData.locations.length);
-            locationsData = wineWalkData.locations;
-        } else {
-            console.error('❌ No establishments or locations found in JSON structure');
-            console.log('JSON structure:', Object.keys(wineWalkData || {}));
-            throw new Error('No locations or establishments found in JSON file');
-        }
-        
-        if (locationsData.length > 0) {
-            const sortedLocations = locationsData.sort((a, b) => {
-                return (a.order || a.id) - (b.order || b.id);
-            });
-            
-            console.log(`🎯 Setting ${sortedLocations.length} locations on map`);
-            setLocations(sortedLocations);
-            showStatus(`Loaded ${sortedLocations.length} local establishments!`, 'success');
-            
-        } else {
-            throw new Error('No valid locations found after processing');
-        }
-    } catch (error) {
-        console.error('❌ Failed to load locations from JSON:', error);
-        console.log('🔧 Falling back to default location');
-        showStatus('Loading default locations (JSON file issue)', 'error');
-        loadDefaultLocations();
-    }
-}, [getCategoryType, formatHours, showStatus, loadDefaultLocations, componentMounted]);
-    // FIXED useEffect - simplified dependencies
-    useEffect(() => {
-        if (!componentMounted) return;
-        
-        let mounted = true;
-        
-        const initialize = async () => {
-            try {
-                console.log('Initializing component...');
-                // Load locations first
-                loadLocationsFromJSON();
-                
-                // Then load maps after a small delay
-                setTimeout(() => {
-                    if (mounted && componentMounted) {
-                        loadGoogleMaps();
-                    }
-                }, 100);
-            } catch (error) {
-                console.error('Error initializing map component:', error);
-                if (mounted && componentMounted) {
-                    showStatus('Error initializing map', 'error');
-                }
-            }
-        };
-        
-        initialize();
-        
-        return () => {
-            mounted = false;
-        };
-    }, [componentMounted]); // Only depend on componentMounted
-
-    // Separate useEffect for when locations and maps are ready
-    useEffect(() => {
-        if (!config.DEMO_MODE && map && locations.length > 0 && mapsLoaded && componentMounted) {
-            console.log('Adding markers to existing map');
-            const timer = setTimeout(() => {
-                addLocationMarkers(map);
-            }, 100);
-            
-            return () => clearTimeout(timer);
-        }
-    }, [locations.length, map, mapsLoaded, componentMounted, config.DEMO_MODE]);
-
-    const calculateDistance = useCallback((pos1, pos2) => {
-        const R = 6371;
-        const dLat = (pos2.lat - pos1.lat) * Math.PI / 180;
-        const dLon = (pos2.lng - pos1.lng) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                 Math.cos(pos1.lat * Math.PI / 180) * Math.cos(pos2.lat * Math.PI / 180) *
-                 Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    }, []);
-
-    const updateDistances = useCallback((userPos) => {
-        locations.forEach((location) => {
-            const distance = calculateDistance(userPos, location);
-            console.log(`Distance to ${location.name}: ${distance.toFixed(1)} km`);
-        });
-    }, [locations, calculateDistance]);
-
-    const updatePosition = useCallback((position) => {
-        if (!componentMounted) return;
-        
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        const accuracy = position.coords.accuracy;
-        const newUserLocation = { lat, lng };
-        setUserLocation(newUserLocation);
-        console.log('User position updated:', newUserLocation);
-        showStatus(`Location updated! Accuracy: ${Math.round(accuracy)}m`, 'success');
-        
-        // Only update map marker if not in demo mode
-        if (!config.DEMO_MODE && map && window.google) {
-            try {
-                if (userMarker) {
-                    userMarker.setPosition(newUserLocation);
-                } else {
-                    const marker = new window.google.maps.Marker({
-                        position: newUserLocation,
-                        map: map,
-                        title: 'Your Location',
-                        icon: {
-                            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
-                                    <circle cx="15" cy="15" r="12" fill="#4285F4" stroke="#ffffff" stroke-width="3"/>
-                                    <circle cx="15" cy="15" r="5" fill="#ffffff"/>
-                                </svg>
-                            `),
-                            scaledSize: new window.google.maps.Size(30, 30),
-                            anchor: new window.google.maps.Point(15, 15)
-                        },
-                        zIndex: 1000
-                    });
-                    
-                    setUserMarker(marker);
-                }
-                map.setCenter(newUserLocation);
-                map.setZoom(16);
-            } catch (error) {
-                console.warn('Error updating user marker:', error);
-            }
-        }
-        updateDistances(newUserLocation);
-    }, [map, userMarker, showStatus, updateDistances, config.DEMO_MODE, componentMounted]);
-
-    const handleLocationError = useCallback((error) => {
-        if (!componentMounted) return;
-        
-        let message;
-        switch(error.code) {
-            case error.PERMISSION_DENIED:
-                message = "Location access denied. Please enable location services.";
-                break;
-            case error.POSITION_UNAVAILABLE:
-                message = "Location information is unavailable.";
-                break;
-            case error.TIMEOUT:
-                message = "Location request timed out.";
-                break;
-            default:
-                message = "An unknown error occurred.";
-                break;
-        }
-        showStatus(message, 'error');
-        setIsTracking(false);
-    }, [showStatus, componentMounted]);
-
-    const startTracking = useCallback(() => {
-        if (!navigator.geolocation) {
-            showStatus('Geolocation is not supported by this browser.', 'error');
-            return;
-        }
-        
-        const options = {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 60000
-        };
-
-        if (config.ENABLE_CONTINUOUS_TRACKING) {
-            const id = navigator.geolocation.watchPosition(
-                updatePosition,
-                handleLocationError,
-                options
-            );
-            setWatchId(id);
-            setIsTracking(true);
-            showStatus('Continuous GPS tracking started!', 'success');
-        } else {
-            navigator.geolocation.getCurrentPosition(
-                updatePosition,
-                handleLocationError,
-                options
-            );
-            setIsTracking(true);
-        }
-    }, [updatePosition, handleLocationError, showStatus, config.ENABLE_CONTINUOUS_TRACKING]);
-
-    const stopTracking = useCallback(() => {
-        if (watchId) {
-            navigator.geolocation.clearWatch(watchId);
-            setWatchId(null);
-        }
-        setIsTracking(false);
-        setUserLocation(null);
-        if (userMarker) {
-            try {
-                userMarker.setMap(null);
-                setUserMarker(null);
-            } catch (error) {
-                console.warn('Error removing user marker:', error);
-            }
-        }
-        showStatus('GPS tracking stopped.', 'success');
-    }, [watchId, userMarker, showStatus]);
-
-    const findNearestLocation = useCallback(() => {
-        if (!userLocation) {
-            showStatus('Please start GPS tracking first.', 'error');
-            return;
-        }
-        if (locations.length === 0) {
-            showStatus('No locations available.', 'error');
-            return;
-        }
-        
-        let nearestLocation = null;
-        let nearestDistance = Infinity;
-        
-        locations.forEach(location => {
-            const distance = calculateDistance(userLocation, location);
-            if (distance < nearestDistance) {
-                nearestDistance = distance;
-                nearestLocation = location;
-            }
-        });
-        
-        if (nearestLocation && !config.DEMO_MODE && map && window.google) {
-            try {
-                map.setCenter({ lat: nearestLocation.lat, lng: nearestLocation.lng });
-                map.setZoom(18);
-                
-                const marker = locationMarkers.find(m => m.getTitle() === nearestLocation.name);
-                
-                if (marker) {
-                    if (marker.setAnimation && window.google.maps.Animation) {
-                        marker.setAnimation(window.google.maps.Animation.BOUNCE);
-                        setTimeout(() => {
-                            if (marker.setAnimation) {
-                                marker.setAnimation(null);
-                            }
-                        }, 2000);
-                    }
-                    
-                    if (marker.infoWindow) {
-                        marker.infoWindow.open(map, marker);
-                    }
-                }
-            } catch (error) {
-                console.warn('Error highlighting nearest location:', error);
-            }
-        }
-        
-        if (nearestLocation) {
-            showStatus(
-                `Nearest: ${nearestLocation.name} (${nearestDistance.toFixed(1)} km away)`, 
-                'success'
-            );
-        }
-    }, [userLocation, locations, map, locationMarkers, calculateDistance, showStatus, config.DEMO_MODE]);
-
-    const showAllLocations = useCallback(() => {
-        if (locations.length === 0) {
-            showStatus('No locations to display.', 'error');
-            return;
-        }
-        
-        if (!config.DEMO_MODE && map && window.google && locationMarkers.length > 0) {
-            try {
-                const bounds = new window.google.maps.LatLngBounds();
-                locationMarkers.forEach(marker => {
-                    bounds.extend(marker.getPosition());
-                });
-                
-                if (userMarker) {
-                    bounds.extend(userMarker.getPosition());
-                }
-                
-                map.fitBounds(bounds);
-                
-                window.google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
-                    if (map.getZoom() > 18) {
-                        map.setZoom(18);
-                    }
-                });
-            } catch (error) {
-                console.warn('Error showing all locations:', error);
-            }
-        }
-        
-        console.log('Showing all locations:', locations);
-        showStatus(`Displaying all ${locations.length} establishments`, 'success');
-    }, [locations, map, locationMarkers, userMarker, showStatus, config.DEMO_MODE]);
-
-    const getDirections = useCallback((lat, lng, name) => {
-        const destination = `${lat},${lng}`;
-        const url = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-        window.open(url, '_blank');
-        showStatus(`Opening directions to ${name}`, 'success');
-    }, [showStatus]);
-
-    const getDistanceToLocation = useCallback((location) => {
-        if (!userLocation) return null;
-        const distance = calculateDistance(userLocation, location);
-        return distance.toFixed(1);
-    }, [userLocation, calculateDistance]);
-
-    // Don't render anything until component is mounted
-    if (!componentMounted) {
-        return null;
-    }
 
     return (
         <div className="wine-walk-container">
             <div className="wine-walk-inner" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', alignItems: 'start' }}>
-                {/* Vendor Signup Form - Left Side */}
+                {/* Sales Copy - Left Side */}
                 <div style={{
-                    background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
+                    background: 'linear-gradient(135deg, #d4af37 0%, #f5d76e 100%)',
                     padding: '40px',
                     borderRadius: '15px',
-                    color: 'white',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column'
+                    color: '#0a0a0a',
+                    boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                    border: '2px solid rgba(255, 255, 255, 0.2)',
+                    height: 'fit-content'
                 }}>
-                    {/* Promotional Box */}
-                    <div style={{
-                        background: 'linear-gradient(135deg, #d4af37 0%, #f5d76e 100%)',
-                        padding: '25px',
-                        borderRadius: '12px',
-                        marginBottom: '30px',
-                        textAlign: 'center',
-                        color: '#0a0a0a',
-                        boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
-                        border: '2px solid rgba(255, 255, 255, 0.2)'
+                    <h3 style={{
+                        fontSize: '28px',
+                        fontWeight: 'bold',
+                        marginBottom: '15px',
+                        color: '#0a0a0a'
                     }}>
-                        <h3 style={{
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                            marginBottom: '15px',
-                            color: '#0a0a0a'
+                        # Stop Losing Sales to Long Lines
+                    </h3>
+                    
+                    <p style={{
+                        fontSize: '18px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>You're hemorrhaging money every day.</strong> Customers abandon your line after 8 minutes. That's $20-30 walking away every few minutes during peak hours.
+                    </p>
+                    
+                    <div style={{
+                        background: '#dc3545',
+                        color: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '8px',
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        marginBottom: '15px',
+                        boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
+                    }}>
+                        ## The Fair Vendor Nightmare
+                    </div>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>You know the drill:</strong> It's Saturday at 1 PM. Lunch rush hits. Your line stretches 20 people deep. New customers see the crowd and keep walking. Meanwhile, families wander the fairgrounds, can't find your booth, and end up at the pizza stand instead.
+                    </p>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>By 3 PM, you've lost hundreds in sales to:</strong>
+                    </p>
+                    
+                    <ul style={{
+                        fontSize: '17px',
+                        lineHeight: '1.5',
+                        marginBottom: '20px',
+                        color: '#0a0a0a',
+                        textAlign: 'left',
+                        paddingLeft: '20px'
+                    }}>
+                        <li style={{ marginBottom: '8px' }}>Line abandonment (customers give up waiting)</li>
+                        <li style={{ marginBottom: '8px' }}>Discovery problems (they can't find you in the crowd)</li>
+                        <li style={{ marginBottom: '8px' }}>Peak hour chaos (overwhelmed staff = slow service = more walkaways)</li>
+                        <li style={{ marginBottom: '8px' }}>Competitor proximity (they settle for whatever's closest)</li>
+                    </ul>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: 'bold'
+                    }}>
+                        This isn't just frustration. It's a revenue crisis.
+                    </p>
+                    
+                    <div style={{
+                        background: '#28a745',
+                        color: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '8px',
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        marginBottom: '15px',
+                        boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
+                    }}>
+                        ## Seamless Captures Every Lost Sale
+                    </div>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>Here's what changes:</strong> Customers scan your QR code from anywhere at the fair - your booth, the event map, even your social media. They order while walking to you. No line. No wait. No abandoned sales.
+                    </p>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>The transformation is immediate:</strong>
+                    </p>
+                    
+                    <ul style={{
+                        fontSize: '17px',
+                        lineHeight: '1.5',
+                        marginBottom: '20px',
+                        color: '#0a0a0a',
+                        textAlign: 'left',
+                        paddingLeft: '20px'
+                    }}>
+                        <li style={{ marginBottom: '8px' }}><strong>Zero line abandonment</strong> - they commit before seeing the crowd</li>
+                        <li style={{ marginBottom: '8px' }}><strong>Capture wandering customers</strong> - they find you from across the fairgrounds</li>
+                        <li style={{ marginBottom: '8px' }}><strong>Lock in peak hour sales</strong> - orders come in even when you're slammed</li>
+                        <li style={{ marginBottom: '8px' }}><strong>Serve 3x more customers</strong> during rush periods</li>
+                        <li style={{ marginBottom: '8px' }}><strong>Higher order values</strong> - customers browse your full menu without pressure</li>
+                    </ul>
+                    
+                    <div style={{
+                        background: '#ff6b35',
+                        color: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '8px',
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        marginBottom: '15px',
+                        boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
+                    }}>
+                        ## The Numbers Don't Lie
+                    </div>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>Average fair vendor using Seamless:</strong>
+                    </p>
+                    
+                    <ul style={{
+                        fontSize: '17px',
+                        lineHeight: '1.5',
+                        marginBottom: '20px',
+                        color: '#0a0a0a',
+                        textAlign: 'left',
+                        paddingLeft: '20px'
+                    }}>
+                        <li style={{ marginBottom: '8px' }}>$300-600 additional revenue per day</li>
+                        <li style={{ marginBottom: '8px' }}>40-60% more orders during peak hours</li>
+                        <li style={{ marginBottom: '8px' }}>25% higher average order value</li>
+                        <li style={{ marginBottom: '8px' }}>Zero customers walking away from lines</li>
+                    </ul>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>Do the math:</strong> Even a modest 3-day fair could net you an extra $900-1,800. That's real money back in your pocket instead of walking away in frustration.
+                    </p>
+                    
+                    <div style={{
+                        background: '#d4af37',
+                        color: '#0a0a0a',
+                        padding: '15px 20px',
+                        borderRadius: '8px',
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        marginBottom: '15px',
+                        boxShadow: '0 3px 10px rgba(212, 175, 55, 0.3)'
+                    }}>
+                        ## Your Mobile Command Center
+                    </div>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>Once you're on Seamless, you're set for life.</strong> One account follows you to every fair, festival, and event. Your regulars find you instantly. New customers discover you through the platform.
+                    </p>
+                    
+                    <ul style={{
+                        fontSize: '17px',
+                        lineHeight: '1.5',
+                        marginBottom: '20px',
+                        color: '#0a0a0a',
+                        textAlign: 'left',
+                        paddingLeft: '20px'
+                    }}>
+                        <li style={{ marginBottom: '8px' }}><strong>County fair in June?</strong> ✓ Your system is ready</li>
+                        <li style={{ marginBottom: '8px' }}><strong>Food truck festival in August?</strong> ✓ Same seamless experience</li>
+                        <li style={{ marginBottom: '8px' }}><strong>Holiday market in December?</strong> ✓ No setup required</li>
+                    </ul>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>No matter how busy the event, no matter how hard you are to find in the crowd - customers reach you with one scan.</strong>
+                    </p>
+                    
+                    <div style={{
+                        background: '#dc3545',
+                        color: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '8px',
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        marginBottom: '15px',
+                        boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
+                    }}>
+                        ## While Your Competitors Struggle...
+                    </div>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>You'll be capturing sales they're losing.</strong> While they deal with abandoned lines and frustrated customers, you're processing orders smoothly and serving more people than ever.
+                    </p>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>Your stressed competitors</strong> watch customers walk away. <strong>You're banking those sales.</strong>
+                    </p>
+                    
+                    <div style={{
+                        background: '#ff6b35',
+                        color: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '8px',
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        marginBottom: '15px',
+                        boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
+                    }}>
+                        ## Don't Wait Another Day
+                    </div>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>Every fair without Seamless is money left on the table.</strong> Every abandoned line is lost revenue. Every customer who can't find you is profit walking to your competitor.
+                    </p>
+                    
+                    <p style={{
+                        fontSize: '17px',
+                        lineHeight: '1.6',
+                        marginBottom: '15px',
+                        color: '#0a0a0a',
+                        fontWeight: '500'
+                    }}>
+                        <strong>The vendors already using Seamless</strong> are outearning everyone around them. <strong>Join them.</strong>
+                    </p>
+                    
+                    <div style={{
+                        background: '#28a745',
+                        color: 'white',
+                        padding: '15px 20px',
+                        borderRadius: '8px',
+                        fontSize: '20px',
+                        fontWeight: 'bold',
+                        marginBottom: '15px',
+                        boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
+                    }}>
+                        [Get Started Now] — Setup takes 5 minutes. Your next event could be your most profitable yet.
+                    </div>
+                </div>
+
+                {/* Pricing Tiers and Registration Form - Right Side */}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '30px'
+                }}>
+                    {/* Pricing Tiers */}
+                    <div style={{
+                        background: 'rgba(212, 175, 55, 0.1)',
+                        padding: '30px',
+                        borderRadius: '15px',
+                        border: '1px solid rgba(212, 175, 55, 0.3)'
+                    }}>
+                        <h3 style={{ 
+                            textAlign: 'center', 
+                            marginBottom: '20px', 
+                            color: '#d4af37',
+                            fontSize: '24px'
                         }}>
-                            🚫 Stop Losing Sales to Long Lines
+                            🎪 Choose Your Plan
                         </h3>
                         
-                        <p style={{
-                            fontSize: '16px',
-                            lineHeight: '1.6',
-                            marginBottom: '15px',
-                            color: '#0a0a0a',
-                            fontWeight: '500'
-                        }}>
-                            Customers abandon your line after 8 minutes. That's <strong>$20-30 walking away every few minutes</strong>.
-                        </p>
-                        
-                        <div style={{
-                            background: '#dc3545',
-                            color: 'white',
-                            padding: '12px 20px',
-                            borderRadius: '8px',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
-                        }}>
-                            ⚠️ At busy fairs, you're bleeding money:
-                        </div>
-                        
-                        <ul style={{
-                            fontSize: '15px',
-                            lineHeight: '1.5',
-                            marginBottom: '20px',
-                            color: '#0a0a0a',
-                            textAlign: 'left',
-                            paddingLeft: '20px'
-                        }}>
-                            <li style={{ marginBottom: '8px' }}>Long lines scare off new customers</li>
-                            <li style={{ marginBottom: '8px' }}>Families can't find your booth and give up</li>
-                            <li style={{ marginBottom: '8px' }}>Peak hours = overwhelmed staff = frustrated customers</li>
-                        </ul>
-                        
-                        <div style={{
-                            background: '#28a745',
-                            color: 'white',
-                            padding: '15px 20px',
-                            borderRadius: '8px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
-                        }}>
-                            ✅ Seamless Captures Those Lost Sales
-                        </div>
-                        
-                        <p style={{
-                            fontSize: '16px',
-                            lineHeight: '1.6',
-                            marginBottom: '15px',
-                            color: '#0a0a0a',
-                            fontWeight: '500'
-                        }}>
-                            Customers scan your QR code from anywhere at the fair. Order while walking to you. <strong>Skip the line entirely.</strong>
-                        </p>
-                        
-                        <div style={{
-                            background: '#ff6b35',
-                            color: 'white',
-                            padding: '12px 20px',
-                            borderRadius: '25px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            display: 'inline-block',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
-                        }}>
-                            💰 Result: $300-600 more revenue per day. Zero line abandonment.
-                        </div>
-                        
-                        <div style={{
-                            background: '#d4af37',
-                            color: '#0a0a0a',
-                            padding: '15px 20px',
-                            borderRadius: '8px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(212, 175, 55, 0.3)'
-                        }}>
-                            🚀 One Setup. Every Event. Forever.
-                        </div>
-                        
-                        <p style={{
-                            fontSize: '16px',
-                            lineHeight: '1.6',
-                            marginBottom: '15px',
-                            color: '#0a0a0a',
-                            fontWeight: '500'
-                        }}>
-                            Sign up once. Works at every fair, festival, and event you do. Your customers can always find you and order instantly — no matter how busy or crowded.
-                        </p>
-                        
-                        <div style={{
-                            background: '#ff6b35',
-                            color: 'white',
-                            padding: '12px 20px',
-                            borderRadius: '25px',
-                            fontSize: '18px',
-                            fontWeight: 'bold',
-                            display: 'inline-block',
-                            marginBottom: '15px',
-                            boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
-                        }}>
-                            💰 Stop watching money walk away.
-                        </div>
-                        
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            {/* Free Plan */}
+                            <div style={{
+                                background: 'rgba(26, 26, 26, 0.8)',
+                                border: '2px solid rgba(212, 175, 55, 0.3)',
+                                borderRadius: '12px',
+                                padding: '25px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease'
+                            }}>
+                                <div style={{ fontSize: '18px', color: '#d4af37', marginBottom: '8px', fontWeight: 'bold' }}>⭐ Free Plan</div>
+                                <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#d4af37', marginBottom: '5px' }}>$0</div>
+                                <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginBottom: '15px' }}>Forever Free</div>
+                                <div style={{ fontSize: '15px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
+                                    <div style={{ marginBottom: '8px' }}>✓ List your menu on festival map</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Basic vendor info showcase</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Event notifications</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Personalized QR code</div>
+                                </div>
+                            </div>
 
+                            {/* Pro Plan */}
+                            <div style={{
+                                background: 'rgba(26, 26, 26, 0.8)',
+                                border: '2px solid rgba(212, 175, 55, 0.3)',
+                                borderRadius: '12px',
+                                padding: '25px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease'
+                            }}>
+                                <div style={{ fontSize: '18px', color: '#d4af37', marginBottom: '8px', fontWeight: 'bold' }}>💼 Pro Plan</div>
+                                <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#d4af37', marginBottom: '5px' }}>$39.99</div>
+                                <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Per Month</div>
+                                <div style={{ 
+                                    background: '#ff6b35', 
+                                    color: 'white', 
+                                    fontSize: '14px', 
+                                    fontWeight: 'bold', 
+                                    padding: '6px 12px', 
+                                    borderRadius: '10px', 
+                                    marginBottom: '15px',
+                                    display: 'inline-block'
+                                }}>
+                                    🎉 2 MONTHS FREE
+                                </div>
+                                <div style={{ fontSize: '15px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
+                                    <div style={{ marginBottom: '8px' }}>✓ All Free features</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Mobile orders & payments</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Real-time tracking</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Sales analytics</div>
+                                </div>
+                            </div>
+
+                            {/* Ultimate Plan */}
+                            <div style={{
+                                background: 'rgba(26, 26, 26, 0.8)',
+                                border: '2px solid rgba(212, 175, 55, 0.3)',
+                                borderRadius: '12px',
+                                padding: '25px',
+                                textAlign: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease'
+                            }}>
+                                <div style={{ fontSize: '18px', color: '#d4af37', marginBottom: '8px', fontWeight: 'bold' }}>🚀 Ultimate Plan</div>
+                                <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#d4af37', marginBottom: '5px' }}>$79.99</div>
+                                <div style={{ fontSize: '16px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Per Month</div>
+                                <div style={{ 
+                                    background: '#ff6b35', 
+                                    color: 'white', 
+                                    fontSize: '14px', 
+                                    fontWeight: 'bold', 
+                                    padding: '6px 12px', 
+                                    borderRadius: '10px', 
+                                    marginBottom: '15px',
+                                    display: 'inline-block'
+                                }}>
+                                    🎉 2 MONTHS FREE
+                                </div>
+                                <div style={{ fontSize: '15px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
+                                    <div style={{ marginBottom: '8px' }}>✓ All Pro features</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Priority vendor visibility</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Advanced analytics</div>
+                                    <div style={{ marginBottom: '8px' }}>✓ Priority support</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <h2 style={{ textAlign: 'center', marginBottom: '30px', fontSize: '28px' }}>
-                        🎪 Vendor Registration
-                    </h2>
-                    
-                    <form style={{ maxWidth: '600px', margin: '0 auto', flex: '1', display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Vendor Name *
-                                </label>
-                                <input 
-                                    type="text" 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                    placeholder="Your name"
-                                />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Business Name *
-                                </label>
-                                <input 
-                                    type="text" 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                    placeholder="Your business name"
-                                />
-                            </div>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Vendor Type *
-                                </label>
-                                <select 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    <option value="">Select vendor type</option>
-                                    <option value="food-truck">Food Truck</option>
-                                    <option value="arts-crafts">Arts & Crafts</option>
-                                    <option value="jewelry">Jewelry</option>
-                                    <option value="clothing">Clothing</option>
-                                    <option value="home-decor">Home Decor</option>
-                                    <option value="beauty">Beauty & Wellness</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="services">Services</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Cuisine Type
-                                </label>
-                                <select 
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    <option value="">Select cuisine (if food truck)</option>
-                                    <option value="mexican">Mexican</option>
-                                    <option value="pizza">Pizza</option>
-                                    <option value="jamaican">Jamaican</option>
-                                    <option value="desserts">Desserts</option>
-                                    <option value="bbq">BBQ</option>
-                                    <option value="asian">Asian</option>
-                                    <option value="mediterranean">Mediterranean</option>
-                                    <option value="american">American</option>
-                                    <option value="vegetarian">Vegetarian</option>
-                                    <option value="seafood">Seafood</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Email *
-                                </label>
-                                <input 
-                                    type="email" 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                    placeholder="your@email.com"
-                                />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Phone Number *
-                                </label>
-                                <input 
-                                    type="tel" 
-                                    required
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                    placeholder="(555) 123-4567"
-                                />
-                            </div>
-                        </div>
-
-                        <div style={{ marginBottom: '20px' }}>
-                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                POS System
-                            </label>
-                            <select 
-                                style={{
-                                    width: '100%',
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    fontSize: '16px'
-                                }}
-                            >
-                                <option value="">Select your POS system</option>
-                                <option value="square">Square</option>
-                                <option value="stripe">Stripe</option>
-                                <option value="paypal">PayPal</option>
-                                <option value="clover">Clover</option>
-                                <option value="toast">Toast</option>
-                                <option value="lightspeed">Lightspeed</option>
-                                <option value="shopify">Shopify</option>
-                                <option value="none">No POS system</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        {/* Pricing Plans Section */}
-                        <div style={{ 
-                            marginBottom: '20px', 
-                            padding: '20px', 
-                            background: 'rgba(212, 175, 55, 0.1)', 
-                            borderRadius: '12px',
-                            border: '1px solid rgba(212, 175, 55, 0.3)'
-                        }}>
-                            <h3 style={{ 
-                                textAlign: 'center', 
-                                marginBottom: '20px', 
-                                color: '#d4af37',
-                                fontSize: '20px'
-                            }}>
-                                🎪 Choose Your Plan
-                            </h3>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px' }}>
-                                {/* Free Plan */}
-                                <div style={{
-                                    background: 'rgba(26, 26, 26, 0.8)',
-                                    border: '2px solid rgba(212, 175, 55, 0.3)',
-                                    borderRadius: '8px',
-                                    padding: '15px',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>⭐ Free Plan</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$0</div>
-                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Forever Free</div>
-                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div>✓ List your menu on festival map</div>
-                                        <div>✓ Basic vendor info showcase</div>
-                                        <div>✓ Event notifications</div>
-                                        <div>✓ Personalized QR code</div>
-                                    </div>
-                                </div>
-
-                                {/* Pro Plan */}
-                                <div style={{
-                                    background: 'rgba(26, 26, 26, 0.8)',
-                                    border: '2px solid rgba(212, 175, 55, 0.3)',
-                                    borderRadius: '8px',
-                                    padding: '15px',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>💼 Pro Plan</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$39.99</div>
-                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Per Month</div>
-                                    <div style={{ 
-                                        background: '#ff6b35', 
-                                        color: 'white', 
-                                        fontSize: '10px', 
-                                        fontWeight: 'bold', 
-                                        padding: '3px 6px', 
-                                        borderRadius: '8px', 
-                                        marginBottom: '8px' 
-                                    }}>
-                                        🎉 2 MONTHS FREE
-                                    </div>
-                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div>✓ All Free features</div>
-                                        <div>✓ Mobile orders & payments</div>
-                                        <div>✓ Real-time tracking</div>
-                                        <div>✓ Sales analytics</div>
-                                    </div>
-                                </div>
-
-                                {/* Ultimate Plan */}
-                                <div style={{
-                                    background: 'rgba(26, 26, 26, 0.8)',
-                                    border: '2px solid rgba(212, 175, 55, 0.3)',
-                                    borderRadius: '8px',
-                                    padding: '15px',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease'
-                                }}>
-                                    <div style={{ fontSize: '14px', color: '#d4af37', marginBottom: '5px' }}>🚀 Ultimate Plan</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d4af37' }}>$79.99</div>
-                                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>Per Month</div>
-                                    <div style={{ 
-                                        background: '#ff6b35', 
-                                        color: 'white', 
-                                        fontSize: '10px', 
-                                        fontWeight: 'bold', 
-                                        padding: '3px 6px', 
-                                        borderRadius: '8px', 
-                                        marginBottom: '8px' 
-                                    }}>
-                                        🎉 2 MONTHS FREE
-                                    </div>
-                                    <div style={{ fontSize: '11px', textAlign: 'left', color: 'rgba(255,255,255,0.8)' }}>
-                                        <div>✓ All Pro features</div>
-                                        <div>✓ Priority vendor visibility</div>
-                                        <div>✓ Advanced analytics</div>
-                                        <div>✓ Priority support</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginTop: '15px' }}>
+                    {/* Registration Form */}
+                    <div style={{
+                        background: 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
+                        padding: '40px',
+                        borderRadius: '15px',
+                        color: 'white'
+                    }}>
+                        <h2 style={{ textAlign: 'center', marginBottom: '30px', fontSize: '32px' }}>
+                            🎪 Vendor Registration
+                        </h2>
+                        
+                        <form style={{ maxWidth: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ marginBottom: '20px' }}>
                                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                     Select Your Plan *
                                 </label>
                                 <select 
                                     required
-                                    id="plan-select"
-                                    onChange={(e) => {
-                                        const creditCardSection = document.getElementById('credit-card-section');
-                                        if (e.target.value === 'pro' || e.target.value === 'ultimate') {
-                                            creditCardSection.style.display = 'block';
-                                        } else {
-                                            creditCardSection.style.display = 'none';
-                                        }
-                                    }}
+                                    value={selectedPlan}
+                                    onChange={handlePlanChange}
                                     style={{
                                         width: '100%',
                                         padding: '12px',
@@ -1343,30 +469,11 @@ const loadLocationsFromJSON = useCallback(() => {
                                     <option value="ultimate">🚀 Ultimate Plan - $79.99/month (2 months free!)</option>
                                 </select>
                             </div>
-                        </div>
 
-                        {/* Credit Card Section - Only show for Pro/Ultimate */}
-                        <div id="credit-card-section" style={{ 
-                            marginBottom: '20px',
-                            padding: '20px',
-                            background: 'rgba(40, 167, 69, 0.1)',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(40, 167, 69, 0.3)',
-                            display: 'none'
-                        }}>
-                            <h4 style={{ 
-                                textAlign: 'center', 
-                                marginBottom: '15px', 
-                                color: '#28a745',
-                                fontSize: '18px'
-                            }}>
-                                💳 Payment Information
-                            </h4>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                        Card Number *
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                        Vendor Name *
                                     </label>
                                     <input 
                                         type="text" 
@@ -1378,12 +485,12 @@ const loadLocationsFromJSON = useCallback(() => {
                                             border: 'none',
                                             fontSize: '16px'
                                         }}
-                                        placeholder="1234 5678 9012 3456"
+                                        placeholder="Your name"
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                        Expiry Date *
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                        Business Name *
                                     </label>
                                     <input 
                                         type="text" 
@@ -1395,18 +502,17 @@ const loadLocationsFromJSON = useCallback(() => {
                                             border: 'none',
                                             fontSize: '16px'
                                         }}
-                                        placeholder="MM/YY"
+                                        placeholder="Your business name"
                                     />
                                 </div>
                             </div>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                        CVV *
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                        Vendor Type *
                                     </label>
-                                    <input 
-                                        type="text" 
+                                    <select 
                                         required
                                         style={{
                                             width: '100%',
@@ -1415,15 +521,72 @@ const loadLocationsFromJSON = useCallback(() => {
                                             border: 'none',
                                             fontSize: '16px'
                                         }}
-                                        placeholder="123"
+                                    >
+                                        <option value="">Select vendor type</option>
+                                        <option value="food-truck">Food Truck</option>
+                                        <option value="arts-crafts">Arts & Crafts</option>
+                                        <option value="jewelry">Jewelry</option>
+                                        <option value="clothing">Clothing</option>
+                                        <option value="home-decor">Home Decor</option>
+                                        <option value="beauty">Beauty & Wellness</option>
+                                        <option value="entertainment">Entertainment</option>
+                                        <option value="services">Services</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                        Cuisine Type
+                                    </label>
+                                    <select 
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                    >
+                                        <option value="">Select cuisine (if food truck)</option>
+                                        <option value="mexican">Mexican</option>
+                                        <option value="pizza">Pizza</option>
+                                        <option value="jamaican">Jamaican</option>
+                                        <option value="desserts">Desserts</option>
+                                        <option value="bbq">BBQ</option>
+                                        <option value="asian">Asian</option>
+                                        <option value="mediterranean">Mediterranean</option>
+                                        <option value="american">American</option>
+                                        <option value="vegetarian">Vegetarian</option>
+                                        <option value="seafood">Seafood</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                        Email *
+                                    </label>
+                                    <input 
+                                        type="email" 
+                                        required
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="your@email.com"
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                        Name on Card *
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                        Phone Number *
                                     </label>
                                     <input 
-                                        type="text" 
+                                        type="tel" 
                                         required
                                         style={{
                                             width: '100%',
@@ -1432,324 +595,164 @@ const loadLocationsFromJSON = useCallback(() => {
                                             border: 'none',
                                             fontSize: '16px'
                                         }}
-                                        placeholder="John Doe"
+                                        placeholder="(555) 123-4567"
                                     />
                                 </div>
                             </div>
-                        </div>
 
-                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
-                            <button 
-                                type="submit"
-                                style={{
-                                    background: 'linear-gradient(135deg, #d4af37, #f5d76e)',
-                                    color: '#0a0a0a',
-                                    border: 'none',
-                                    padding: '15px 40px',
-                                    borderRadius: '25px',
-                                    fontSize: '18px',
-                                    fontWeight: 'bold',
-                                    cursor: 'pointer',
-                                    boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
-                                    transition: 'all 0.3s ease'
-                                }}
-                                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-                            >
-                                🚀 Register as Vendor
-                            </button>
-                        </div>
+                            <div style={{ marginBottom: '20px' }}>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    POS System
+                                </label>
+                                <select 
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                >
+                                    <option value="">Select your POS system</option>
+                                    <option value="square">Square</option>
+                                    <option value="stripe">Stripe</option>
+                                    <option value="paypal">PayPal</option>
+                                    <option value="clover">Clover</option>
+                                    <option value="toast">Toast</option>
+                                    <option value="lightspeed">Lightspeed</option>
+                                    <option value="shopify">Shopify</option>
+                                    <option value="none">No POS system</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
 
-                        <div style={{ 
-                            textAlign: 'center', 
-                            marginTop: '20px', 
-                            fontSize: '14px', 
-                            opacity: 0.8 
-                        }}>
-                            <p>Registration includes CRM integration and Stripe payment processing</p>
-                            <p>We'll contact you within 24 hours to complete your setup</p>
-                        </div>
-                    </form>
-                </div>
-
-                {/* Map Section - Right Side */}
-                <div style={{ height: '100%' }}>
-                    <div className="wine-walk-header">
-                        <h1>🎪 EzFest</h1>
-                        <p>Discover the best food trucks and vendors at the festival</p>
-                    {wineWalkData.search_center && (
-                        <div style={{fontSize: '14px', opacity: 0.8, marginTop: '10px'}}>
-                            Explore {wineWalkData.total_establishments} establishments within {wineWalkData.search_center.radius} of downtown Clermont
-                        </div>
-                    )}
-                    {/* Configuration Status */}
-                    <div style={{ 
-                        fontSize: '12px', 
-                        opacity: 0.6, 
-                        marginTop: '10px',
-                        padding: '5px 10px',
-                        background: config.DEMO_MODE ? 'rgba(255, 193, 7, 0.1)' : 'rgba(40, 167, 69, 0.1)',
-                        borderRadius: '15px',
-                        display: 'inline-block',
-                        border: config.DEMO_MODE ? '1px solid rgba(255, 193, 7, 0.3)' : '1px solid rgba(40, 167, 69, 0.3)'
-                    }}>
-                        {config.DEMO_MODE ? '🔧 Demo Mode' : '🌐 Live Mode'} | 
-                        {config.ENABLE_CONTINUOUS_TRACKING ? ' Continuous GPS' : ' Single Location GPS'}
-                        {process.env.NODE_ENV === 'development' && (
-                            <span style={{ marginLeft: '5px', opacity: 0.8 }}>| Dev</span>
-                        )}
-                    </div>
-                </div>
-
-                <div className="wine-walk-controls">
-                    <div className="wine-walk-button-group">
-                        <button 
-                            className={`wine-walk-btn ${isTracking ? 'wine-walk-btn-secondary' : 'wine-walk-btn-primary'}`}
-                            onClick={isTracking ? stopTracking : startTracking}
-                        >
-                            {isTracking ? '⏹️ Stop Tracking' : '📍 Start GPS Tracking'}
-                        </button>
-                        <button 
-                            className="wine-walk-btn wine-walk-btn-secondary" 
-                            onClick={findNearestLocation}
-                            disabled={!userLocation}
-                        >
-                            🎯 Find Nearest Location
-                        </button>
-                        <button 
-                            className="wine-walk-btn wine-walk-btn-secondary" 
-                            onClick={showAllLocations}
-                        >
-                            🗺️ Show All Locations
-                        </button>
-                    </div>
-                    
-                    {status.visible && (
-                        <div className={`wine-walk-status ${status.type}`}>
-                            {status.message}
-                        </div>
-                    )}
-
-                    {userLocation && (
-                        <div style={{
-                            marginTop: '10px', 
-                            padding: '8px', 
-                            background: 'rgba(212, 175, 55, 0.1)', 
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            color: '#e0b841'
-                        }}>
-                            📍 Your location: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
-                        </div>
-                    )}
-                </div>
-
-                <div className="wine-walk-map-container">
-                    <div ref={mapRef} className="wine-walk-map">
-                        {config.DEMO_MODE ? (
-                            <div style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                                color: 'white',
-                                fontSize: '18px',
-                                textAlign: 'center',
-                                zIndex: 1
+                            {/* Credit Card Section - Only show for Pro/Ultimate */}
+                            <div id="credit-card-section" style={{ 
+                                marginBottom: '20px',
+                                padding: '20px',
+                                background: 'rgba(40, 167, 69, 0.1)',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(40, 167, 69, 0.3)',
+                                display: 'none'
                             }}>
-                                <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
-                                <div>Interactive Map (Demo Mode)</div>
-                                <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
-                                    GPS tracking and directions still work!
-                                </div>
-                                <div style={{ fontSize: '12px', marginTop: '20px', opacity: 0.6, maxWidth: '400px' }}>
-                                    Set REACT_APP_DEMO_MODE=false in your .env file for full map functionality
-                                </div>
-                                <div style={{
-                                    fontSize: '11px',
-                                    marginTop: '15px',
-                                    padding: '8px 12px',
-                                    background: 'rgba(255, 255, 255, 0.1)',
-                                    borderRadius: '20px',
-                                    opacity: 0.7
+                                <h4 style={{ 
+                                    textAlign: 'center', 
+                                    marginBottom: '15px', 
+                                    color: '#28a745',
+                                    fontSize: '18px'
                                 }}>
-                                    Current: DEMO_MODE = {config.DEMO_MODE.toString()}
+                                    💳 Payment Information
+                                </h4>
+                                
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                                    <div>
+                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                            Card Number *
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            required
+                                            style={{
+                                                width: '100%',
+                                                padding: '12px',
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                fontSize: '16px'
+                                            }}
+                                            placeholder="1234 5678 9012 3456"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                            Expiry Date *
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            required
+                                            style={{
+                                                width: '100%',
+                                                padding: '12px',
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                fontSize: '16px'
+                                            }}
+                                            placeholder="MM/YY"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                                    <div>
+                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                            CVV *
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            required
+                                            style={{
+                                                width: '100%',
+                                                padding: '12px',
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                fontSize: '16px'
+                                            }}
+                                            placeholder="123"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                            Name on Card *
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            required
+                                            style={{
+                                                width: '100%',
+                                                padding: '12px',
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                fontSize: '16px'
+                                            }}
+                                            placeholder="John Doe"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        ) : !mapsLoaded ? (
-                            <div style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                                color: 'white',
-                                fontSize: '18px',
-                                textAlign: 'center',
-                                zIndex: 1
-                            }}>
-                                <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
-                                <div>Loading Google Maps...</div>
-                                <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
-                                    Please wait while we load the interactive map
-                                </div>
-                                <div style={{ 
-                                    width: '40px', 
-                                    height: '40px', 
-                                    border: '3px solid rgba(255,255,255,0.3)',
-                                    borderTop: '3px solid white',
-                                    borderRadius: '50%',
-                                    animation: 'spin 1s linear infinite',
-                                    marginTop: '20px'
-                                }}></div>
-                            </div>
-                        ) : null}
-                    </div>
-                </div>
 
-                <div className="wine-walk-location-list">
-                    <h3>Local Establishments ({locations.length})</h3>
-                    <div>
-                        {locations.length === 0 ? (
-                            <div style={{
+                            <div style={{ textAlign: 'center', marginTop: 'auto' }}>
+                                <button 
+                                    type="submit"
+                                    style={{
+                                        background: 'linear-gradient(135deg, #d4af37, #f5d76e)',
+                                        color: '#0a0a0a',
+                                        border: 'none',
+                                        padding: '15px 40px',
+                                        borderRadius: '25px',
+                                        fontSize: '18px',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                                    onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                                >
+                                    🚀 Register as Vendor
+                                </button>
+                            </div>
+
+                            <div style={{ 
                                 textAlign: 'center', 
-                                padding: '40px', 
-                                color: '#666',
-                                fontStyle: 'italic'
+                                marginTop: '20px', 
+                                fontSize: '14px', 
+                                opacity: 0.8 
                             }}>
-                                No locations loaded. Check your wineWalkLocations.json file.
+                                <p>Registration includes CRM integration and Stripe payment processing</p>
+                                <p>We'll contact you within 24 hours to complete your setup</p>
                             </div>
-                        ) : (
-                            locations.map((location, index) => (
-                                <div key={location.id || index} className="wine-walk-location-item">
-                                    <div className="wine-walk-location-info">
-                                        <div className="wine-walk-location-name">
-                                            {getLocationIcon(location.type)} {location.name}
-                                            {location.featured && (
-                                                <span style={{color: '#d4af37', marginLeft: '8px'}}>⭐</span>
-                                            )}
-                                            {userLocation && (
-                                                <span style={{
-                                                    color: '#666', 
-                                                    fontSize: '12px', 
-                                                    marginLeft: '8px'
-                                                }}>
-                                                    ({getDistanceToLocation(location)} km)
-                                                </span>
-                                            )}
-                                            {location.distance_from_center && (
-                                                <span style={{
-                                                    color: '#888', 
-                                                    fontSize: '11px', 
-                                                    marginLeft: '8px'
-                                                }}>
-                                                    • {location.distance_from_center}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="wine-walk-location-address">{location.address}</div>
-                                        
-                                        {location.category && (
-                                            <div style={{
-                                                fontSize: '12px', 
-                                                color: '#d4af37', 
-                                                marginTop: '2px',
-                                                fontWeight: 'bold'
-                                            }}>
-                                                {location.category}
-                                            </div>
-                                        )}
-                                        
-                                        {location.description && (
-                                            <div style={{
-                                                fontSize: '14px', 
-                                                color: '#888', 
-                                                marginTop: '4px',
-                                                lineHeight: '1.4'
-                                            }}>
-                                                {location.description}
-                                            </div>
-                                        )}
-
-                                        {location.specialties && location.specialties.length > 0 && (
-                                            <div style={{
-                                                fontSize: '12px', 
-                                                color: '#666', 
-                                                marginTop: '6px',
-                                                fontStyle: 'italic'
-                                            }}>
-                                                Specialties: {location.specialties.slice(0, 3).join(', ')}
-                                                {location.specialties.length > 3 && '...'}
-                                            </div>
-                                        )}
-                                        
-                                        <div style={{
-                                            display: 'flex', 
-                                            flexWrap: 'wrap', 
-                                            gap: '12px', 
-                                            marginTop: '8px'
-                                        }}>
-                                            {location.hours && (
-                                                <div style={{fontSize: '12px', color: '#666'}}>
-                                                    🕒 {location.hours}
-                                                </div>
-                                            )}
-                                            {location.phone && (
-                                                <div style={{fontSize: '12px', color: '#666'}}>
-                                                    📞 {location.phone}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="wine-walk-location-actions">
-                                        <button 
-                                            className="wine-walk-btn wine-walk-btn-primary wine-walk-btn-small"
-                                            onClick={() => getDirections(location.lat, location.lng, location.name)}
-                                        >
-                                            Directions
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        )}
+                        </form>
                     </div>
                 </div>
-            </div>
-
-            {wineWalkData.search_center && (
-                    <div style={{
-                        textAlign: 'center',
-                        marginTop: '30px',
-                        padding: '20px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        borderRadius: '10px',
-                        fontSize: '14px',
-                        color: 'rgba(255, 255, 255, 0.7)'
-                    }}>
-                        <div>Food & Drink Walk</div>
-                        <div style={{marginTop: '5px'}}>
-                            Search center: {wineWalkData.search_center.address}
-                        </div>
-                        <div style={{marginTop: '5px'}}>
-                            Search date: {wineWalkData.search_date}
-                        </div>
-                        <div style={{marginTop: '5px', fontSize: '12px', opacity: 0.6}}>
-                            Environment: {process.env.NODE_ENV} | Mode: {config.DEMO_MODE ? 'Demo' : 'Live'}
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );
