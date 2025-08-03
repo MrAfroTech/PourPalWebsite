@@ -221,6 +221,8 @@ export default async function handler(req, res) {
         let klaviyoProfileId;
         try {
             console.log('📧 Starting Klaviyo integration...');
+            console.log('📧 Using API Key:', KLAVIYO_API_KEY ? `${KLAVIYO_API_KEY.substring(0, 10)}...` : 'NOT SET');
+            console.log('📧 Using List ID:', KLAVIYO_LIST_ID);
             console.log('📧 Environment variables check:');
             console.log('  - KLAVIYO_API_KEY:', !!process.env.KLAVIYO_PRIVATE_API_KEY);
             console.log('  - KLAVIYO_LIST_ID:', !!process.env.KLAVIYO_LIST_ID);
@@ -263,6 +265,7 @@ export default async function handler(req, res) {
         } catch (klaviyoError) {
             console.error('❌ Klaviyo integration failed:', klaviyoError);
             console.error('❌ Klaviyo error message:', klaviyoError.message);
+            console.error('❌ Klaviyo error stack:', klaviyoError.stack);
             // Continue with registration even if Klaviyo fails
             klaviyoProfileId = undefined;
         }
