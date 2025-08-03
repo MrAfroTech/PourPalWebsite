@@ -289,6 +289,22 @@ export default async function handler(req, res) {
             console.error('❌ Klaviyo error stack:', klaviyoError.stack);
             // Continue with registration even if Klaviyo fails
             klaviyoProfileId = undefined;
+            
+            // Return error details in response for debugging
+            return res.json({
+                success: false,
+                error: 'Klaviyo integration failed',
+                klaviyoError: klaviyoError.message,
+                data: {
+                    vendorName,
+                    businessName,
+                    vendorType,
+                    cuisineType,
+                    email,
+                    phone,
+                    selectedPlan
+                }
+            });
         }
 
         // For now, just return success for free plan
