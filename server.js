@@ -3,12 +3,18 @@ const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+// Import vendor registration routes
+const vendorRegistrationRoutes = require('./api/vendor-registration');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Vendor registration routes
+app.use('/api/vendor-registration', vendorRegistrationRoutes);
 
 // Stripe checkout session endpoint
 app.post('/api/create-checkout-session', async (req, res) => {
@@ -99,6 +105,43 @@ app.post('/api/create-checkout-session', async (req, res) => {
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Test Klaviyo connection
+app.get('/api/test-klaviyo', async (req, res) => {
+  try {
+    const axios = require('axios');
+    const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
+    
+    if (!KLAVIYO_API_KEY) {
+      return res.status(500).json({
+        success: false,
+        error: 'KLAVIYO_PRIVATE_API_KEY not configured'
+      });
+    }
+
+    // Test Klaviyo API connection
+    const response = await axios.get('https://a.klaviyo.com/api/profiles/', {
+      headers: {
+        'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+        'Accept': 'application/json',
+        'Revision': '2023-12-15'
+      }
+    });
+
+    res.json({
+      success: true,
+      message: 'Klaviyo connection successful',
+      profiles_count: response.data.data?.length || 0
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Klaviyo connection failed',
+      details: error.response?.data || error.message
+    });
+  }
+  });
 });
 
 app.listen(PORT, () => {

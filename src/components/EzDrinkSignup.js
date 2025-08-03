@@ -1,15 +1,195 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
 
 const EzDrinkSignup = () => {
     const [selectedPlan, setSelectedPlan] = useState('');
+    const [stripe, setStripe] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [formData, setFormData] = useState({
+        vendorName: '',
+        businessName: '',
+        vendorType: '',
+        cuisineType: '',
+        email: '',
+        phone: '',
+        posSystem: '',
+        selectedPlan: ''
+    });
+
+    // Initialize Stripe
+    useEffect(() => {
+        const initStripe = async () => {
+            const stripeInstance = await loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+            setStripe(stripeInstance);
+        };
+        initStripe();
+    }, []);
 
     const handlePlanChange = (e) => {
-        setSelectedPlan(e.target.value);
+        const plan = e.target.value;
+        setSelectedPlan(plan);
+        setFormData(prev => ({ ...prev, selectedPlan: plan }));
+        
         const creditCardSection = document.getElementById('credit-card-section');
-        if (e.target.value === 'pro' || e.target.value === 'ultimate') {
+        const posSystemSection = document.getElementById('pos-system-section');
+        
+        if (plan === 'pro' || plan === 'ultimate') {
             creditCardSection.style.display = 'block';
+            posSystemSection.style.display = 'block';
         } else {
             creditCardSection.style.display = 'none';
+            posSystemSection.style.display = 'none';
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        
+        // Show/hide cuisine type based on vendor type
+        if (name === 'vendorType') {
+            const cuisineTypeSection = document.getElementById('cuisine-type-section');
+            if (value === 'food-truck') {
+                cuisineTypeSection.style.display = 'block';
+            } else {
+                cuisineTypeSection.style.display = 'none';
+                // Clear cuisine type when vendor type changes
+                setFormData(prev => ({ ...prev, cuisineType: '' }));
+            }
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+        setSuccess('');
+
+        try {
+            // Validate form
+            if (!formData.vendorName || !formData.businessName || !formData.email || 
+                !formData.phone || !formData.selectedPlan) {
+                throw new Error('Please fill in all required fields');
+            }
+
+            // For paid plans, validate payment fields
+            if (formData.selectedPlan === 'pro' || formData.selectedPlan === 'ultimate') {
+                const cardNumber = document.getElementById('card-number')?.value;
+                const expiryDate = document.getElementById('expiry-date')?.value;
+                const cvv = document.getElementById('cvv')?.value;
+                const nameOnCard = document.getElementById('name-on-card')?.value;
+
+                if (!cardNumber || !expiryDate || !cvv || !nameOnCard) {
+                    throw new Error('Please fill in all payment information');
+                }
+            }
+
+            // For paid plans, process payment first
+            if (formData.selectedPlan === 'pro' || formData.selectedPlan === 'ultimate') {
+                if (!stripe) {
+                    throw new Error('Payment system not loaded');
+                }
+
+                // Check if credit card fields exist
+                const cardNumber = document.getElementById('card-number');
+                const expiryDate = document.getElementById('expiry-date');
+                const cvv = document.getElementById('cvv');
+                const nameOnCard = document.getElementById('name-on-card');
+
+                if (!cardNumber || !expiryDate || !cvv || !nameOnCard) {
+                    throw new Error('Payment form not properly loaded');
+                }
+
+                // Create payment method
+                const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: {
+                        number: cardNumber.value,
+                        exp_month: parseInt(expiryDate.value.split('/')[0]),
+                        exp_year: parseInt('20' + expiryDate.value.split('/')[1]),
+                        cvc: cvv.value,
+                    },
+                    billing_details: {
+                        name: nameOnCard.value,
+                        email: formData.email,
+                    },
+                });
+
+                if (paymentMethodError) {
+                    throw new Error(paymentMethodError.message);
+                }
+
+                // Submit registration with payment
+                const response = await fetch('/api/vendor-registration-vercel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...formData,
+                        paymentMethodId: paymentMethod.id
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    setSuccess(result.message);
+                    // Reset form
+                    setFormData({
+                        vendorName: '',
+                        businessName: '',
+                        vendorType: '',
+                        cuisineType: '',
+                        email: '',
+                        phone: '',
+                        posSystem: '',
+                        selectedPlan: ''
+                    });
+                    setSelectedPlan('');
+                    document.getElementById('credit-card-section').style.display = 'none';
+                    document.getElementById('pos-system-section').style.display = 'none';
+                    document.getElementById('cuisine-type-section').style.display = 'none';
+                } else {
+                    throw new Error(result.error || 'Registration failed');
+                }
+            } else {
+                // Free plan - no payment required
+                const response = await fetch('/api/vendor-registration-vercel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    setSuccess(result.message);
+                    // Reset form
+                    setFormData({
+                        vendorName: '',
+                        businessName: '',
+                        vendorType: '',
+                        cuisineType: '',
+                        email: '',
+                        phone: '',
+                        posSystem: '',
+                        selectedPlan: ''
+                    });
+                    setSelectedPlan('');
+                    document.getElementById('cuisine-type-section').style.display = 'none';
+                } else {
+                    throw new Error(result.error || 'Registration failed');
+                }
+            }
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -387,14 +567,41 @@ const EzDrinkSignup = () => {
                             🎪 Vendor Registration
                         </h2>
                         
-                        <form style={{ maxWidth: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
+                        {error && (
+                            <div style={{
+                                background: '#dc3545',
+                                color: 'white',
+                                padding: '15px',
+                                borderRadius: '8px',
+                                marginBottom: '20px',
+                                fontSize: '14px'
+                            }}>
+                                ❌ {error}
+                            </div>
+                        )}
+
+                        {success && (
+                            <div style={{
+                                background: '#28a745',
+                                color: 'white',
+                                padding: '15px',
+                                borderRadius: '8px',
+                                marginBottom: '20px',
+                                fontSize: '14px'
+                            }}>
+                                ✅ {success}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} style={{ maxWidth: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
                             <div style={{ marginBottom: '20px' }}>
                                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                     Select Your Plan *
                                 </label>
                                 <select 
                                     required
-                                    value={selectedPlan}
+                                    name="selectedPlan"
+                                    value={formData.selectedPlan}
                                     onChange={handlePlanChange}
                                     style={{
                                         width: '100%',
@@ -416,35 +623,41 @@ const EzDrinkSignup = () => {
                                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                         Vendor Name *
                                     </label>
-                                    <input 
-                                        type="text" 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                        placeholder="Your name"
-                                    />
+                                                                    <input 
+                                    type="text" 
+                                    name="vendorName"
+                                    required
+                                    value={formData.vendorName}
+                                    onChange={handleInputChange}
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                    placeholder="Your name"
+                                />
                                 </div>
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                         Business Name *
                                     </label>
-                                    <input 
-                                        type="text" 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                        placeholder="Your business name"
-                                    />
+                                                                    <input 
+                                    type="text" 
+                                    name="businessName"
+                                    required
+                                    value={formData.businessName}
+                                    onChange={handleInputChange}
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                    placeholder="Your business name"
+                                />
                                 </div>
                             </div>
 
@@ -453,16 +666,19 @@ const EzDrinkSignup = () => {
                                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                         Vendor Type *
                                     </label>
-                                    <select 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                    >
+                                                                    <select 
+                                    name="vendorType"
+                                    required
+                                    value={formData.vendorType}
+                                    onChange={handleInputChange}
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                >
                                         <option value="">Select vendor type</option>
                                         <option value="food-truck">Food Truck</option>
                                         <option value="arts-crafts">Arts & Crafts</option>
@@ -475,11 +691,14 @@ const EzDrinkSignup = () => {
                                         <option value="other">Other</option>
                                     </select>
                                 </div>
-                                <div>
+                                <div id="cuisine-type-section" style={{ display: 'none' }}>
                                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                         Cuisine Type
                                     </label>
                                     <select 
+                                        name="cuisineType"
+                                        value={formData.cuisineType}
+                                        onChange={handleInputChange}
                                         style={{
                                             width: '100%',
                                             padding: '12px',
@@ -488,7 +707,7 @@ const EzDrinkSignup = () => {
                                             fontSize: '16px'
                                         }}
                                     >
-                                        <option value="">Select cuisine (if food truck)</option>
+                                        <option value="">Select cuisine type</option>
                                         <option value="mexican">Mexican</option>
                                         <option value="pizza">Pizza</option>
                                         <option value="jamaican">Jamaican</option>
@@ -509,43 +728,52 @@ const EzDrinkSignup = () => {
                                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                         Email *
                                     </label>
-                                    <input 
-                                        type="email" 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                        placeholder="your@email.com"
-                                    />
+                                                                    <input 
+                                    type="email" 
+                                    name="email"
+                                    required
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                    placeholder="your@email.com"
+                                />
                                 </div>
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                         Phone Number *
                                     </label>
-                                    <input 
-                                        type="tel" 
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                        placeholder="(555) 123-4567"
-                                    />
+                                                                    <input 
+                                    type="tel" 
+                                    name="phone"
+                                    required
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                    placeholder="(555) 123-4567"
+                                />
                                 </div>
                             </div>
 
-                            <div style={{ marginBottom: '20px' }}>
+                            <div id="pos-system-section" style={{ marginBottom: '20px', display: 'none' }}>
                                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
                                     POS System
                                 </label>
                                 <select 
+                                    name="posSystem"
+                                    value={formData.posSystem}
+                                    onChange={handleInputChange}
                                     style={{
                                         width: '100%',
                                         padding: '12px',
@@ -592,7 +820,8 @@ const EzDrinkSignup = () => {
                                         </label>
                                         <input 
                                             type="text" 
-                                            required
+                                            id="card-number"
+                                            name="card-number"
                                             style={{
                                                 width: '100%',
                                                 padding: '12px',
@@ -609,7 +838,8 @@ const EzDrinkSignup = () => {
                                         </label>
                                         <input 
                                             type="text" 
-                                            required
+                                            id="expiry-date"
+                                            name="expiry-date"
                                             style={{
                                                 width: '100%',
                                                 padding: '12px',
@@ -629,7 +859,8 @@ const EzDrinkSignup = () => {
                                         </label>
                                         <input 
                                             type="text" 
-                                            required
+                                            id="cvv"
+                                            name="cvv"
                                             style={{
                                                 width: '100%',
                                                 padding: '12px',
@@ -646,7 +877,8 @@ const EzDrinkSignup = () => {
                                         </label>
                                         <input 
                                             type="text" 
-                                            required
+                                            id="name-on-card"
+                                            name="name-on-card"
                                             style={{
                                                 width: '100%',
                                                 padding: '12px',
@@ -663,22 +895,24 @@ const EzDrinkSignup = () => {
                             <div style={{ textAlign: 'center', marginTop: 'auto' }}>
                                 <button 
                                     type="submit"
+                                    disabled={loading}
                                     style={{
-                                        background: 'linear-gradient(135deg, #d4af37, #f5d76e)',
+                                        background: loading ? '#666' : 'linear-gradient(135deg, #d4af37, #f5d76e)',
                                         color: '#0a0a0a',
                                         border: 'none',
                                         padding: '15px 40px',
                                         borderRadius: '25px',
                                         fontSize: '18px',
                                         fontWeight: 'bold',
-                                        cursor: 'pointer',
+                                        cursor: loading ? 'not-allowed' : 'pointer',
                                         boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
-                                        transition: 'all 0.3s ease'
+                                        transition: 'all 0.3s ease',
+                                        opacity: loading ? 0.7 : 1
                                     }}
-                                    onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                                    onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                                    onMouseOver={(e) => !loading && (e.target.style.transform = 'scale(1.05)')}
+                                    onMouseOut={(e) => !loading && (e.target.style.transform = 'scale(1)')}
                                 >
-                                    🚀 Register as Vendor
+                                    {loading ? '⏳ Processing...' : '🚀 Register as Vendor'}
                                 </button>
                             </div>
 
