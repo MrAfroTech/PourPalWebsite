@@ -37,7 +37,8 @@
         <button type="submit">Submit</button>
     </form>
     
-    <div id="result"></div>
+            <div id="result"></div>
+        <div id="error" style="color: red; margin-top: 10px;"></div>
 
     <script>
         document.getElementById('testForm').addEventListener('submit', async function(e) {
@@ -69,10 +70,20 @@
                 const result = await response.json();
                 console.log('Response data:', result);
                 
-                document.getElementById('result').innerHTML = `
-                    <h3>Result:</h3>
-                    <pre>${JSON.stringify(result, null, 2)}</pre>
-                `;
+                if (result.success) {
+                    document.getElementById('result').innerHTML = `
+                        <h3 style="color: green;">Success!</h3>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                    document.getElementById('error').innerHTML = '';
+                } else {
+                    document.getElementById('result').innerHTML = '';
+                    document.getElementById('error').innerHTML = `
+                        <h3 style="color: red;">Error:</h3>
+                        <p>${result.message || result.error}</p>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                    `;
+                }
                 
             } catch (error) {
                 console.error('Error:', error);

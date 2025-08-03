@@ -105,10 +105,25 @@ async function addContactToKlaviyo(contactData) {
             // Don't throw error here - profile was created successfully
         }
         
-        return profileId; // Return profile ID
+        return { success: true, profileId }; // Return success with profile ID
     } catch (error) {
         console.error('Error adding contact to Klaviyo:', error.response?.data || error.message);
-        throw error;
+        
+        // Handle duplicate email/phone errors
+        if (error.response?.status === 409) {
+            return { 
+                success: false, 
+                error: 'DUPLICATE_CONTACT',
+                message: 'This contact already exists. Please use a different email or phone number.' 
+            };
+        }
+        
+        // Handle other errors
+        return { 
+            success: false, 
+            error: 'KLAVIYO_ERROR',
+            message: 'Failed to add contact to Klaviyo. Please try again.' 
+        };
     }
 }
 
@@ -197,7 +212,7 @@ router.post('/register', async (req, res) => {
         let klaviyoProfileId;
         try {
             console.log('📧 Adding contact to Klaviyo...');
-            klaviyoProfileId = await addContactToKlaviyo({
+            const klaviyoResult = await addContactToKlaviyo({
                 vendorName,
                 businessName,
                 vendorType,
@@ -208,6 +223,24 @@ router.post('/register', async (req, res) => {
                 selectedPlan
             });
 
+            // Check if Klaviyo operation was successful
+            if (!klaviyoResult.success) {
+                if (klaviyoResult.error === 'DUPLICATE_CONTACT') {
+                    return res.status(409).json({
+                        success: false,
+                        error: 'DUPLICATE_CONTACT',
+                        message: klaviyoResult.message
+                    });
+                } else {
+                    return res.status(500).json({
+                        success: false,
+                        error: 'KLAVIYO_ERROR',
+                        message: klaviyoResult.message
+                    });
+                }
+            }
+
+            klaviyoProfileId = klaviyoResult.profileId;
             console.log('✅ Contact added to Klaviyo with ID:', klaviyoProfileId);
 
             // Track registration event
@@ -221,7 +254,11 @@ router.post('/register', async (req, res) => {
 
         } catch (klaviyoError) {
             console.error('❌ Klaviyo error:', klaviyoError);
-            // Continue with registration even if Klaviyo fails
+            return res.status(500).json({
+                success: false,
+                error: 'KLAVIYO_ERROR',
+                message: 'Failed to add contact to Klaviyo. Please try again.'
+            });
         }
 
         // Handle payment for Pro/Ultimate plans

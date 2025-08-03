@@ -135,11 +135,26 @@ async function addContactToKlaviyo(contactData) {
             // Don't throw error here - profile was created successfully
         }
         
-        return profileId; // Return profile ID
+        return { success: true, profileId }; // Return success with profile ID
     } catch (error) {
         console.error('❌ Error adding contact to Klaviyo:', error);
         console.error('❌ Error details:', error.message);
-        throw error;
+        
+        // Handle duplicate email/phone errors
+        if (error.message && error.message.includes('409')) {
+            return { 
+                success: false, 
+                error: 'DUPLICATE_CONTACT',
+                message: 'This contact already exists. Please use a different email or phone number.' 
+            };
+        }
+        
+        // Handle other errors
+        return { 
+            success: false, 
+            error: 'KLAVIYO_ERROR',
+            message: 'Failed to add contact to Klaviyo. Please try again.' 
+        };
     }
 }
 
@@ -245,7 +260,7 @@ export default async function handler(req, res) {
             console.log('  - KLAVIYO_LIST_ID fallback:', KLAVIYO_LIST_ID);
             console.log('📧 All environment variables:', Object.keys(process.env).filter(key => key.includes('KLAVIYO')));
             
-            klaviyoProfileId = await addContactToKlaviyo({
+            const klaviyoResult = await addContactToKlaviyo({
                 vendorName,
                 businessName,
                 vendorType,
@@ -256,6 +271,24 @@ export default async function handler(req, res) {
                 selectedPlan
             });
 
+            // Check if Klaviyo operation was successful
+            if (!klaviyoResult.success) {
+                if (klaviyoResult.error === 'DUPLICATE_CONTACT') {
+                    return res.status(409).json({
+                        success: false,
+                        error: 'DUPLICATE_CONTACT',
+                        message: klaviyoResult.message
+                    });
+                } else {
+                    return res.status(500).json({
+                        success: false,
+                        error: 'KLAVIYO_ERROR',
+                        message: klaviyoResult.message
+                    });
+                }
+            }
+
+            klaviyoProfileId = klaviyoResult.profileId;
             console.log('✅ Contact added to Klaviyo with ID:', klaviyoProfileId);
 
                     // Add profile to the specific list using the correct endpoint
