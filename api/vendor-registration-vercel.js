@@ -240,9 +240,10 @@ export default async function handler(req, res) {
         // Add contact to Klaviyo
         let klaviyoProfileId;
         try {
-            console.log('📧 Starting Klaviyo integration...');
+            console.log('📧 === KLACIYO INTEGRATION START ===');
             console.log('📧 Using API Key:', KLAVIYO_API_KEY ? `${KLAVIYO_API_KEY.substring(0, 10)}...` : 'NOT SET');
             console.log('📧 Using List ID:', KLAVIYO_LIST_ID);
+            console.log('📧 Contact data:', contactData);
             console.log('📧 Environment variables check:');
             console.log('  - KLAVIYO_API_KEY:', !!process.env.KLAVIYO_PRIVATE_API_KEY);
             console.log('  - KLAVIYO_LIST_ID:', !!process.env.KLAVIYO_LIST_ID);
@@ -312,6 +313,11 @@ export default async function handler(req, res) {
                 success: true,
                 message: 'Registration successful! Welcome to the free plan.',
                 klaviyoProfileId,
+                klaviyoDebug: {
+                    apiKeyUsed: KLAVIYO_API_KEY ? 'YES' : 'NO',
+                    listIdUsed: KLAVIYO_LIST_ID,
+                    profileId: klaviyoProfileId
+                },
                 data: {
                     vendorName,
                     businessName,
