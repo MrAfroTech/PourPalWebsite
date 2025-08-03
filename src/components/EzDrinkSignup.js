@@ -32,7 +32,7 @@ const EzDrinkSignup = () => {
                         marginBottom: '15px',
                         color: '#0a0a0a'
                     }}>
-                        # Stop Losing Sales to Long Lines
+                        💸 Stop Losing Sales to Long Lines
                     </h3>
                     
                     <p style={{
@@ -55,7 +55,7 @@ const EzDrinkSignup = () => {
                         marginBottom: '15px',
                         boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
                     }}>
-                        ## The Fair Vendor Nightmare
+                        🎪 The Fair Vendor Reality
                     </div>
                     
                     <p style={{
@@ -65,7 +65,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>You know the drill:</strong> It's Saturday at 1 PM. Lunch rush hits. Your line stretches 20 people deep. New customers see the crowd and keep walking. Meanwhile, families wander the fairgrounds, can't find your booth, and end up at the pizza stand instead.
+                        <strong>Saturday at 1 PM. Lunch rush hits.</strong> Your line stretches 20 people deep. New customers see the crowd and keep walking. Families can't find your booth and end up at competitors instead.
                     </p>
                     
                     <p style={{
@@ -75,7 +75,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>By 3 PM, you've lost hundreds in sales to:</strong>
+                        <strong>By 3 PM, you've lost hundreds to:</strong>
                     </p>
                     
                     <ul style={{
@@ -88,8 +88,7 @@ const EzDrinkSignup = () => {
                     }}>
                         <li style={{ marginBottom: '8px' }}>Line abandonment (customers give up waiting)</li>
                         <li style={{ marginBottom: '8px' }}>Discovery problems (they can't find you in the crowd)</li>
-                        <li style={{ marginBottom: '8px' }}>Peak hour chaos (overwhelmed staff = slow service = more walkaways)</li>
-                        <li style={{ marginBottom: '8px' }}>Competitor proximity (they settle for whatever's closest)</li>
+                        <li style={{ marginBottom: '8px' }}>Peak hour chaos (overwhelmed staff = slow service)</li>
                     </ul>
                     
                     <p style={{
@@ -112,7 +111,7 @@ const EzDrinkSignup = () => {
                         marginBottom: '15px',
                         boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
                     }}>
-                        ## Seamless Captures Every Lost Sale
+                        🚀 Seamless Captures Every Lost Sale
                     </div>
                     
                     <p style={{
@@ -122,7 +121,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>Here's what changes:</strong> Customers scan your QR code from anywhere at the fair - your booth, the event map, even your social media. They order while walking to you. No line. No wait. No abandoned sales.
+                        Customers scan your QR code from anywhere at the fair. Order while walking to you. Skip the line entirely.
                     </p>
                     
                     <p style={{
@@ -132,7 +131,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>The transformation is immediate:</strong>
+                        <strong>The transformation:</strong>
                     </p>
                     
                     <ul style={{
@@ -145,9 +144,8 @@ const EzDrinkSignup = () => {
                     }}>
                         <li style={{ marginBottom: '8px' }}><strong>Zero line abandonment</strong> - they commit before seeing the crowd</li>
                         <li style={{ marginBottom: '8px' }}><strong>Capture wandering customers</strong> - they find you from across the fairgrounds</li>
-                        <li style={{ marginBottom: '8px' }}><strong>Lock in peak hour sales</strong> - orders come in even when you're slammed</li>
                         <li style={{ marginBottom: '8px' }}><strong>Serve 3x more customers</strong> during rush periods</li>
-                        <li style={{ marginBottom: '8px' }}><strong>Higher order values</strong> - customers browse your full menu without pressure</li>
+                        <li style={{ marginBottom: '8px' }}><strong>Higher order values</strong> - customers browse without pressure</li>
                     </ul>
                     
                     <div style={{
@@ -160,7 +158,7 @@ const EzDrinkSignup = () => {
                         marginBottom: '15px',
                         boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
                     }}>
-                        ## The Numbers Don't Lie
+                        📊 The Numbers Don't Lie
                     </div>
                     
                     <p style={{
@@ -170,7 +168,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>Average fair vendor using Seamless:</strong>
+                        <strong>Average vendor using Seamless:</strong>
                     </p>
                     
                     <ul style={{
@@ -183,7 +181,6 @@ const EzDrinkSignup = () => {
                     }}>
                         <li style={{ marginBottom: '8px' }}>$300-600 additional revenue per day</li>
                         <li style={{ marginBottom: '8px' }}>40-60% more orders during peak hours</li>
-                        <li style={{ marginBottom: '8px' }}>25% higher average order value</li>
                         <li style={{ marginBottom: '8px' }}>Zero customers walking away from lines</li>
                     </ul>
                     
@@ -194,7 +191,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>Do the math:</strong> Even a modest 3-day fair could net you an extra $900-1,800. That's real money back in your pocket instead of walking away in frustration.
+                        <strong>Do the math:</strong> A 3-day fair could net you an extra $900-1,800.
                     </p>
                     
                     <div style={{
@@ -207,7 +204,7 @@ const EzDrinkSignup = () => {
                         marginBottom: '15px',
                         boxShadow: '0 3px 10px rgba(212, 175, 55, 0.3)'
                     }}>
-                        ## Your Mobile Command Center
+                        🔄 One Setup. Every Event. Forever.
                     </div>
                     
                     <p style={{
@@ -217,30 +214,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>Once you're on Seamless, you're set for life.</strong> One account follows you to every fair, festival, and event. Your regulars find you instantly. New customers discover you through the platform.
-                    </p>
-                    
-                    <ul style={{
-                        fontSize: '17px',
-                        lineHeight: '1.5',
-                        marginBottom: '20px',
-                        color: '#0a0a0a',
-                        textAlign: 'left',
-                        paddingLeft: '20px'
-                    }}>
-                        <li style={{ marginBottom: '8px' }}><strong>County fair in June?</strong> ✓ Your system is ready</li>
-                        <li style={{ marginBottom: '8px' }}><strong>Food truck festival in August?</strong> ✓ Same seamless experience</li>
-                        <li style={{ marginBottom: '8px' }}><strong>Holiday market in December?</strong> ✓ No setup required</li>
-                    </ul>
-                    
-                    <p style={{
-                        fontSize: '17px',
-                        lineHeight: '1.6',
-                        marginBottom: '15px',
-                        color: '#0a0a0a',
-                        fontWeight: '500'
-                    }}>
-                        <strong>No matter how busy the event, no matter how hard you are to find in the crowd - customers reach you with one scan.</strong>
+                        Your account follows you everywhere. County fair, food festival, holiday market - same system, instant customer access. No matter how crowded, customers find you with one scan.
                     </p>
                     
                     <div style={{
@@ -253,7 +227,7 @@ const EzDrinkSignup = () => {
                         marginBottom: '15px',
                         boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
                     }}>
-                        ## While Your Competitors Struggle...
+                        ⚡ While Your Competitors Lose Sales...
                     </div>
                     
                     <p style={{
@@ -263,7 +237,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>You'll be capturing sales they're losing.</strong> While they deal with abandoned lines and frustrated customers, you're processing orders smoothly and serving more people than ever.
+                        <strong>You're capturing them.</strong> While they watch customers walk away, you're processing orders smoothly and outearning everyone around you.
                     </p>
                     
                     <p style={{
@@ -273,40 +247,7 @@ const EzDrinkSignup = () => {
                         color: '#0a0a0a',
                         fontWeight: '500'
                     }}>
-                        <strong>Your stressed competitors</strong> watch customers walk away. <strong>You're banking those sales.</strong>
-                    </p>
-                    
-                    <div style={{
-                        background: '#ff6b35',
-                        color: 'white',
-                        padding: '15px 20px',
-                        borderRadius: '8px',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginBottom: '15px',
-                        boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
-                    }}>
-                        ## Don't Wait Another Day
-                    </div>
-                    
-                    <p style={{
-                        fontSize: '17px',
-                        lineHeight: '1.6',
-                        marginBottom: '15px',
-                        color: '#0a0a0a',
-                        fontWeight: '500'
-                    }}>
-                        <strong>Every fair without Seamless is money left on the table.</strong> Every abandoned line is lost revenue. Every customer who can't find you is profit walking to your competitor.
-                    </p>
-                    
-                    <p style={{
-                        fontSize: '17px',
-                        lineHeight: '1.6',
-                        marginBottom: '15px',
-                        color: '#0a0a0a',
-                        fontWeight: '500'
-                    }}>
-                        <strong>The vendors already using Seamless</strong> are outearning everyone around them. <strong>Join them.</strong>
+                        <strong>Every fair without Seamless is money left on the table.</strong>
                     </p>
                     
                     <div style={{
@@ -319,7 +260,7 @@ const EzDrinkSignup = () => {
                         marginBottom: '15px',
                         boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
                     }}>
-                        [Get Started Now] — Setup takes 5 minutes. Your next event could be your most profitable yet.
+                        🚀 [Get Started Now] — Setup takes 5 minutes. Your next event could be your most profitable yet.
                     </div>
                 </div>
 
