@@ -22,12 +22,23 @@ async function addContactToKlaviyo(contactData) {
         console.log('📧 Contact data for Klaviyo:', contactData);
         console.log('📧 API endpoint being called: https://a.klaviyo.com/api/profiles/');
         
+        // Format phone number for Klaviyo (needs international format)
+        let formattedPhone = contactData.phone;
+        if (formattedPhone && !formattedPhone.startsWith('+')) {
+            // Add +1 prefix for US numbers if not already present
+            if (formattedPhone.replace(/\D/g, '').length === 10) {
+                formattedPhone = '+1' + formattedPhone.replace(/\D/g, '');
+            } else if (formattedPhone.replace(/\D/g, '').length === 11 && formattedPhone.replace(/\D/g, '').startsWith('1')) {
+                formattedPhone = '+' + formattedPhone.replace(/\D/g, '');
+            }
+        }
+
         const klaviyoData = {
             data: {
                 type: 'profile',
                 attributes: {
                     email: contactData.email,
-                    phone_number: contactData.phone,
+                    phone_number: formattedPhone,
                     first_name: contactData.vendorName,
                     last_name: contactData.businessName,
                     properties: {
