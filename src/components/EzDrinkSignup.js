@@ -135,7 +135,7 @@ const EzDrinkSignup = () => {
                 }
 
                 // Submit registration with payment
-                const response = await fetch('/api/vendor-registration-vercel', {
+                const response = await fetch('http://localhost:3001/api/vendor-registration/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -165,17 +165,17 @@ const EzDrinkSignup = () => {
                     document.getElementById('credit-card-section').style.display = 'none';
                     document.getElementById('pos-system-section').style.display = 'none';
                     document.getElementById('cuisine-type-section').style.display = 'none';
-                } else {
+        } else {
                     throw new Error(result.error || 'Registration failed');
                 }
-            } else {
+        } else {
                 // Free plan - no payment required
                 console.log('🆓 Processing free plan registration');
                 console.log('📤 Submitting free plan registration to API...');
                 console.log('📤 Request payload:', formData);
                 
-                console.log('📤 Making request to:', window.location.origin + '/api/vendor-registration-vercel');
-                const response = await fetch('/api/vendor-registration-vercel', {
+                console.log('📤 Making request to:', 'http://localhost:3001/api/vendor-registration/register');
+                const response = await fetch('http://localhost:3001/api/vendor-registration/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -214,12 +214,12 @@ const EzDrinkSignup = () => {
                     });
                     setSelectedPlan('');
                     document.getElementById('cuisine-type-section').style.display = 'none';
-                } else {
+        } else {
                     console.log('❌ Free plan registration failed:', result.error);
                     throw new Error(result.error || 'Registration failed');
                 }
             }
-        } catch (error) {
+            } catch (error) {
             console.log('❌ Form submission error:', error);
             console.log('❌ Error message:', error.message);
             console.log('❌ Error stack:', error.stack);
@@ -238,42 +238,42 @@ const EzDrinkSignup = () => {
                     background: 'linear-gradient(135deg, #d4af37 0%, #f5d76e 100%)',
                     padding: '40px',
                     borderRadius: '15px',
-                    color: '#0a0a0a',
-                    boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                        color: '#0a0a0a',
+                        boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
                     border: '2px solid rgba(255, 255, 255, 0.2)',
                     height: 'fit-content'
-                }}>
-                    <h3 style={{
-                        fontSize: '28px',
-                        fontWeight: 'bold',
-                        marginBottom: '15px',
-                        color: '#0a0a0a'
                     }}>
+                        <h3 style={{
+                            fontSize: '28px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            color: '#0a0a0a'
+                        }}>
                         💸 Stop Losing Sales to Long Lines
-                    </h3>
-                    
-                    <p style={{
-                        fontSize: '18px',
-                        lineHeight: '1.6',
-                        marginBottom: '15px',
-                        color: '#0a0a0a',
-                        fontWeight: '500'
-                    }}>
+                        </h3>
+                        
+                        <p style={{
+                            fontSize: '18px',
+                            lineHeight: '1.6',
+                            marginBottom: '15px',
+                            color: '#0a0a0a',
+                            fontWeight: '500'
+                        }}>
                         <strong>You're hemorrhaging money every day.</strong> Customers abandon your line after 8 minutes. That's $20-30 walking away every few minutes during peak hours.
-                    </p>
-                    
-                    <div style={{
-                        background: '#dc3545',
-                        color: 'white',
+                        </p>
+                        
+                        <div style={{
+                            background: '#dc3545',
+                            color: 'white',
                         padding: '15px 20px',
-                        borderRadius: '8px',
+                            borderRadius: '8px',
                         fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginBottom: '15px',
-                        boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
-                    }}>
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
+                        }}>
                         🎪 The Fair Vendor Reality
-                    </div>
+                        </div>
                     
                     <p style={{
                         fontSize: '17px',
@@ -294,19 +294,19 @@ const EzDrinkSignup = () => {
                     }}>
                         <strong>By 3 PM, you've lost hundreds to:</strong>
                     </p>
-                    
-                    <ul style={{
-                        fontSize: '17px',
-                        lineHeight: '1.5',
-                        marginBottom: '20px',
-                        color: '#0a0a0a',
-                        textAlign: 'left',
-                        paddingLeft: '20px'
-                    }}>
+                        
+                        <ul style={{
+                            fontSize: '17px',
+                            lineHeight: '1.5',
+                            marginBottom: '20px',
+                            color: '#0a0a0a',
+                            textAlign: 'left',
+                            paddingLeft: '20px'
+                        }}>
                         <li style={{ marginBottom: '8px' }}>Line abandonment (customers give up waiting)</li>
                         <li style={{ marginBottom: '8px' }}>Discovery problems (they can't find you in the crowd)</li>
                         <li style={{ marginBottom: '8px' }}>Peak hour chaos (overwhelmed staff = slow service)</li>
-                    </ul>
+                        </ul>
                     
                     <p style={{
                         fontSize: '17px',
@@ -317,27 +317,27 @@ const EzDrinkSignup = () => {
                     }}>
                         This isn't just frustration. It's a revenue crisis.
                     </p>
-                    
-                    <div style={{
-                        background: '#28a745',
-                        color: 'white',
-                        padding: '15px 20px',
-                        borderRadius: '8px',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginBottom: '15px',
-                        boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
-                    }}>
+                        
+                        <div style={{
+                            background: '#28a745',
+                            color: 'white',
+                            padding: '15px 20px',
+                            borderRadius: '8px',
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(40, 167, 69, 0.3)'
+                        }}>
                         🚀 Seamless Captures Every Lost Sale
-                    </div>
-                    
-                    <p style={{
+                        </div>
+                        
+                        <p style={{
                         fontSize: '17px',
-                        lineHeight: '1.6',
-                        marginBottom: '15px',
-                        color: '#0a0a0a',
-                        fontWeight: '500'
-                    }}>
+                            lineHeight: '1.6',
+                            marginBottom: '15px',
+                            color: '#0a0a0a',
+                            fontWeight: '500'
+                        }}>
                         Customers scan your QR code from anywhere at the fair. Order while walking to you. Skip the line entirely.
                     </p>
                     
@@ -364,19 +364,19 @@ const EzDrinkSignup = () => {
                         <li style={{ marginBottom: '8px' }}><strong>Serve 3x more customers</strong> during rush periods</li>
                         <li style={{ marginBottom: '8px' }}><strong>Higher order values</strong> - customers browse without pressure</li>
                     </ul>
-                    
-                    <div style={{
-                        background: '#ff6b35',
-                        color: 'white',
+                        
+                        <div style={{
+                            background: '#ff6b35',
+                            color: 'white',
                         padding: '15px 20px',
                         borderRadius: '8px',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginBottom: '15px',
-                        boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
-                    }}>
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(255, 107, 53, 0.3)'
+                        }}>
                         📊 The Numbers Don't Lie
-                    </div>
+                        </div>
                     
                     <p style={{
                         fontSize: '17px',
@@ -410,43 +410,43 @@ const EzDrinkSignup = () => {
                     }}>
                         <strong>Do the math:</strong> A 3-day fair could net you an extra $900-1,800.
                     </p>
-                    
-                    <div style={{
-                        background: '#d4af37',
-                        color: '#0a0a0a',
-                        padding: '15px 20px',
-                        borderRadius: '8px',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginBottom: '15px',
-                        boxShadow: '0 3px 10px rgba(212, 175, 55, 0.3)'
-                    }}>
+                        
+                        <div style={{
+                            background: '#d4af37',
+                            color: '#0a0a0a',
+                            padding: '15px 20px',
+                            borderRadius: '8px',
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
+                            boxShadow: '0 3px 10px rgba(212, 175, 55, 0.3)'
+                        }}>
                         🔄 One Setup. Every Event. Forever.
-                    </div>
-                    
-                    <p style={{
+                        </div>
+                        
+                        <p style={{
                         fontSize: '17px',
-                        lineHeight: '1.6',
-                        marginBottom: '15px',
-                        color: '#0a0a0a',
-                        fontWeight: '500'
-                    }}>
+                            lineHeight: '1.6',
+                            marginBottom: '15px',
+                            color: '#0a0a0a',
+                            fontWeight: '500'
+                        }}>
                         Your account follows you everywhere. County fair, food festival, holiday market - same system, instant customer access. No matter how crowded, customers find you with one scan.
-                    </p>
-                    
-                    <div style={{
+                        </p>
+                        
+                        <div style={{
                         background: '#dc3545',
-                        color: 'white',
+                            color: 'white',
                         padding: '15px 20px',
                         borderRadius: '8px',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginBottom: '15px',
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                            marginBottom: '15px',
                         boxShadow: '0 3px 10px rgba(220, 53, 69, 0.3)'
-                    }}>
+                        }}>
                         ⚡ While Your Competitors Lose Sales...
-                    </div>
-                    
+                        </div>
+                        
                     <p style={{
                         fontSize: '17px',
                         lineHeight: '1.6',
@@ -479,17 +479,17 @@ const EzDrinkSignup = () => {
                     }}>
                         🚀 [Get Started Now] — Setup takes 5 minutes. Your next event could be your most profitable yet.
                     </div>
-                </div>
+                    </div>
 
                 {/* Pricing Tiers and Registration Form - Right Side */}
-                <div style={{
+                    <div style={{ 
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '30px'
                 }}>
                     {/* Pricing Tiers */}
                     <div style={{
-                        background: 'rgba(212, 175, 55, 0.1)',
+                        background: 'rgba(212, 175, 55, 0.1)', 
                         padding: '30px',
                         borderRadius: '15px',
                         border: '1px solid rgba(212, 175, 55, 0.3)'
@@ -589,9 +589,9 @@ const EzDrinkSignup = () => {
                                     <div style={{ marginBottom: '8px' }}>✓ Advanced analytics</div>
                                     <div style={{ marginBottom: '8px' }}>✓ Priority support</div>
                                 </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
                     {/* Registration Form */}
                     <div style={{
@@ -632,35 +632,35 @@ const EzDrinkSignup = () => {
 
                         <form onSubmit={handleSubmit} style={{ maxWidth: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column' }}>
                             <div style={{ marginBottom: '20px' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    Select Your Plan *
-                                </label>
-                                <select 
-                                    required
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                Select Your Plan *
+                            </label>
+                            <select 
+                                required
                                     name="selectedPlan"
                                     value={formData.selectedPlan}
                                     onChange={handlePlanChange}
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    <option value="">Choose your plan</option>
-                                    <option value="free">⭐ Free Plan - $0/month</option>
-                                    <option value="pro">💼 Pro Plan - $39.99/month (2 months free!)</option>
-                                    <option value="ultimate">🚀 Ultimate Plan - $79.99/month (2 months free!)</option>
-                                </select>
-                            </div>
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    fontSize: '16px'
+                                }}
+                            >
+                                <option value="">Choose your plan</option>
+                                <option value="free">⭐ Free Plan - $0/month</option>
+                                <option value="pro">💼 Pro Plan - $39.99/month (2 months free!)</option>
+                                <option value="ultimate">🚀 Ultimate Plan - $79.99/month (2 months free!)</option>
+                            </select>
+                    </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                        Vendor Name *
-                                    </label>
-                                                                    <input 
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Vendor Name *
+                                </label>
+                                <input 
                                     type="text" 
                                     name="vendorName"
                                     required
@@ -675,12 +675,12 @@ const EzDrinkSignup = () => {
                                     }}
                                     placeholder="Your name"
                                 />
-                                </div>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                        Business Name *
-                                    </label>
-                                                                    <input 
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Business Name *
+                                </label>
+                                <input 
                                     type="text" 
                                     name="businessName"
                                     required
@@ -695,15 +695,15 @@ const EzDrinkSignup = () => {
                                     }}
                                     placeholder="Your business name"
                                 />
-                                </div>
                             </div>
+                        </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                        Vendor Type *
-                                    </label>
-                                                                    <select 
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Vendor Type *
+                                </label>
+                                <select 
                                     name="vendorType"
                                     required
                                     value={formData.vendorType}
@@ -716,56 +716,56 @@ const EzDrinkSignup = () => {
                                         fontSize: '16px'
                                     }}
                                 >
-                                        <option value="">Select vendor type</option>
-                                        <option value="food-truck">Food Truck</option>
-                                        <option value="arts-crafts">Arts & Crafts</option>
-                                        <option value="jewelry">Jewelry</option>
-                                        <option value="clothing">Clothing</option>
-                                        <option value="home-decor">Home Decor</option>
-                                        <option value="beauty">Beauty & Wellness</option>
-                                        <option value="entertainment">Entertainment</option>
-                                        <option value="services">Services</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
+                                    <option value="">Select vendor type</option>
+                                    <option value="food-truck">Food Truck</option>
+                                    <option value="arts-crafts">Arts & Crafts</option>
+                                    <option value="jewelry">Jewelry</option>
+                                    <option value="clothing">Clothing</option>
+                                    <option value="home-decor">Home Decor</option>
+                                    <option value="beauty">Beauty & Wellness</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="services">Services</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
                                 <div id="cuisine-type-section" style={{ display: 'none' }}>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                        Cuisine Type
-                                    </label>
-                                    <select 
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Cuisine Type
+                                </label>
+                                <select 
                                         name="cuisineType"
                                         value={formData.cuisineType}
                                         onChange={handleInputChange}
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            fontSize: '16px'
-                                        }}
-                                    >
+                                    style={{
+                                        width: '100%',
+                                        padding: '12px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        fontSize: '16px'
+                                    }}
+                                >
                                         <option value="">Select cuisine type</option>
-                                        <option value="mexican">Mexican</option>
-                                        <option value="pizza">Pizza</option>
-                                        <option value="jamaican">Jamaican</option>
-                                        <option value="desserts">Desserts</option>
-                                        <option value="bbq">BBQ</option>
-                                        <option value="asian">Asian</option>
-                                        <option value="mediterranean">Mediterranean</option>
-                                        <option value="american">American</option>
-                                        <option value="vegetarian">Vegetarian</option>
-                                        <option value="seafood">Seafood</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
+                                    <option value="mexican">Mexican</option>
+                                    <option value="pizza">Pizza</option>
+                                    <option value="jamaican">Jamaican</option>
+                                    <option value="desserts">Desserts</option>
+                                    <option value="bbq">BBQ</option>
+                                    <option value="asian">Asian</option>
+                                    <option value="mediterranean">Mediterranean</option>
+                                    <option value="american">American</option>
+                                    <option value="vegetarian">Vegetarian</option>
+                                    <option value="seafood">Seafood</option>
+                                    <option value="other">Other</option>
+                                </select>
                             </div>
+                        </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                        Email *
-                                    </label>
-                                                                    <input 
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Email *
+                                </label>
+                                <input 
                                     type="email" 
                                     name="email"
                                     required
@@ -780,12 +780,12 @@ const EzDrinkSignup = () => {
                                     }}
                                     placeholder="your@email.com"
                                 />
-                                </div>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                        Phone Number *
-                                    </label>
-                                                                    <input 
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                    Phone Number *
+                                </label>
+                                <input 
                                     type="tel" 
                                     name="phone"
                                     required
@@ -800,171 +800,171 @@ const EzDrinkSignup = () => {
                                     }}
                                     placeholder="(555) 123-4567"
                                 />
-                                </div>
                             </div>
+                        </div>
 
                             <div id="pos-system-section" style={{ marginBottom: '20px', display: 'none' }}>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-                                    POS System
-                                </label>
-                                <select 
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                                POS System
+                            </label>
+                            <select 
                                     name="posSystem"
                                     value={formData.posSystem}
                                     onChange={handleInputChange}
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        fontSize: '16px'
-                                    }}
-                                >
-                                    <option value="">Select your POS system</option>
-                                    <option value="square">Square</option>
-                                    <option value="stripe">Stripe</option>
-                                    <option value="paypal">PayPal</option>
-                                    <option value="clover">Clover</option>
-                                    <option value="toast">Toast</option>
-                                    <option value="lightspeed">Lightspeed</option>
-                                    <option value="shopify">Shopify</option>
-                                    <option value="none">No POS system</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    fontSize: '16px'
+                                }}
+                            >
+                                <option value="">Select your POS system</option>
+                                <option value="square">Square</option>
+                                <option value="stripe">Stripe</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="clover">Clover</option>
+                                <option value="toast">Toast</option>
+                                <option value="lightspeed">Lightspeed</option>
+                                <option value="shopify">Shopify</option>
+                                <option value="none">No POS system</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
 
-                            {/* Credit Card Section - Only show for Pro/Ultimate */}
-                            <div id="credit-card-section" style={{ 
-                                marginBottom: '20px',
-                                padding: '20px',
-                                background: 'rgba(40, 167, 69, 0.1)',
-                                borderRadius: '12px',
-                                border: '1px solid rgba(40, 167, 69, 0.3)',
-                                display: 'none'
+                        {/* Credit Card Section - Only show for Pro/Ultimate */}
+                        <div id="credit-card-section" style={{ 
+                            marginBottom: '20px',
+                            padding: '20px',
+                            background: 'rgba(40, 167, 69, 0.1)',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(40, 167, 69, 0.3)',
+                            display: 'none'
+                        }}>
+                            <h4 style={{ 
+                                textAlign: 'center', 
+                                marginBottom: '15px', 
+                                color: '#28a745',
+                                fontSize: '18px'
                             }}>
-                                <h4 style={{ 
-                                    textAlign: 'center', 
-                                    marginBottom: '15px', 
-                                    color: '#28a745',
-                                    fontSize: '18px'
-                                }}>
-                                    💳 Payment Information
-                                </h4>
-                                
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                            Card Number *
-                                        </label>
-                                        <input 
-                                            type="text" 
+                                💳 Payment Information
+                            </h4>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                        Card Number *
+                                    </label>
+                                    <input 
+                                        type="text" 
                                             id="card-number"
                                             name="card-number"
-                                            style={{
-                                                width: '100%',
-                                                padding: '12px',
-                                                borderRadius: '8px',
-                                                border: 'none',
-                                                fontSize: '16px'
-                                            }}
-                                            placeholder="1234 5678 9012 3456"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                            Expiry Date *
-                                        </label>
-                                        <input 
-                                            type="text" 
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="1234 5678 9012 3456"
+                                    />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                        Expiry Date *
+                                    </label>
+                                    <input 
+                                        type="text" 
                                             id="expiry-date"
                                             name="expiry-date"
-                                            style={{
-                                                width: '100%',
-                                                padding: '12px',
-                                                borderRadius: '8px',
-                                                border: 'none',
-                                                fontSize: '16px'
-                                            }}
-                                            placeholder="MM/YY"
-                                        />
-                                    </div>
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="MM/YY"
+                                    />
                                 </div>
-                                
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                            CVV *
-                                        </label>
-                                        <input 
-                                            type="text" 
+                            </div>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                        CVV *
+                                    </label>
+                                    <input 
+                                        type="text" 
                                             id="cvv"
                                             name="cvv"
-                                            style={{
-                                                width: '100%',
-                                                padding: '12px',
-                                                borderRadius: '8px',
-                                                border: 'none',
-                                                fontSize: '16px'
-                                            }}
-                                            placeholder="123"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
-                                            Name on Card *
-                                        </label>
-                                        <input 
-                                            type="text" 
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="123"
+                                    />
+                                </div>
+                                <div>
+                                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#28a745' }}>
+                                        Name on Card *
+                                    </label>
+                                    <input 
+                                        type="text" 
                                             id="name-on-card"
                                             name="name-on-card"
-                                            style={{
-                                                width: '100%',
-                                                padding: '12px',
-                                                borderRadius: '8px',
-                                                border: 'none',
-                                                fontSize: '16px'
-                                            }}
-                                            placeholder="John Doe"
-                                        />
-                                    </div>
+                                        style={{
+                                            width: '100%',
+                                            padding: '12px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            fontSize: '16px'
+                                        }}
+                                        placeholder="John Doe"
+                                    />
                                 </div>
                             </div>
+                        </div>
 
-                            <div style={{ textAlign: 'center', marginTop: 'auto' }}>
-                                <button 
-                                    type="submit"
+                        <div style={{ textAlign: 'center', marginTop: 'auto' }}>
+                            <button 
+                                type="submit"
                                     disabled={loading}
-                                    style={{
+                                style={{
                                         background: loading ? '#666' : 'linear-gradient(135deg, #d4af37, #f5d76e)',
-                                        color: '#0a0a0a',
-                                        border: 'none',
-                                        padding: '15px 40px',
-                                        borderRadius: '25px',
-                                        fontSize: '18px',
-                                        fontWeight: 'bold',
+                                    color: '#0a0a0a',
+                                    border: 'none',
+                                    padding: '15px 40px',
+                                    borderRadius: '25px',
+                                    fontSize: '18px',
+                                    fontWeight: 'bold',
                                         cursor: loading ? 'not-allowed' : 'pointer',
-                                        boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
+                                    boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
                                         transition: 'all 0.3s ease',
                                         opacity: loading ? 0.7 : 1
-                                    }}
+                                }}
                                     onMouseOver={(e) => !loading && (e.target.style.transform = 'scale(1.05)')}
                                     onMouseOut={(e) => !loading && (e.target.style.transform = 'scale(1)')}
-                                >
+                            >
                                     {loading ? '⏳ Processing...' : '🚀 Register as Vendor'}
-                                </button>
-                            </div>
+                            </button>
+                        </div>
 
-                            <div style={{ 
-                                textAlign: 'center', 
-                                marginTop: '20px', 
-                                fontSize: '14px', 
-                                opacity: 0.8 
-                            }}>
-                                <p>Registration includes CRM integration and Stripe payment processing</p>
-                                <p>We'll contact you within 24 hours to complete your setup</p>
-                            </div>
-                        </form>
-                    </div>
+                        <div style={{ 
+                            textAlign: 'center', 
+                            marginTop: '20px', 
+                            fontSize: '14px', 
+                            opacity: 0.8 
+                        }}>
+                            <p>Registration includes CRM integration and Stripe payment processing</p>
+                            <p>We'll contact you within 24 hours to complete your setup</p>
+                        </div>
+                    </form>
                 </div>
+                            </div>
             </div>
         </div>
     );

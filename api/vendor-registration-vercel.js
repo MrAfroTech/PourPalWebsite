@@ -24,19 +24,26 @@ async function addContactToKlaviyo(contactData) {
         
         // Format phone number for Klaviyo (needs international format)
         let formattedPhone = contactData.phone;
+        console.log('📞 Original phone number:', contactData.phone);
+        
         if (formattedPhone && !formattedPhone.startsWith('+')) {
             // Add +1 prefix for US numbers if not already present
             if (formattedPhone.replace(/\D/g, '').length === 10) {
                 formattedPhone = '+1' + formattedPhone.replace(/\D/g, '');
+                console.log('📞 Formatted 10-digit number:', formattedPhone);
             } else if (formattedPhone.replace(/\D/g, '').length === 11 && formattedPhone.replace(/\D/g, '').startsWith('1')) {
                 formattedPhone = '+' + formattedPhone.replace(/\D/g, '');
+                console.log('📞 Formatted 11-digit number:', formattedPhone);
             }
         }
         
         // If phone number is invalid or empty, don't include it
         if (!formattedPhone || formattedPhone.length < 10) {
+            console.log('📞 Invalid phone number, removing:', formattedPhone);
             formattedPhone = null;
         }
+        
+        console.log('📞 Final formatted phone:', formattedPhone);
 
         const klaviyoData = {
             data: {
@@ -90,7 +97,45 @@ async function addContactToKlaviyo(contactData) {
         const result = await response.json();
         console.log('✅ Contact added to Klaviyo:', result);
         console.log('✅ Klaviyo Profile ID:', result.data.id);
-        return result.data.id; // Return profile ID
+        const profileId = result.data.id;
+        
+        // Add user to the list
+        try {
+            console.log('📧 Adding user to list TJr6rx...');
+            const listSubscriptionResponse = await fetch(
+                `https://a.klaviyo.com/api/lists/TJr6rx/relationships/profiles/`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Revision': '2023-12-15'
+                    },
+                    body: JSON.stringify({
+                        data: [
+                            {
+                                type: 'profile',
+                                id: profileId
+                            }
+                        ]
+                    })
+                }
+            );
+            
+            if (listSubscriptionResponse.ok) {
+                const listResult = await listSubscriptionResponse.json();
+                console.log('✅ User added to list:', listResult);
+            } else {
+                const listError = await listSubscriptionResponse.text();
+                console.error('❌ Error adding user to list:', listError);
+            }
+        } catch (listError) {
+            console.error('❌ Error adding user to list:', listError);
+            // Don't throw error here - profile was created successfully
+        }
+        
+        return profileId; // Return profile ID
     } catch (error) {
         console.error('❌ Error adding contact to Klaviyo:', error);
         console.error('❌ Error details:', error.message);

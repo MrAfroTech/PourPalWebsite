@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Form</title>
+</head>
+<body>
+    <h1>Test Vendor Registration Form</h1>
+    <form id="testForm">
+        <div>
+            <label>Vendor Name:</label>
+            <input type="text" id="vendorName" value="Test User" required>
+        </div>
+        <div>
+            <label>Business Name:</label>
+            <input type="text" id="businessName" value="Test Business" required>
+        </div>
+        <div>
+            <label>Email:</label>
+            <input type="email" id="email" value="webfinaltest@example.com" required>
+        </div>
+        <div>
+            <label>Phone:</label>
+            <input type="tel" id="phone" value="3054340748" required>
+        </div>
+        <div>
+            <label>Vendor Type:</label>
+            <select id="vendorType">
+                <option value="food-truck">Food Truck</option>
+            </select>
+        </div>
+        <div>
+            <label>Plan:</label>
+            <select id="selectedPlan">
+                <option value="free">Free</option>
+            </select>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                vendorName: document.getElementById('vendorName').value,
+                businessName: document.getElementById('businessName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                vendorType: document.getElementById('vendorType').value,
+                selectedPlan: document.getElementById('selectedPlan').value
+            };
+            
+            console.log('Submitting form data:', formData);
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/vendor-registration/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const result = await response.json();
+                console.log('Response data:', result);
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>Result:</h3>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3>Error:</h3>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        });
+    </script>
+</body>
+</html> 

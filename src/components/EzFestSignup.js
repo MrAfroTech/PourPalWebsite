@@ -452,70 +452,70 @@ const EzFestSignup = () => {
         document.head.appendChild(script);
     }, [initMap, showStatus, config, componentMounted]);
 
-    const loadLocationsFromJSON = useCallback(() => {
-        if (!componentMounted) return;
+const loadLocationsFromJSON = useCallback(() => {
+    if (!componentMounted) return;
+    
+    console.log('🔍 Raw ezfestLocations:', ezfestLocations);
+    
+    try {
+        let locationsData = [];
         
-        console.log('🔍 Raw ezfestLocations:', ezfestLocations);
+        if (ezfestLocations && ezfestLocations.foodTrucks) {
+            console.log('📍 Found food trucks in JSON:', ezfestLocations.foodTrucks.length);
+            
+            locationsData = ezfestLocations.foodTrucks.map((foodTruck, index) => {
+                console.log(`Processing food truck ${index + 1}:`, foodTruck.name);
+                
+                const lat = foodTruck.lat || 28.5493;
+                const lng = foodTruck.lng || -81.7731;
+                
+                console.log(`📍 Coordinates for ${foodTruck.name}:`, { lat, lng });
+                
+                return {
+                    id: foodTruck.id || index + 1,
+                    name: foodTruck.name,
+                    address: foodTruck.address || 'Clermont, FL',
+                    type: foodTruck.type,
+                    lat: lat,
+                    lng: lng,
+                    description: foodTruck.description,
+                    phone: foodTruck.phone,
+                    website: foodTruck.website,
+                    hours: foodTruck.hours,
+                    featured: foodTruck.menu && foodTruck.menu.length > 2,
+                    order: index + 1,
+                    category: foodTruck.type,
+                    specialties: foodTruck.menu,
+                    rating: foodTruck.rating,
+                    waitTime: foodTruck.waitTime,
+                    icon: foodTruck.icon
+                };
+            });
+            
+            console.log('✅ Processed food trucks with coordinates:', locationsData);
+            
+        } else {
+            console.error('❌ No food trucks found in JSON structure');
+            console.log('JSON structure:', Object.keys(ezfestLocations || {}));
+            throw new Error('No food trucks found in JSON file');
+        }
         
-        try {
-            let locationsData = [];
+        if (locationsData.length > 0) {
+            const sortedLocations = locationsData.sort((a, b) => {
+                return (a.order || a.id) - (b.order || b.id);
+            });
             
-            if (ezfestLocations && ezfestLocations.foodTrucks) {
-                console.log('📍 Found food trucks in JSON:', ezfestLocations.foodTrucks.length);
-                
-                locationsData = ezfestLocations.foodTrucks.map((foodTruck, index) => {
-                    console.log(`Processing food truck ${index + 1}:`, foodTruck.name);
-                    
-                    const lat = foodTruck.lat || 28.5493;
-                    const lng = foodTruck.lng || -81.7731;
-                    
-                    console.log(`📍 Coordinates for ${foodTruck.name}:`, { lat, lng });
-                    
-                    return {
-                        id: foodTruck.id || index + 1,
-                        name: foodTruck.name,
-                        address: foodTruck.address || 'Clermont, FL',
-                        type: foodTruck.type,
-                        lat: lat,
-                        lng: lng,
-                        description: foodTruck.description,
-                        phone: foodTruck.phone,
-                        website: foodTruck.website,
-                        hours: foodTruck.hours,
-                        featured: foodTruck.menu && foodTruck.menu.length > 2,
-                        order: index + 1,
-                        category: foodTruck.type,
-                        specialties: foodTruck.menu,
-                        rating: foodTruck.rating,
-                        waitTime: foodTruck.waitTime,
-                        icon: foodTruck.icon
-                    };
-                });
-                
-                console.log('✅ Processed food trucks with coordinates:', locationsData);
-                
-            } else {
-                console.error('❌ No food trucks found in JSON structure');
-                console.log('JSON structure:', Object.keys(ezfestLocations || {}));
-                throw new Error('No food trucks found in JSON file');
-            }
+            console.log(`🎯 Setting ${sortedLocations.length} food trucks on map`);
+            setLocations(sortedLocations);
+            showStatus(`Loaded ${sortedLocations.length} food trucks!`, 'success');
             
-            if (locationsData.length > 0) {
-                const sortedLocations = locationsData.sort((a, b) => {
-                    return (a.order || a.id) - (b.order || b.id);
-                });
-                
-                console.log(`🎯 Setting ${sortedLocations.length} food trucks on map`);
-                setLocations(sortedLocations);
-                showStatus(`Loaded ${sortedLocations.length} food trucks!`, 'success');
-                
-            } else {
-                throw new Error('No valid locations found after processing');
-            }
-        } catch (error) {
-            console.error('❌ Failed to load locations from JSON:', error);
-            console.log('🔧 Falling back to default location');
-            showStatus('Loading default locations (JSON file issue)', 'error');
+        } else {
+            throw new Error('No valid locations found after processing');
+        }
+    } catch (error) {
+        console.error('❌ Failed to load locations from JSON:', error);
+        console.log('🔧 Falling back to default location');
+        showStatus('Loading default locations (JSON file issue)', 'error');
             
             const defaultLocations = [
                 {
@@ -833,123 +833,123 @@ const EzFestSignup = () => {
                         )}
                     </div>
 
-                    <div className="wine-walk-controls">
-                        <div className="wine-walk-button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            <button 
-                                className={`wine-walk-btn ${isTracking ? 'wine-walk-btn-secondary' : 'wine-walk-btn-primary'}`}
-                                onClick={isTracking ? stopTracking : startTracking}
-                                style={{ width: '100%' }}
-                            >
-                                {isTracking ? '⏹️ Stop Tracking' : '📍 Start GPS Tracking'}
-                            </button>
-                            <button 
-                                className="wine-walk-btn wine-walk-btn-secondary" 
-                                onClick={findNearestLocation}
-                                disabled={!userLocation}
-                                style={{ width: '100%' }}
-                            >
-                                🎯 Find Nearest Location
-                            </button>
-                            <button 
-                                className="wine-walk-btn wine-walk-btn-secondary" 
-                                onClick={showAllLocations}
-                                style={{ width: '100%' }}
-                            >
-                                🗺️ Show All Locations
-                            </button>
-                        </div>
-                        
-                        {status.visible && (
-                            <div className={`wine-walk-status ${status.type}`}>
-                                {status.message}
-                            </div>
-                        )}
-
-                        {userLocation && (
-                            <div style={{
-                                marginTop: '10px', 
-                                padding: '8px', 
-                                background: 'rgba(212, 175, 55, 0.1)', 
-                                borderRadius: '6px',
-                                fontSize: '14px',
-                                color: '#e0b841'
-                            }}>
-                                📍 Your location: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
-                            </div>
-                        )}
+                <div className="wine-walk-controls">
+                    <div className="wine-walk-button-group" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <button 
+                            className={`wine-walk-btn ${isTracking ? 'wine-walk-btn-secondary' : 'wine-walk-btn-primary'}`}
+                            onClick={isTracking ? stopTracking : startTracking}
+                            style={{ width: '100%' }}
+                        >
+                            {isTracking ? '⏹️ Stop Tracking' : '📍 Start GPS Tracking'}
+                        </button>
+                        <button 
+                            className="wine-walk-btn wine-walk-btn-secondary" 
+                            onClick={findNearestLocation}
+                            disabled={!userLocation}
+                            style={{ width: '100%' }}
+                        >
+                            🎯 Find Nearest Location
+                        </button>
+                        <button 
+                            className="wine-walk-btn wine-walk-btn-secondary" 
+                            onClick={showAllLocations}
+                            style={{ width: '100%' }}
+                        >
+                            🗺️ Show All Locations
+                        </button>
                     </div>
+                    
+                    {status.visible && (
+                        <div className={`wine-walk-status ${status.type}`}>
+                            {status.message}
+                        </div>
+                    )}
 
-                    <div className="wine-walk-map-container">
-                        <div ref={mapRef} className="wine-walk-map">
-                            {config.DEMO_MODE ? (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    flexDirection: 'column',
-                                    color: 'white',
-                                    fontSize: '18px',
-                                    textAlign: 'center',
-                                    zIndex: 1
-                                }}>
-                                    <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
-                                    <div>Interactive Map (Demo Mode)</div>
-                                    <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
-                                        GPS tracking and directions still work!
-                                    </div>
-                                    <div style={{ fontSize: '12px', marginTop: '20px', opacity: 0.6, maxWidth: '400px' }}>
-                                        Set REACT_APP_DEMO_MODE=false in your .env file for full map functionality
-                                    </div>
-                                    <div style={{
-                                        fontSize: '11px',
-                                        marginTop: '15px',
-                                        padding: '8px 12px',
-                                        background: 'rgba(255, 255, 255, 0.1)',
-                                        borderRadius: '20px',
-                                        opacity: 0.7
-                                    }}>
-                                        Current: DEMO_MODE = {config.DEMO_MODE.toString()}
-                                    </div>
+                    {userLocation && (
+                        <div style={{
+                            marginTop: '10px', 
+                            padding: '8px', 
+                            background: 'rgba(212, 175, 55, 0.1)', 
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            color: '#e0b841'
+                        }}>
+                            📍 Your location: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+                        </div>
+                    )}
+                </div>
+
+                <div className="wine-walk-map-container">
+                    <div ref={mapRef} className="wine-walk-map">
+                        {config.DEMO_MODE ? (
+                            <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'column',
+                                color: 'white',
+                                fontSize: '18px',
+                                textAlign: 'center',
+                                zIndex: 1
+                            }}>
+                                <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
+                                <div>Interactive Map (Demo Mode)</div>
+                                <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
+                                    GPS tracking and directions still work!
                                 </div>
-                            ) : !mapsLoaded ? (
-                                <div style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    flexDirection: 'column',
-                                    color: 'white',
-                                    fontSize: '18px',
-                                    textAlign: 'center',
-                                    zIndex: 1
-                                }}>
-                                    <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
-                                    <div>Loading Google Maps...</div>
-                                    <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
-                                        Please wait while we load the interactive map
-                                    </div>
-                                    <div style={{ 
-                                        width: '40px', 
-                                        height: '40px', 
-                                        border: '3px solid rgba(255,255,255,0.3)',
-                                        borderTop: '3px solid white',
-                                        borderRadius: '50%',
-                                        animation: 'spin 1s linear infinite',
-                                        marginTop: '20px'
-                                    }}></div>
+                                <div style={{ fontSize: '12px', marginTop: '20px', opacity: 0.6, maxWidth: '400px' }}>
+                                    Set REACT_APP_DEMO_MODE=false in your .env file for full map functionality
                                 </div>
-                            ) : null}
+                                <div style={{
+                                    fontSize: '11px',
+                                    marginTop: '15px',
+                                    padding: '8px 12px',
+                                    background: 'rgba(255, 255, 255, 0.1)',
+                                    borderRadius: '20px',
+                                    opacity: 0.7
+                                }}>
+                                    Current: DEMO_MODE = {config.DEMO_MODE.toString()}
+                                </div>
+                            </div>
+                        ) : !mapsLoaded ? (
+                            <div style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'column',
+                                color: 'white',
+                                fontSize: '18px',
+                                textAlign: 'center',
+                                zIndex: 1
+                            }}>
+                                <div style={{ fontSize: '48px', marginBottom: '20px' }}>🗺️</div>
+                                <div>Loading Google Maps...</div>
+                                <div style={{ fontSize: '14px', marginTop: '10px', opacity: 0.8 }}>
+                                    Please wait while we load the interactive map
+                                </div>
+                                <div style={{ 
+                                    width: '40px', 
+                                    height: '40px', 
+                                    border: '3px solid rgba(255,255,255,0.3)',
+                                    borderTop: '3px solid white',
+                                    borderRadius: '50%',
+                                    animation: 'spin 1s linear infinite',
+                                    marginTop: '20px'
+                                }}></div>
+                            </div>
+                        ) : null}
                         </div>
                     </div>
                 </div>
@@ -995,7 +995,7 @@ const EzFestSignup = () => {
                                                 </span>
                                             )}
                                         </div>
-
+                                        
                                         {location.category && (
                                             <div style={{
                                                 fontSize: '12px', 

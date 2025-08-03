@@ -48,6 +48,7 @@
       "last 1 safari version"
     ]
   },
+  "proxy": "http://localhost:3001",
   "env": {
     "KLAVIYO_PRIVATE_API_KEY": "pk_6811fc9f50361d1357c49b1bd91a029acc",
     "KLAVIYO_LIST_ID": "TJr6rx"

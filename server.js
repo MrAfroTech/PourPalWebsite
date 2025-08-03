@@ -141,7 +141,6 @@ app.get('/api/test-klaviyo', async (req, res) => {
       details: error.response?.data || error.message
     });
   }
-  });
 });
 
 app.listen(PORT, () => {
