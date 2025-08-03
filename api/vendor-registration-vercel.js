@@ -32,13 +32,17 @@ async function addContactToKlaviyo(contactData) {
                 formattedPhone = '+' + formattedPhone.replace(/\D/g, '');
             }
         }
+        
+        // If phone number is invalid or empty, don't include it
+        if (!formattedPhone || formattedPhone.length < 10) {
+            formattedPhone = null;
+        }
 
         const klaviyoData = {
             data: {
                 type: 'profile',
                 attributes: {
                     email: contactData.email,
-                    phone_number: formattedPhone,
                     first_name: contactData.vendorName,
                     last_name: contactData.businessName,
                     properties: {
@@ -53,6 +57,11 @@ async function addContactToKlaviyo(contactData) {
                 }
             }
         };
+        
+        // Only add phone_number if it's valid
+        if (formattedPhone) {
+            klaviyoData.data.attributes.phone_number = formattedPhone;
+        }
 
         console.log('📧 Klaviyo request payload:', JSON.stringify(klaviyoData, null, 2));
 
