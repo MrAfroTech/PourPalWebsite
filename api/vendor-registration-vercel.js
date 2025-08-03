@@ -191,7 +191,7 @@ export default async function handler(req, res) {
             console.log('📧 === KLACIYO INTEGRATION START ===');
             console.log('📧 Using API Key:', KLAVIYO_API_KEY ? `${KLAVIYO_API_KEY.substring(0, 10)}...` : 'NOT SET');
             console.log('📧 Using List ID:', KLAVIYO_LIST_ID);
-            console.log('📧 Contact data:', contactData);
+            console.log('📧 Contact data:', { vendorName, businessName, vendorType, cuisineType, email, phone, posSystem, selectedPlan });
             console.log('📧 Environment variables check:');
             console.log('  - KLAVIYO_API_KEY:', !!process.env.KLAVIYO_PRIVATE_API_KEY);
             console.log('  - KLAVIYO_LIST_ID:', !!process.env.KLAVIYO_LIST_ID);
