@@ -63,27 +63,40 @@ const EzDrinkSignup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('🚀 Form submission started');
+        console.log('📋 Form data:', formData);
+        
         setLoading(true);
         setError('');
         setSuccess('');
 
         try {
+            console.log('✅ Form validation passed');
+            
             // Validate form
             if (!formData.vendorName || !formData.businessName || !formData.email || 
                 !formData.phone || !formData.selectedPlan) {
+                console.log('❌ Form validation failed');
                 throw new Error('Please fill in all required fields');
             }
 
             // For paid plans, validate payment fields
             if (formData.selectedPlan === 'pro' || formData.selectedPlan === 'ultimate') {
+                console.log('💳 Validating payment fields for paid plan');
                 const cardNumber = document.getElementById('card-number')?.value;
                 const expiryDate = document.getElementById('expiry-date')?.value;
                 const cvv = document.getElementById('cvv')?.value;
                 const nameOnCard = document.getElementById('name-on-card')?.value;
 
+                console.log('💳 Payment field values:', { cardNumber: !!cardNumber, expiryDate: !!expiryDate, cvv: !!cvv, nameOnCard: !!nameOnCard });
+
                 if (!cardNumber || !expiryDate || !cvv || !nameOnCard) {
+                    console.log('❌ Payment validation failed');
                     throw new Error('Please fill in all payment information');
                 }
+                console.log('✅ Payment validation passed');
+            } else {
+                console.log('🆓 Free plan - skipping payment validation');
             }
 
             // For paid plans, process payment first
@@ -157,6 +170,10 @@ const EzDrinkSignup = () => {
                 }
             } else {
                 // Free plan - no payment required
+                console.log('🆓 Processing free plan registration');
+                console.log('📤 Submitting free plan registration to API...');
+                console.log('📤 Request payload:', formData);
+                
                 const response = await fetch('/api/vendor-registration-vercel', {
                     method: 'POST',
                     headers: {
@@ -165,9 +182,15 @@ const EzDrinkSignup = () => {
                     body: JSON.stringify(formData),
                 });
 
+                console.log('📥 API Response status:', response.status);
+                console.log('📥 API Response headers:', Object.fromEntries(response.headers.entries()));
+                
                 const result = await response.json();
+                console.log('📥 API Response data:', result);
 
                 if (result.success) {
+                    console.log('✅ Free plan registration successful');
+                    console.log('📧 Klaviyo Profile ID:', result.klaviyoProfileId);
                     setSuccess(result.message);
                     // Reset form
                     setFormData({
@@ -183,12 +206,17 @@ const EzDrinkSignup = () => {
                     setSelectedPlan('');
                     document.getElementById('cuisine-type-section').style.display = 'none';
                 } else {
+                    console.log('❌ Free plan registration failed:', result.error);
                     throw new Error(result.error || 'Registration failed');
                 }
             }
         } catch (error) {
+            console.log('❌ Form submission error:', error);
+            console.log('❌ Error message:', error.message);
+            console.log('❌ Error stack:', error.stack);
             setError(error.message);
         } finally {
+            console.log('🏁 Form submission completed');
             setLoading(false);
         }
     };
