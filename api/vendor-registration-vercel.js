@@ -98,59 +98,7 @@ async function addContactToKlaviyo(contactData) {
     }
 }
 
-// Helper function to add profile to Klaviyo list
-async function addProfileToList(profileId, listId) {
-    try {
-        console.log('📧 === KLACIYO LIST SUBSCRIPTION START ===');
-        console.log('📧 Profile ID to add:', profileId);
-        console.log('📧 List ID to add to:', listId);
-        console.log('📧 List subscription endpoint:', `https://a.klaviyo.com/api/lists/${listId}/profile-subscription-bulk-create-jobs/`);
-        
-        const listPayload = {
-            data: {
-                type: 'profile-subscription-bulk-create-job',
-                attributes: {
-                    profiles: {
-                        data: [
-                            {
-                                type: 'profile',
-                                id: profileId
-                            }
-                        ]
-                    }
-                }
-            }
-        };
 
-        console.log('📧 List subscription payload:', JSON.stringify(listPayload, null, 2));
-
-        const response = await fetch(`https://a.klaviyo.com/api/lists/${listId}/profile-subscription-bulk-create-jobs/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Revision': '2023-12-15'
-            },
-            body: JSON.stringify(listPayload)
-        });
-
-        console.log('📧 List subscription response status:', response.status);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.log('📧 List subscription error response:', errorText);
-            throw new Error(`Klaviyo list API error: ${response.status} ${response.statusText} - ${errorText}`);
-        }
-
-        const result = await response.json();
-        console.log('✅ Profile added to list:', result);
-        return result;
-    } catch (error) {
-        console.error('❌ Error adding profile to list:', error);
-        throw error;
-    }
-}
 
 // Helper function to track event in Klaviyo
 async function trackKlaviyoEvent(profileId, eventName, eventData) {
@@ -265,14 +213,41 @@ export default async function handler(req, res) {
 
             console.log('✅ Contact added to Klaviyo with ID:', klaviyoProfileId);
 
-            // Add profile to the specific list
-            try {
-                await addProfileToList(klaviyoProfileId, KLAVIYO_LIST_ID);
-                console.log('✅ Profile added to list successfully');
-            } catch (listError) {
-                console.error('❌ Failed to add profile to list:', listError);
-                // Continue even if list addition fails
+                    // Add profile to the specific list using the correct endpoint
+        try {
+            console.log('📧 Adding profile to list using correct endpoint...');
+            
+            const listResponse = await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Revision': '2023-12-15'
+                },
+                body: JSON.stringify({
+                    data: [
+                        {
+                            type: 'profile',
+                            id: klaviyoProfileId
+                        }
+                    ]
+                })
+            });
+
+            console.log('📧 List addition response status:', listResponse.status);
+
+            if (!listResponse.ok) {
+                const listErrorText = await listResponse.text();
+                console.log('📧 List addition error response:', listErrorText);
+                throw new Error(`List addition failed: ${listResponse.status} ${listResponse.statusText} - ${listErrorText}`);
             }
+
+            console.log('✅ Profile added to list successfully');
+        } catch (listError) {
+            console.error('❌ Failed to add profile to list:', listError);
+            // Continue even if list addition fails
+        }
 
             // Track registration event
             await trackKlaviyoEvent(klaviyoProfileId, 'Vendor Registration Started', {
