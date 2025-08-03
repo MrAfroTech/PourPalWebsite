@@ -174,6 +174,7 @@ const EzDrinkSignup = () => {
                 console.log('📤 Submitting free plan registration to API...');
                 console.log('📤 Request payload:', formData);
                 
+                console.log('📤 Making request to:', window.location.origin + '/api/vendor-registration-vercel');
                 const response = await fetch('/api/vendor-registration-vercel', {
                     method: 'POST',
                     headers: {
@@ -184,6 +185,14 @@ const EzDrinkSignup = () => {
 
                 console.log('📥 API Response status:', response.status);
                 console.log('📥 API Response headers:', Object.fromEntries(response.headers.entries()));
+                console.log('📥 API Response URL:', response.url);
+                
+                if (!response.ok) {
+                    console.log('❌ API request failed with status:', response.status);
+                    const errorText = await response.text();
+                    console.log('❌ Error response:', errorText);
+                    throw new Error(`API request failed: ${response.status} - ${errorText}`);
+                }
                 
                 const result = await response.json();
                 console.log('📥 API Response data:', result);
