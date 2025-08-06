@@ -11,6 +11,113 @@ console.log('🔧 KLAVIYO_LIST_ID value:', process.env.KLAVIYO_LIST_ID || 'NOT S
 console.log('🔧 All env vars with KLAVIYO:', Object.keys(process.env).filter(key => key.includes('KLAVIYO')));
 console.log('🔧 === END MODULE LEVEL CHECK ===');
 
+// Helper function to send immediate welcome email via Klaviyo
+async function sendWelcomeEmail(profileId, contactData) {
+    try {
+        console.log('📧 Sending welcome email via Klaviyo...');
+        
+        const emailData = {
+            data: {
+                type: 'email',
+                attributes: {
+                    profile: {
+                        $id: profileId
+                    },
+                    subject: `Welcome to EzDrink, ${contactData.vendorName}!`,
+                    template_id: process.env.KLAVIYO_WELCOME_EMAIL_TEMPLATE_ID || 'welcome_vendor_email',
+                    context: {
+                        vendor_name: contactData.vendorName,
+                        business_name: contactData.businessName,
+                        plan: contactData.selectedPlan,
+                        setup_url: `${process.env.FRONTEND_URL || 'https://ezdrink.us'}/setup/${profileId}`
+                    }
+                }
+            }
+        };
+
+        const response = await fetch('https://a.klaviyo.com/api/emails/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Revision': '2023-12-15'
+            },
+            body: JSON.stringify(emailData)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Klaviyo email API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ Welcome email sent via Klaviyo:', result);
+        return { success: true, messageId: result.data.id };
+    } catch (error) {
+        console.error('❌ Error sending welcome email:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+// Helper function to send immediate welcome SMS via Klaviyo
+async function sendWelcomeSMS(profileId, contactData) {
+    try {
+        console.log('📱 Sending welcome SMS via Klaviyo...');
+        
+        // Format phone number for SMS
+        let formattedPhone = contactData.phone;
+        if (formattedPhone && !formattedPhone.startsWith('+')) {
+            if (formattedPhone.replace(/\D/g, '').length === 10) {
+                formattedPhone = '+1' + formattedPhone.replace(/\D/g, '');
+            } else if (formattedPhone.replace(/\D/g, '').length === 11 && formattedPhone.replace(/\D/g, '').startsWith('1')) {
+                formattedPhone = '+' + formattedPhone.replace(/\D/g, '');
+            }
+        }
+        
+        if (!formattedPhone || formattedPhone.length < 10) {
+            console.log('📱 Invalid phone number for SMS, skipping');
+            return { success: false, error: 'Invalid phone number' };
+        }
+
+        const smsData = {
+            data: {
+                type: 'sms',
+                attributes: {
+                    profile: {
+                        $id: profileId
+                    },
+                    message: `Welcome to EzDrink, ${contactData.vendorName}! Your ${contactData.selectedPlan} plan is now active. We'll be in touch within 24 hours to complete your setup. Reply STOP to unsubscribe.`,
+                    template_id: process.env.KLAVIYO_WELCOME_SMS_TEMPLATE_ID || 'welcome_vendor_sms'
+                }
+            }
+        };
+
+        const response = await fetch('https://a.klaviyo.com/api/sms/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Revision': '2023-12-15'
+            },
+            body: JSON.stringify(smsData)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Klaviyo SMS API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ Welcome SMS sent via Klaviyo:', result);
+        return { success: true, messageId: result.data.id };
+    } catch (error) {
+        console.error('❌ Error sending welcome SMS:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // Helper function to add contact to Klaviyo
 async function addContactToKlaviyo(contactData) {
     try {
@@ -158,8 +265,6 @@ async function addContactToKlaviyo(contactData) {
     }
 }
 
-
-
 // Helper function to track event in Klaviyo
 async function trackKlaviyoEvent(profileId, eventName, eventData) {
     try {
@@ -247,6 +352,9 @@ export default async function handler(req, res) {
 
         // Add contact to Klaviyo
         let klaviyoProfileId;
+        let emailResult = { success: false };
+        let smsResult = { success: false };
+        
         try {
             console.log('📧 === KLACIYO INTEGRATION START ===');
             console.log('📧 Using API Key:', KLAVIYO_API_KEY ? `${KLAVIYO_API_KEY.substring(0, 10)}...` : 'NOT SET');
@@ -257,6 +365,7 @@ export default async function handler(req, res) {
             console.log('  - KLAVIYO_LIST_ID:', !!process.env.KLAVIYO_LIST_ID);
             console.log('  - KLAVIYO_API_KEY value:', process.env.KLAVIYO_PRIVATE_API_KEY ? 'SET' : 'NOT SET');
             console.log('  - KLAVIYO_LIST_ID value:', process.env.KLAVIYO_LIST_ID || 'NOT SET');
+            console.log('  - KLAVIYO_LIST_ID fallback:', KLAVIYO_LIST_ID);
             console.log('  - KLAVIYO_LIST_ID fallback:', KLAVIYO_LIST_ID);
             console.log('📧 All environment variables:', Object.keys(process.env).filter(key => key.includes('KLAVIYO')));
             
@@ -291,42 +400,6 @@ export default async function handler(req, res) {
             klaviyoProfileId = klaviyoResult.profileId;
             console.log('✅ Contact added to Klaviyo with ID:', klaviyoProfileId);
 
-                    // Add profile to the specific list using the correct endpoint
-        try {
-            console.log('📧 Adding profile to list using correct endpoint...');
-            
-            const listResponse = await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Revision': '2023-12-15'
-                },
-                body: JSON.stringify({
-                    data: [
-                        {
-                            type: 'profile',
-                            id: klaviyoProfileId
-                        }
-                    ]
-                })
-            });
-
-            console.log('📧 List addition response status:', listResponse.status);
-
-            if (!listResponse.ok) {
-                const listErrorText = await listResponse.text();
-                console.log('📧 List addition error response:', listErrorText);
-                throw new Error(`List addition failed: ${listResponse.status} ${listResponse.statusText} - ${listErrorText}`);
-            }
-
-            console.log('✅ Profile added to list successfully');
-        } catch (listError) {
-            console.error('❌ Failed to add profile to list:', listError);
-            // Continue even if list addition fails
-        }
-
             // Track registration event
             await trackKlaviyoEvent(klaviyoProfileId, 'Vendor Registration Started', {
                 plan: selectedPlan,
@@ -335,6 +408,38 @@ export default async function handler(req, res) {
             });
 
             console.log('✅ Registration event tracked in Klaviyo');
+
+            // Send immediate welcome communications
+            const contactData = {
+                vendorName,
+                businessName,
+                vendorType,
+                cuisineType,
+                email,
+                phone,
+                posSystem,
+                selectedPlan
+            };
+
+            // Send welcome email
+            emailResult = await sendWelcomeEmail(klaviyoProfileId, contactData);
+            if (emailResult.success) {
+                console.log('✅ Welcome email sent successfully');
+            } else {
+                console.log('⚠️ Welcome email failed:', emailResult.error);
+            }
+
+            // Send welcome SMS if phone number is valid
+            if (phone && phone.replace(/\D/g, '').length >= 10) {
+                smsResult = await sendWelcomeSMS(klaviyoProfileId, contactData);
+                if (smsResult.success) {
+                    console.log('✅ Welcome SMS sent successfully');
+                } else {
+                    console.log('⚠️ Welcome SMS failed:', smsResult.error);
+                }
+            } else {
+                console.log('📱 No valid phone number provided, skipping SMS');
+            }
 
         } catch (klaviyoError) {
             console.error('❌ Klaviyo integration failed:', klaviyoError);
@@ -368,6 +473,10 @@ export default async function handler(req, res) {
                 success: true,
                 message: 'Registration successful! Welcome to the free plan.',
                 klaviyoProfileId,
+                communications: {
+                    email: emailResult.success,
+                    sms: phone && phone.replace(/\D/g, '').length >= 10 ? smsResult.success : false
+                },
                 data: {
                     vendorName,
                     businessName,
@@ -382,6 +491,10 @@ export default async function handler(req, res) {
                 success: true,
                 message: 'Registration successful! Welcome to the free plan.',
                 klaviyoProfileId,
+                communications: {
+                    email: emailResult.success,
+                    sms: phone && phone.replace(/\D/g, '').length >= 10 ? smsResult.success : false
+                },
                 klaviyoDebug: {
                     apiKeyUsed: KLAVIYO_API_KEY ? 'YES' : 'NO',
                     listIdUsed: KLAVIYO_LIST_ID,

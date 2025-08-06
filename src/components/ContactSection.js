@@ -9,11 +9,9 @@ const ContactSection = () => {
     message: ''
   });
   
-  const [status, setStatus] = useState({
-    submitted: false,
-    submitting: false,
-    info: { error: false, msg: null }
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   
   const handleChange = e => {
     const { name, value } = e.target;
@@ -22,25 +20,51 @@ const ContactSection = () => {
   
   const handleSubmit = async e => {
     e.preventDefault();
-    setStatus(prevStatus => ({ ...prevStatus, submitting: true }));
+    console.log('🚀 Contact form submission started');
+    console.log('📋 Form data:', formData);
     
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
     try {
-      const res = await fetch('/api/contact', {
+      console.log('✅ Form validation passed');
+      
+      // Validate form
+      if (!formData.name || !formData.email || !formData.message) {
+        console.log('❌ Form validation failed');
+        throw new Error('Please fill in all required fields');
+      }
+
+      console.log('📤 Submitting contact form to API...');
+      console.log('📤 Request payload:', formData);
+      
+      const response = await fetch('http://localhost:3001/api/contact', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
+
+      console.log('📥 API Response status:', response.status);
+      console.log('📥 API Response headers:', Object.fromEntries(response.headers.entries()));
+      console.log('📥 API Response URL:', response.url);
       
-      const data = await res.json();
+      if (!response.ok) {
+        console.log('❌ API request failed with status:', response.status);
+        const errorText = await response.text();
+        console.log('❌ Error response:', errorText);
+        throw new Error(`API request failed: ${response.status} - ${errorText}`);
+      }
       
-      if (res.ok) {
-        setStatus({
-          submitted: true,
-          submitting: false,
-          info: { error: false, msg: data.message }
-        });
+      const result = await response.json();
+      console.log('📥 API Response data:', result);
+
+      if (result.success) {
+        console.log('✅ Contact form submission successful');
+        setSuccess(result.message || 'Thank you for your message! We\'ll get back to you soon.');
+        // Reset form
         setFormData({
           name: '',
           email: '',
@@ -48,18 +72,17 @@ const ContactSection = () => {
           message: ''
         });
       } else {
-        setStatus({
-          submitted: false,
-          submitting: false,
-          info: { error: true, msg: data.message }
-        });
+        console.log('❌ Contact form submission failed:', result.error);
+        throw new Error(result.error || 'Contact form submission failed');
       }
     } catch (error) {
-      setStatus({
-        submitted: false,
-        submitting: false,
-        info: { error: true, msg: 'An error occurred. Please try again later.' }
-      });
+      console.log('❌ Contact form submission error:', error);
+      console.log('❌ Error message:', error.message);
+      console.log('❌ Error stack:', error.stack);
+      setError(error.message);
+    } finally {
+      console.log('🏁 Contact form submission completed');
+      setLoading(false);
     }
   };
   
@@ -67,7 +90,7 @@ const ContactSection = () => {
     <section id="contact" className="contact-section">
       <div className="section-header">
         <h2 className="section-title">Get In Touch</h2>
-        <p className="section-subtitle">Interested in EzDrink? Let's talk about how we can help your business.</p>
+        <p className="section-subtitle">Interested in Seamless? Let's talk about how we can help your business.</p>
       </div>
       
       <div className="contact-container">
@@ -109,7 +132,7 @@ const ContactSection = () => {
             </div>
             <div className="contact-text">
               <h4>Phone</h4>
-              <p>(123) 456-7890</p>
+              <p>(305) 434-0738</p>
             </div>
           </div>
           
@@ -122,13 +145,13 @@ const ContactSection = () => {
             </div>
             <div className="contact-text">
               <h4>Email</h4>
-              <p>hello@EzDrink.store</p>
+              <p>team@ezdrink.us</p>
             </div>
           </div>
         </div>
         
         <div className="contact-form-container">
-          {status.submitted ? (
+          {success ? (
             <div className="form-success">
               <div className="success-icon">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -137,10 +160,10 @@ const ContactSection = () => {
                 </svg>
               </div>
               <h3>Thank you for reaching out!</h3>
-              <p>We've received your message and will get back to you shortly.</p>
+              <p>{success}</p>
               <button 
                 className="primary-button"
-                onClick={() => setStatus(prevStatus => ({ ...prevStatus, submitted: false }))}
+                onClick={() => setSuccess('')}
               >
                 Send Another Message
               </button>
@@ -152,6 +175,12 @@ const ContactSection = () => {
                 <p>Fill out the form below and we'll be in touch soon</p>
               </div>
               
+              {error && (
+                <div className="form-error">
+                  <p>❌ {error}</p>
+                </div>
+              )}
+              
               <div className="form-group">
                 <label htmlFor="name">Name</label>
                 <input
@@ -162,6 +191,7 @@ const ContactSection = () => {
                   onChange={handleChange}
                   placeholder="Your name"
                   required
+                  disabled={loading}
                 />
               </div>
               
@@ -175,6 +205,7 @@ const ContactSection = () => {
                   onChange={handleChange}
                   placeholder="Your email address"
                   required
+                  disabled={loading}
                 />
               </div>
               
@@ -186,6 +217,7 @@ const ContactSection = () => {
                   value={formData.type}
                   onChange={handleChange}
                   required
+                  disabled={loading}
                 >
                   <option value="bar_owner">Bar Owner/Manager</option>
                   <option value="customer">Customer</option>
@@ -204,21 +236,16 @@ const ContactSection = () => {
                   placeholder="Tell us how we can help you"
                   rows="4"
                   required
+                  disabled={loading}
                 ></textarea>
               </div>
-              
-              {status.info.error && (
-                <div className="form-error">
-                  <p>{status.info.msg}</p>
-                </div>
-              )}
               
               <button 
                 type="submit" 
                 className="primary-button submit-button"
-                disabled={status.submitting}
+                disabled={loading}
               >
-                {status.submitting ? 'Sending...' : 'Send Message'}
+                {loading ? '⏳ Sending...' : 'Send Message'}
               </button>
             </form>
           )}

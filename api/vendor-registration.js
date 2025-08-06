@@ -183,6 +183,105 @@ async function createPaymentIntent(amount, currency = 'usd') {
     }
 }
 
+// Helper function to send immediate welcome email via Klaviyo
+async function sendWelcomeEmail(profileId, contactData) {
+    try {
+        console.log('📧 Sending welcome email via Klaviyo...');
+        
+        const emailData = {
+            data: {
+                type: 'email',
+                attributes: {
+                    profile: {
+                        $id: profileId
+                    },
+                    subject: `Welcome to EzDrink, ${contactData.vendorName}!`,
+                    template_id: 'welcome_vendor_email', // You'll need to create this template in Klaviyo
+                    context: {
+                        vendor_name: contactData.vendorName,
+                        business_name: contactData.businessName,
+                        plan: contactData.selectedPlan,
+                        setup_url: `${process.env.FRONTEND_URL}/setup/${profileId}`
+                    }
+                }
+            }
+        };
+
+        const response = await axios.post(
+            'https://a.klaviyo.com/api/emails/',
+            emailData,
+            {
+                headers: {
+                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Revision': '2023-12-15'
+                }
+            }
+        );
+
+        console.log('✅ Welcome email sent via Klaviyo:', response.data);
+        return { success: true, messageId: response.data.data.id };
+    } catch (error) {
+        console.error('❌ Error sending welcome email:', error.response?.data || error.message);
+        return { success: false, error: error.message };
+    }
+}
+
+// Helper function to send immediate welcome SMS via Klaviyo
+async function sendWelcomeSMS(profileId, contactData) {
+    try {
+        console.log('📱 Sending welcome SMS via Klaviyo...');
+        
+        // Format phone number for SMS
+        let formattedPhone = contactData.phone;
+        if (formattedPhone && !formattedPhone.startsWith('+')) {
+            if (formattedPhone.replace(/\D/g, '').length === 10) {
+                formattedPhone = '+1' + formattedPhone.replace(/\D/g, '');
+            } else if (formattedPhone.replace(/\D/g, '').length === 11 && formattedPhone.replace(/\D/g, '').startsWith('1')) {
+                formattedPhone = '+' + formattedPhone.replace(/\D/g, '');
+            }
+        }
+        
+        if (!formattedPhone || formattedPhone.length < 10) {
+            console.log('📱 Invalid phone number for SMS, skipping');
+            return { success: false, error: 'Invalid phone number' };
+        }
+
+        const smsData = {
+            data: {
+                type: 'sms',
+                attributes: {
+                    profile: {
+                        $id: profileId
+                    },
+                    message: `Welcome to EzDrink, ${contactData.vendorName}! Your ${contactData.selectedPlan} plan is now active. We'll be in touch within 24 hours to complete your setup. Reply STOP to unsubscribe.`,
+                    template_id: 'welcome_vendor_sms' // You'll need to create this template in Klaviyo
+                }
+            }
+        };
+
+        const response = await axios.post(
+            'https://a.klaviyo.com/api/sms/',
+            smsData,
+            {
+                headers: {
+                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Revision': '2023-12-15'
+                }
+            }
+        );
+
+        console.log('✅ Welcome SMS sent via Klaviyo:', response.data);
+        return { success: true, messageId: response.data.data.id };
+    } catch (error) {
+        console.error('❌ Error sending welcome SMS:', error.response?.data || error.message);
+        return { success: false, error: error.message };
+    }
+}
+
 // Main registration endpoint
 router.post('/register', async (req, res) => {
     try {
@@ -252,6 +351,38 @@ router.post('/register', async (req, res) => {
 
             console.log('✅ Registration event tracked in Klaviyo');
 
+            // Send immediate welcome communications
+            const contactData = {
+                vendorName,
+                businessName,
+                vendorType,
+                cuisineType,
+                email,
+                phone,
+                posSystem,
+                selectedPlan
+            };
+
+            // Send welcome email
+            const emailResult = await sendWelcomeEmail(klaviyoProfileId, contactData);
+            if (emailResult.success) {
+                console.log('✅ Welcome email sent successfully');
+            } else {
+                console.log('⚠️ Welcome email failed:', emailResult.error);
+            }
+
+            // Send welcome SMS if phone number is valid
+            if (phone && phone.replace(/\D/g, '').length >= 10) {
+                const smsResult = await sendWelcomeSMS(klaviyoProfileId, contactData);
+                if (smsResult.success) {
+                    console.log('✅ Welcome SMS sent successfully');
+                } else {
+                    console.log('⚠️ Welcome SMS failed:', smsResult.error);
+                }
+            } else {
+                console.log('📱 No valid phone number provided, skipping SMS');
+            }
+
         } catch (klaviyoError) {
             console.error('❌ Klaviyo error:', klaviyoError);
             return res.status(500).json({
@@ -299,7 +430,11 @@ router.post('/register', async (req, res) => {
                         success: true,
                         message: 'Registration successful! Payment processed.',
                         paymentIntent: paymentIntentConfirm,
-                        klaviyoProfileId
+                        klaviyoProfileId,
+                        communications: {
+                            email: emailResult.success,
+                            sms: phone && phone.replace(/\D/g, '').length >= 10 ? smsResult.success : false
+                        }
                     });
                 } else {
                     // Payment failed
@@ -345,7 +480,11 @@ router.post('/register', async (req, res) => {
             return res.json({
                 success: true,
                 message: 'Registration successful! Welcome to the free plan.',
-                klaviyoProfileId
+                klaviyoProfileId,
+                communications: {
+                    email: emailResult.success,
+                    sms: phone && phone.replace(/\D/g, '').length >= 10 ? smsResult.success : false
+                }
             });
         }
 

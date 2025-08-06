@@ -5,76 +5,57 @@ import StatsModal from './StatsModal';
 const HeroSection = ({ onOpenPopup }) => {
   const textRef = useRef(null);
   const statsRef = useRef(null);
-  const videoRefs = useRef([]);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeModal, setActiveModal] = useState(null);
   const [showMenuPopup, setShowMenuPopup] = useState(false);
-  const videoTimerRef = useRef(null);
+  const imageTimerRef = useRef(null);
   const transitionInProgress = useRef(false);
   
-  // Fixed video duration
-  const VIDEO_DURATION = 3000; // 3 seconds
+  // Fixed image duration
+  const IMAGE_DURATION = 4000; // 4 seconds
 
-  // Your video sources - updated list with 22 videos
-  const videoSources = [
-    '/1899147-hd_1920_1080_30fps.mp4',
-    '/2022396_segment1.mp4',
-    '/2022396-hd_1920_1080_30fps.mp4',
-    '/3402517-uhd_4096_2160_25fps.mp4',
-    '/3403452-hd_1920_1080_25fps.mp4',
-    '/3772392-hd_1920_1080_25fps (1).mp4',
-    '/4667118-uhd_4096_2160_25fps.mp4',
-    '/4667157-uhd_4096_2160_25fps.mp4',
-    '/4694603-uhd_4096_2160_25fps (1).mp4',
-    '/4774631-hd_1920_1080_25fps (1).mp4',
-    '/5816530-hd_1920_1080_25fps.mp4',
-    '/5974777-uhd_4096_2160_30fps.mp4',
-    '/6174384-hd_1920_1080_30fps.mp4',
-    '/6174435-hd_1920_1080_30fps.mp4',
-    '/6396313-hd_1920_1080_25fps.mp4',
-    '/6396314-hd_1920_1080_25fps.mp4',
-    '/7219895-uhd_3840_2160_24fps.mp4',
-    '/7269151-uhd_3840_2160_25fps.mp4',
-    '/7269643-uhd_3840_2160_25fps.mp4',
-    '/7722221-uhd_3840_2160_25fps.mp4',
-    '/8935798-uhd_3840_2160_25fps.mp4',
-    '/9003399-hd_1920_1080_25fps.mp4',
-    '/9419423-uhd_4096_2160_25fps.mp4',
-    '/14058819-uhd_2732_1440_24fps.mp4'
+  // Pexels image sources - B2B appropriate images
+  const imageSources = [
+    '/pexels-chanwalrus-941861.jpg',
+    '/pexels-conojeghuo-375889.jpg',
+    '/pexels-davideibiza-1739748.jpg',
+    '/pexels-igor-starkov-233202-1237073.jpg',
+    '/pexels-igor-starkov-233202-791810.jpg',
+    '/pexels-introspectivedsgn-12973613.jpg',
+    '/pexels-kampus-5920673.jpg',
+    '/pexels-kampus-5920742.jpg',
+    '/pexels-life-of-pix-67468.jpg',
+    '/pexels-nastyasensei-66707-331107.jpg',
+    '/pexels-pixabay-260922.jpg',
+    '/pexels-quark-studio-1159039-3201921.jpg',
+    '/pexels-rdne-10375833.jpg',
+    '/pexels-reneterp-2544830.jpg',
+    '/pexels-sander-dalhuisen-1332691-2566029.jpg',
+    '/pexels-thiagopatrevita-1121482.jpg',
+    '/pexels-wb2008-2290070.jpg'
   ];
 
-  // Initialize videos and start the sequence
+  // Initialize images and start the sequence
   useEffect(() => {
-    // Initialize video refs array
-    videoRefs.current = Array(videoSources.length).fill(null);
-    
-    // Preload all videos to improve performance
-    videoSources.forEach((src, index) => {
-      const video = document.createElement('video');
-      video.src = src;
-      video.preload = 'auto';
-      video.muted = true;
-    });
-    
-    // Start with the first video
-    startVideoSequence();
+    // Start with the first image
+    startImageSequence();
     
     // Cleanup function to clear any timers
     return () => {
-      if (videoTimerRef.current) {
-        clearTimeout(videoTimerRef.current);
+      if (imageTimerRef.current) {
+        clearTimeout(imageTimerRef.current);
       }
     };
   }, []);
 
   // Initial sequence start
-  const startVideoSequence = () => {
-    console.log("Starting video sequence with video 0");
-    playVideo(0);
+  const startImageSequence = () => {
+    console.log("Starting image sequence with image 0");
+    showImage(0);
   };
   
-  // Main function to play a specific video
-  const playVideo = (index) => {
+  // Main function to show a specific image
+  const showImage = (index) => {
     // Prevent multiple simultaneous transitions
     if (transitionInProgress.current) {
       console.log("Transition already in progress, skipping");
@@ -84,80 +65,22 @@ const HeroSection = ({ onOpenPopup }) => {
     transitionInProgress.current = true;
     
     // Clear any existing timers
-    if (videoTimerRef.current) {
-      clearTimeout(videoTimerRef.current);
+    if (imageTimerRef.current) {
+      clearTimeout(imageTimerRef.current);
     }
     
-    console.log(`Playing video ${index}`);
+    console.log(`Showing image ${index}`);
     
-    // Update the current video index
-    setCurrentVideoIndex(index);
+    // Update the current image index
+    setCurrentImageIndex(index);
     
-    // Make sure all other videos are paused
-    videoRefs.current.forEach((videoRef, i) => {
-      if (videoRef && i !== index) {
-        videoRef.pause();
-      }
-    });
-    
-    // Play the current video
-    const videoRef = videoRefs.current[index];
-    if (videoRef) {
-      // Reset to beginning
-      videoRef.currentTime = 0;
-      
-      // Disable looping explicitly
-      videoRef.loop = false;
-      
-      // Play the video
-      videoRef.play()
-        .then(() => {
-          console.log(`Video ${index} started playing`);
-          
-          // Schedule next video after fixed duration
-          videoTimerRef.current = setTimeout(() => {
-            const nextIndex = (index + 1) % videoSources.length;
-            console.log(`Moving from video ${index} to ${nextIndex}`);
-            transitionInProgress.current = false;
-            playVideo(nextIndex);
-          }, VIDEO_DURATION);
-        })
-        .catch(error => {
-          console.error(`Error playing video ${index}:`, error);
-          
-          // If there's an error, try the next video
-          const nextIndex = (index + 1) % videoSources.length;
-          console.log(`Error with video ${index}, moving to ${nextIndex}`);
-          transitionInProgress.current = false;
-          
-          // Small delay before trying next video
-          setTimeout(() => {
-            playVideo(nextIndex);
-          }, 100);
-        });
-    } else {
-      console.error(`Video ref ${index} not available`);
-      
-      // If video ref is not available, move to next video
-      const nextIndex = (index + 1) % videoSources.length;
+    // Schedule next image after fixed duration
+    imageTimerRef.current = setTimeout(() => {
+      const nextIndex = (index + 1) % imageSources.length;
+      console.log(`Moving from image ${index} to ${nextIndex}`);
       transitionInProgress.current = false;
-      setTimeout(() => {
-        playVideo(nextIndex);
-      }, 100);
-    }
-  };
-  
-  // Handle video ended event as backup (in case the timer fails)
-  const handleVideoEnded = (index) => {
-    console.log(`Video ${index} ended naturally`);
-    
-    // If this is the current video, move to the next one
-    if (index === currentVideoIndex) {
-      const nextIndex = (index + 1) % videoSources.length;
-      console.log(`Video ${index} ended, moving to ${nextIndex}`);
-      transitionInProgress.current = false;
-      playVideo(nextIndex);
-    }
+      showImage(nextIndex);
+    }, IMAGE_DURATION);
   };
 
   useEffect(() => {
@@ -228,44 +151,33 @@ const HeroSection = ({ onOpenPopup }) => {
 
   return (
     <section className="hero-section">
-      {/* Video Background */}
+      {/* Image Background */}
       <div className="hero-background">
-        <div className="video-background">
-          {videoSources.map((src, index) => (
-            <video
-              key={`video-${index}-${src}`}
-              ref={el => videoRefs.current[index] = el}
+        <div className="image-background">
+          {imageSources.map((src, index) => (
+            <img
+              key={`image-${index}-${src}`}
               src={src}
-              muted
-              playsInline
-              loop={false}
-              onEnded={() => handleVideoEnded(index)}
-              className={`video-element ${index === currentVideoIndex ? 'active' : ''}`}
+              alt={`Background image ${index + 1}`}
+              className={`image-element ${index === currentImageIndex ? 'active' : ''}`}
             />
           ))}
-          <div className="video-overlay"></div>
+          <div className="image-overlay"></div>
           <div className="gradient-overlay"></div>
           <div className="grid-pattern"></div>
         </div>
       </div>
       
-      <div className="hero-content" ref={textRef}>
-        <h1 className="hero-title fade-in">
-          <span className="gradient-text">Ez</span>
-          <span className="accent-text">Drink</span>
-        </h1>
-        <h2 className="hero-subtitle fade-in">YOUR FAVORITE BARTENDER'S FAVORITE BARTENDER</h2>
-        <p className="hero-description fade-in">
-          Eliminate bar chaos. Eliminate long lines.
-          Happy customers. Efficient staff. More profits. Everybody wins.
-        </p>
-        
-        <div className="hero-cta fade-in">
-          <button className="primary-button" onClick={onOpenPopup}>Are You Ready?</button>
-          <button className="secondary-button" onClick={() => window.location.href = '/demo'}>Watch It In Action →</button>
-          <button className="ezfest-button" onClick={() => window.location.href = '/ezfest'}>🎪 Join EzFest →</button>
+              <div className="hero-content" ref={textRef}>
+          <h2 className="hero-subtitle fade-in">BRINGING THE HOSPITALITY INDUSTRY INTO THE 21ST CENTURY. ONE SEAMLESS CONNECTION AT A TIME</h2>
+          <p className="hero-description fade-in">
+            We integrate with any POS system connecting vendors to their customers. From California to New York. Florida to Maine. From food trucks to bars to massive festivals.
+          </p>
+          
+          <div className="hero-cta fade-in">
+            <button className="primary-button wide-button" onClick={onOpenPopup}>Claim Your Free Access</button>
+          </div>
         </div>
-      </div>
       
       <div className="hero-visual">
         <div className="stats-container" ref={statsRef}>
@@ -326,7 +238,7 @@ const HeroSection = ({ onOpenPopup }) => {
             <div className="phone-screen">
               <div className="app-screen">
                 <div className="app-header">
-                  <div className="app-logo">EzDrink</div>
+                  <div className="app-logo">Seamless</div>
                   <div className="app-icon"></div>
                 </div>
                 <div className="app-content">
@@ -393,7 +305,7 @@ const HeroSection = ({ onOpenPopup }) => {
             
             <div className="popup-content">
               <h3>No More Menu Maintenance Headaches</h3>
-              <p>EzDrink transforms your existing menu into a digital masterpiece with zero effort on your part. Our team handles the entire process, from initial setup to seasonal updates.</p>
+              <p>Seamless transforms your existing menu into a digital masterpiece with zero effort on your part. Our team handles the entire process, from initial setup to seasonal updates.</p>
               
               <h3>Three Simple Steps to Digital Transformation</h3>
               <ol>

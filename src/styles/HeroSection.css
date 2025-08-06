@@ -28,8 +28,8 @@
     background-color: #121212;
   }
   
-  /* Video Background */
-  .video-background {
+  /* Image Background */
+  .image-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -38,7 +38,7 @@
     z-index: 0;
   }
   
-  .video-element {
+  .image-element {
     position: absolute;
     top: 0;
     left: 0;
@@ -51,11 +51,11 @@
     will-change: opacity;
   }
   
-  .video-element.active {
+  .image-element.active {
     opacity: 1;
   }
   
-  .video-overlay {
+  .image-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -165,6 +165,11 @@
   .primary-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 15px rgba(212, 175, 55, 0.3);
+  }
+  
+  .wide-button {
+    padding: 15px 50px;
+    min-width: 200px;
   }
   
   .secondary-button {
@@ -724,7 +729,7 @@
       width: 150px;
     }
     
-    .video-element {
+    .image-element {
       transition: opacity 0.5s ease;
     }
     

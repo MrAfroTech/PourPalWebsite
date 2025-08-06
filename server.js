@@ -3,18 +3,129 @@ const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// Import vendor registration routes
+// Import routes
 const vendorRegistrationRoutes = require('./api/vendor-registration');
+const klaviyoWebhook = require('./api/klaviyo-webhook');
+
+// Import services
+const crossPlatformIntegration = require('./services/crossPlatformIntegrationService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Increased limit for webhook payloads
 
 // Vendor registration routes
 app.use('/api/vendor-registration', vendorRegistrationRoutes);
+
+// Klaviyo webhook endpoint
+app.post('/api/webhooks/klaviyo', klaviyoWebhook);
+
+// Stripe webhook endpoint
+app.post('/api/webhooks/stripe', async (req, res) => {
+  try {
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    
+    let event;
+    
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+      console.error('❌ Stripe webhook signature verification failed:', err.message);
+      return res.status(400).json({ error: 'Invalid signature' });
+    }
+    
+    console.log('🔔 Stripe webhook received:', event.type);
+    
+    // Process the webhook
+    await crossPlatformIntegration.handleStripeWebhook(event);
+    
+    res.json({ received: true });
+    
+  } catch (error) {
+    console.error('❌ Stripe webhook error:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
+});
+
+// Clover webhook endpoint
+app.post('/api/webhooks/clover', async (req, res) => {
+  try {
+    console.log('🔔 Clover webhook received:', req.body.type);
+    
+    // Verify Clover webhook signature if needed
+    // const signature = req.headers['x-clover-signature'];
+    // if (!crossPlatformIntegration.verifyWebhookSignature(req.body, signature, process.env.CLOVER_WEBHOOK_SECRET)) {
+    //   return res.status(401).json({ error: 'Invalid signature' });
+    // }
+    
+    await crossPlatformIntegration.handleCloverWebhook(req.body);
+    
+    res.json({ received: true });
+    
+  } catch (error) {
+    console.error('❌ Clover webhook error:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
+});
+
+// Square webhook endpoint
+app.post('/api/webhooks/square', async (req, res) => {
+  try {
+    console.log('🔔 Square webhook received:', req.body.type);
+    
+    // Verify Square webhook signature if needed
+    // const signature = req.headers['x-square-signature'];
+    // if (!crossPlatformIntegration.verifyWebhookSignature(req.body, signature, process.env.SQUARE_WEBHOOK_SECRET)) {
+    //   return res.status(401).json({ error: 'Invalid signature' });
+    // }
+    
+    await crossPlatformIntegration.handleSquareWebhook(req.body);
+    
+    res.json({ received: true });
+    
+  } catch (error) {
+    console.error('❌ Square webhook error:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
+});
+
+// Shopify webhook endpoint
+app.post('/api/webhooks/shopify', async (req, res) => {
+  try {
+    console.log('🔔 Shopify webhook received:', req.body.topic);
+    
+    // Verify Shopify webhook signature if needed
+    // const signature = req.headers['x-shopify-hmac-sha256'];
+    // if (!crossPlatformIntegration.verifyWebhookSignature(req.body, signature, process.env.SHOPIFY_WEBHOOK_SECRET)) {
+    //   return res.status(401).json({ error: 'Invalid signature' });
+    // }
+    
+    await crossPlatformIntegration.handleShopifyWebhook(req.body);
+    
+    res.json({ received: true });
+    
+  } catch (error) {
+    console.error('❌ Shopify webhook error:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    services: {
+      klaviyo: !!process.env.KLAVIYO_PRIVATE_API_KEY,
+      stripe: !!process.env.STRIPE_SECRET_KEY,
+      server: 'running'
+    }
+  });
+});
 
 // Stripe checkout session endpoint
 app.post('/api/create-checkout-session', async (req, res) => {

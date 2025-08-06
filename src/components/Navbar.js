@@ -36,8 +36,8 @@ const Navbar = ({ scrollPosition, onOpenFunnel }) => {
         <Link to="/" className="navbar-logo">
           <div className="logo-container">
             <span className="logo-text">
-              <span className="gradient-text">Ez</span>
-              <span className="accent-text">Drink</span>
+              <span className="gradient-text">Seam</span>
+              <span className="accent-text">less</span>
             </span>
           </div>
         </Link>
@@ -53,12 +53,12 @@ const Navbar = ({ scrollPosition, onOpenFunnel }) => {
         <ul className={`nav-menu ${menuOpen ? 'active' : ''}`}>
           <li className="nav-item">
             <Link to="/increase-revenue" className="nav-link" onClick={() => setMenuOpen(false)}>
-              Increase Revenue
+              Partnership Benefits
             </Link>
           </li>
           <li className="nav-item">
             <Link to="/reduce-expenses" className="nav-link" onClick={() => setMenuOpen(false)}>
-              Reduce Expenses
+              Turn Wait Time Into Revenue
             </Link>
           </li>
           <li className="nav-item">
@@ -71,7 +71,7 @@ const Navbar = ({ scrollPosition, onOpenFunnel }) => {
               className="nav-button primary-button" 
               onClick={handleButtonClick}
             >
-              See How Much You'll Earn → Book Now
+              Claim Your Free Access
             </button>
           </li>
         </ul>

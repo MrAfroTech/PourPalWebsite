@@ -32,8 +32,8 @@ const FeatureSection = () => {
   return (
     <section id="features" className="features-section" ref={sectionRef}>
       <div className="section-header">
-        <h2 className="section-title">Elevate Your Bar Experience</h2>
-        <p className="section-subtitle">EzDrink brings cutting-edge AI to revolutionize ordering</p>
+        <h2 className="section-title">Vendor Benefits</h2>
+        <p className="section-subtitle">Seamless brings cutting-edge technology to revolutionize your business operations</p>
       </div>
       
       <div className="features-container">
@@ -45,9 +45,9 @@ const FeatureSection = () => {
               <path d="M8 19H16" stroke="currentColor" strokeWidth="2"/>
             </svg>
           </div>
-          <h3 className="feature-title">Skip The Line</h3>
+          <h3 className="feature-title">Increase Revenue</h3>
           <p className="feature-description">
-            Order directly from your table or anywhere in the venue without waiting in line at the bar.
+            Reduce wait times and increase order volume with seamless digital ordering that works 24/7.
           </p>
         </div>
         
@@ -59,9 +59,9 @@ const FeatureSection = () => {
               <path d="M8 15H16" stroke="currentColor" strokeWidth="2"/>
             </svg>
           </div>
-          <h3 className="feature-title">Seamless Payments</h3>
+          <h3 className="feature-title">POS Integration</h3>
           <p className="feature-description">
-            Securely pay through the app with multiple payment options and easy tipping.
+            Seamlessly integrate with your existing POS system - no hardware changes required.
           </p>
         </div>
         
@@ -73,9 +73,9 @@ const FeatureSection = () => {
               <path d="M22 22L18 18" stroke="currentColor" strokeWidth="2"/>
             </svg>
           </div>
-          <h3 className="feature-title">Real-Time Updates</h3>
+          <h3 className="feature-title">Real-Time Analytics</h3>
           <p className="feature-description">
-            Get instant notifications when your order is being prepared and when it's ready for pickup.
+            Get instant insights into sales patterns, popular items, and customer behavior to optimize your menu.
           </p>
         </div>
         
@@ -87,9 +87,9 @@ const FeatureSection = () => {
               <path d="M17.5 7.5V7.51" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </div>
-          <h3 className="feature-title">Smart Recommendations</h3>
+          <h3 className="feature-title">Menu Management</h3>
           <p className="feature-description">
-            AI-powered suggestions based on your preferences and popular choices at the venue.
+            Easily update prices, add seasonal items, and manage inventory in real-time from anywhere.
           </p>
         </div>
         
@@ -112,9 +112,9 @@ const FeatureSection = () => {
               <path d="M10.5 17H11.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
-          <h3 className="feature-title">Order History</h3>
+          <h3 className="feature-title">24/7 Support</h3>
           <p className="feature-description">
-            Easily reorder your favorites with a complete history of your past orders at any venue.
+            Get dedicated support whenever you need it - from setup to ongoing operations and troubleshooting.
           </p>
         </div>
         
@@ -125,9 +125,9 @@ const FeatureSection = () => {
               <path d="M8 12L11 15L16 9" stroke="currentColor" strokeWidth="2"/>
             </svg>
           </div>
-          <h3 className="feature-title">Contactless Experience</h3>
+          <h3 className="feature-title">Reduce Costs</h3>
           <p className="feature-description">
-            Minimize physical contact with menus and staff for a safer, more convenient experience.
+            Lower operational costs with automated ordering, reduced wait times, and optimized staff allocation.
           </p>
         </div>
       </div>

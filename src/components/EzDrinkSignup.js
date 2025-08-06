@@ -134,8 +134,14 @@ const EzDrinkSignup = () => {
                     throw new Error(paymentMethodError.message);
                 }
 
+                // Determine API endpoint based on environment
+                const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                const apiBaseUrl = isDevelopment ? 'http://localhost:3001' : 'https://ezdrink-h68lriqtf-maurice-sanders-projects.vercel.app';
+                const apiEndpoint = `${apiBaseUrl}/api/vendor-registration/register`;
+
                 // Submit registration with payment
-                const response = await fetch('http://localhost:3001/api/vendor-registration/register', {
+                console.log('📤 Making request to:', apiEndpoint);
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -174,8 +180,13 @@ const EzDrinkSignup = () => {
                 console.log('📤 Submitting free plan registration to API...');
                 console.log('📤 Request payload:', formData);
                 
-                console.log('📤 Making request to:', 'http://localhost:3001/api/vendor-registration/register');
-                const response = await fetch('http://localhost:3001/api/vendor-registration/register', {
+                // Determine API endpoint based on environment
+                const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                const apiBaseUrl = isDevelopment ? 'http://localhost:3001' : 'https://ezdrink-h68lriqtf-maurice-sanders-projects.vercel.app';
+                const apiEndpoint = `${apiBaseUrl}/api/vendor-registration/register`;
+                
+                console.log('📤 Making request to:', apiEndpoint);
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -200,6 +211,7 @@ const EzDrinkSignup = () => {
                 if (result.success) {
                     console.log('✅ Free plan registration successful');
                     console.log('📧 Klaviyo Profile ID:', result.klaviyoProfileId);
+                    console.log('📧 Communications status:', result.communications);
                     setSuccess(result.message);
                     // Reset form
                     setFormData({

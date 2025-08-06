@@ -115,18 +115,18 @@ const isSignupSuccessPage = location.pathname === '/signup-success';
 const isEzFestPage = location.pathname === '/ezfest';
 const hideNavbar = isDownloadPage || isCashFinderPage || isWineWalkPage || isKidsExpoPage || isSignupPage || isSignupSuccessPage || isEzFestPage;
 
-  // Auto-display video popup when site loads
-  useEffect(() => {
-    // Only show popup on homepage (not on other routes)
-    if (location.pathname === '/') {
-      // Delay showing popup by 3 seconds for better user experience
-      const timer = setTimeout(() => {
-        setShowVideoPopup(true);
-      }, 3000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [location.pathname]);
+  // Auto-display video popup when site loads - DISABLED
+  // useEffect(() => {
+  //   // Only show popup on homepage (not on other routes)
+  //   if (location.pathname === '/') {
+  //     // Delay showing popup by 3 seconds for better user experience
+  //     const timer = setTimeout(() => {
+  //       setShowVideoPopup(true);
+  //     }, 3000);
+  //     
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
