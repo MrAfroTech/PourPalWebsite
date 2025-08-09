@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Season: Be the Venue Everyone's Talking About</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #0A0A0A;
+        }
+        
+        .email-container {
+            background-color: #1A1A1A;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #1A1A1A 50%, #333333 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+            color: #CCCCCC;
+        }
+        
+        .content {
+            padding: 40px 30px;
+            background-color: #1A1A1A;
+            color: #CCCCCC;
+        }
+        
+        .subject-preview {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #FF6B35;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+        }
+        
+        .future-vision {
+            background: linear-gradient(135deg, #1A2A1A, #0A1A0A);
+            border: 1px solid #00AA44;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border-radius: 8px;
+            border-left: 4px solid #FF6B35;
+        }
+        
+        .timeline-number {
+            background-color: #FF6B35;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .success-metrics {
+            background: linear-gradient(135deg, #1A1A2A, #0A0A1A);
+            border: 2px solid #4169E1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+        }
+        
+        .metric-label {
+            font-weight: bold;
+            color: #4169E1;
+        }
+        
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+        
+        .urgency-box {
+            background-color: #2A1A1A;
+            border-left: 4px solid #FF6B35;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .urgency-box h3 {
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+        
+        .final-cta-section {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .final-cta-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .final-cta-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #000000;
+            color: #FF6B35;
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 2px solid #FF6B35;
+        }
+        
+        .cta-button:hover {
+            background-color: #FF6B35;
+            color: #000000;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 3px solid #000000;
+            color: #000000;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #000000;
+            color: #FF6B35;
+        }
+        
+        .guarantee-box {
+            background-color: #1A2A1A;
+            border: 2px solid #00FF88;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .footer {
+            background-color: #000000;
+            color: #CCCCCC;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 3px solid #FF6B35;
+        }
+        
+        .footer a {
+            color: #FF6B35;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .final-cta-section {
+                padding: 30px 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .timeline-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .timeline-number {
+                margin: 0 auto 15px auto;
+            }
+            
+            .metric-row {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Nightlife Solutions</h1>
+            <div class="tagline">Filling Seats, Amplifying Energy</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>Next Season: Be the Venue Everyone's Talking About</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Your Nightlife Empire This Season</h1>
+                
+                <p>Over the past week, we've covered the complete transformation: from half-empty venues to packed dance floors, from hoping for crowds to proactively reaching party-goers, from one-night visitors to VIP regulars.</p>
+
+                <div class="future-vision">
+                    <h3 style="color: #00FF88; margin-bottom: 15px;">🎯 Picture Your Venue 90 Days From Now</h3>
+                    <p style="font-size: 18px; font-style: italic;">"The venue with consistently packed weekends, VIP regulars who bring their friends every week, and a reputation as the place everyone plans their night around."</p>
+                </div>
+
+                <p>This isn't wishful thinking – it's the predictable result of building your digital nightlife presence while your competitors are still waiting for groups to find them by chance.</p>
+
+                <h3 style="color: #FF6B35; margin: 30px 0 20px 0;">Your 90-Day Nightlife Transformation Timeline</h3>
+
+                <div class="timeline-item">
+                    <div class="timeline-number">30</div>
+                    <div>
+                        <strong>First Month:</strong> Digital presence established, party-goers discovering your venue through event searches<br>
+                        <em>Immediate boost in weeknight attendance and new group acquisition</em>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-number">60</div>
+                    <div>
+                        <strong>Second Month:</strong> Repeat groups returning, higher per-group spending from smart upselling<br>
+                        <em>VIP loyalty building, predictable weekend revenue streams developing</em>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-number">90</div>
+                    <div>
+                        <strong>Third Month:</strong> Local nightlife dominance, loyal VIP base, competitors wondering how you own the scene<br>
+                        <em>Sustainable growth, packed weekends, and the venue everyone talks about</em>
+                    </div>
+                </div>
+
+                <div class="success-metrics">
+                    <h3 style="text-align: center; color: #4169E1; margin-bottom: 20px;">Expected Results by Month 3</h3>
+                    
+                    <div class="metric-row">
+                        <span class="metric-label">Weeknight Attendance</span>
+                        <span class="metric-value">+250-350%</span>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-label">Average Group Spend</span>
+                        <span class="metric-value">+45-65%</span>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-label">VIP Regulars</span>
+                        <span class="metric-value">+200%</span>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-label">Overall Revenue</span>
+                        <span class="metric-value">+50-75%</span>
+                    </div>
+                </div>
+
+                <div class="urgency-box">
+                    <h3>⏰ The First-Mover Advantage Is Closing</h3>
+                    <p>Right now, you have a massive advantage: most venues in your area haven't made the digital nightlife transition yet. But this window won't stay open forever.</p>
+                    <p><strong>Every month you wait, more competitors adopt digital strategies and your first-mover advantage diminishes.</strong></p>
+                </div>
+
+                <p><strong>The question isn't whether digital nightlife marketing will become standard – it already is.</strong> The question is whether you'll lead the transformation in your market or scramble to catch up later.</p>
+
+                <div class="guarantee-box">
+                    <h3 style="color: #00FF88;">🛡️ Risk-Free Trial</h3>
+                    <p><strong>Forever Free Plan:</strong> Start building your digital presence at no cost</p>
+                    <p><strong>Pro/Ultimate Plans:</strong> Get 2 full months free to see the transformation</p>
+                    <p><em>No contracts, no hidden fees, cancel anytime</em></p>
+                </div>
+
+                <p>Your amazing atmosphere deserves to be discovered by every party-goer in your area. Your dedication to great experiences deserves VIP customers who return every weekend. Your venue deserves to thrive, not just survive.</p>
+
+                <p><strong>The venues that act now will own their local nightlife scenes. The ones that wait will spend years trying to catch up.</strong></p>
+            </div>
+
+            <!-- Final Call to Action -->
+            <div class="final-cta-section">
+                <div class="final-cta-title">Own Your Nightlife Market</div>
+                <div class="final-cta-subtitle">Join thousands of successful venues using Seamless to fill more seats and amplify their energy</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Claim 2 FREE Months Pro/Ultimate</a>
+                </div>
+                <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">Start building your scene today, while your competition is still guessing what works</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

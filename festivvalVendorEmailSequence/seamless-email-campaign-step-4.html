@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn Every $8 Order Into a $12 Order (Without Saying a Word)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #121212 0%, #2a2a2a 100%);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15), transparent 40%);
+        }
+        
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-text {
+            color: #ffffff;
+            font-size: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background: #f8f9fa;
+            border-left: 4px solid #d4af37;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .subject-preview h2 {
+            color: #d4af37;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .subject-preview p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .main-content h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .order-comparison {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .order-scenario {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .order-scenario.enhanced {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .scenario-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .scenario-title.basic {
+            color: #6c757d;
+        }
+        
+        .scenario-title.enhanced {
+            color: #d4af37;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .order-item.suggested {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #d4af37;
+        }
+        
+        .order-total {
+            border-top: 2px solid #333;
+            padding-top: 10px;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .order-total.enhanced {
+            color: #d4af37;
+        }
+        
+        .upsell-features {
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 6px;
+            border-left: 4px solid #d4af37;
+        }
+        
+        .feature-icon {
+            font-size: 20px;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .feature-text {
+            flex-grow: 1;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .revenue-impact {
+            background: #121212;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .revenue-stat {
+            display: inline-block;
+            margin: 0 20px;
+        }
+        
+        .revenue-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #d4af37;
+            display: block;
+        }
+        
+        .revenue-label {
+            font-size: 14px;
+            color: #ffffff;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4af37 0%, #f5d76e 100%);
+            color: #121212;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: transform 0.2s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .pricing-highlight {
+            background: #121212;
+            color: #ffffff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .pricing-highlight .free-plan {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-highlight .trial-offer {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+        
+
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .main-content h1 {
+                font-size: 24px;
+            }
+            
+            .order-comparison {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .revenue-stat {
+                display: block;
+                margin: 15px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Seamless</div>
+            <div class="header-text">Coast to Coast Onsite Mobile Ordering</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                
+                <p>Turn Every $8 Order Into a $12 Order (Without Saying a Word)</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>The Upsell Opportunity You're Missing</h1>
+                
+                <p>Yesterday we talked about getting discovered. Today, let's talk about something that could transform your revenue: <strong>automated upselling.</strong></p>
+                
+                <p>Right now, when a customer orders from you, do you remember to suggest add-ons? Do you mention the perfect drink pairing? Do you offer dessert?</p>
+                
+                <p>Probably not. You're busy cooking, taking orders, and managing the line. But what if the app did your suggestive selling for you?</p>
+                
+                <div class="order-comparison">
+                    <div class="order-scenario">
+                        <div class="scenario-title basic">Traditional Ordering</div>
+                        <div class="order-item">
+                            <span>2 Carnitas Tacos</span>
+                            <span>$9.00</span>
+                        </div>
+                        <div class="order-total">Total: $9.00</div>
+                    </div>
+                    
+                    <div class="order-scenario enhanced">
+                        <div class="scenario-title enhanced">With Seamless Upselling</div>
+                        <div class="order-item">
+                            <span>2 Carnitas Tacos</span>
+                            <span>$9.00</span>
+                        </div>
+                        <div class="order-item suggested">
+                            <span>+ Guacamole (suggested)</span>
+                            <span>$2.50</span>
+                        </div>
+                        <div class="order-item suggested">
+                            <span>+ Horchata (suggested)</span>
+                            <span>$3.00</span>
+                        </div>
+                        <div class="order-total enhanced">Total: $14.50</div>
+                    </div>
+                </div>
+                
+                <p><strong>That's a 61% increase in order value.</strong> And the customer is happier because they discovered items they actually wanted.</p>
+                
+                <div class="upsell-features">
+                    <h3 style="color: #d4af37; text-align: center; margin-bottom: 20px;">How Seamless Upsells For You</h3>
+                    
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-icon">🤖</div>
+                            <div class="feature-text">
+                                <div class="feature-title">Smart Suggestions</div>
+                                <div class="feature-desc">App automatically suggests complementary items based on their order</div>
+                            </div>
+                        </li>
+                        
+                        <li>
+                            <div class="feature-icon">🍽️</div>
+                            <div class="feature-text">
+                                <div class="feature-title">Combo Deals</div>
+                                <div class="feature-desc">Create preset combinations that save customers money while increasing your revenue</div>
+                            </div>
+                        </li>
+                        
+                        <li>
+                            <div class="feature-icon">⏰</div>
+                            <div class="feature-text">
+                                <div class="feature-title">Perfect Timing</div>
+                                <div class="feature-desc">Suggests add-ons at checkout when customers are most likely to say yes</div>
+                            </div>
+                        </li>
+                        
+                        <li>
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-text">
+                                <div class="feature-title">Data-Driven</div>
+                                <div class="feature-desc">Learns what items sell well together to improve suggestions over time</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <p>The best part? <strong>You don't have to remember anything.</strong> While you focus on cooking amazing food, the app is working behind the scenes to increase every order value.</p>
+                
+                <div class="revenue-impact">
+                    <h3 style="color: #d4af37; margin-bottom: 20px;">Your Revenue Potential</h3>
+                    
+                    <div class="revenue-stat">
+                        <span class="revenue-number">50+</span>
+                        <span class="revenue-label">Orders per day</span>
+                    </div>
+                    
+                    <div class="revenue-stat">
+                        <span class="revenue-number">$4.50</span>
+                        <span class="revenue-label">Average upsell value</span>
+                    </div>
+                    
+                    <div class="revenue-stat">
+                        <span class="revenue-number">$225</span>
+                        <span class="revenue-label">Extra revenue per day</span>
+                    </div>
+                </div>
+                
+                <p>That's an extra $225 per day in revenue without any additional effort from you. Over a festival season, that could mean thousands in additional income.</p>
+                
+                <p><strong>Let the app do your suggestive selling while you focus on what you do best: creating amazing food.</strong></p>
+                
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <h3 style="margin-bottom: 15px; color: #333;">Start Upselling Automatically</h3>
+                    <a href="https://ezdrink.us/signup" class="cta-button">Boost My Revenue</a>
+                    
+                    <div class="pricing-highlight">
+                        <div class="free-plan">Forever Free Plan Gets You Started</div>
+                        <div class="trial-offer">Pro plan with advanced upselling FREE for 2 months</div>
+                    </div>
+                </div>
+                
+                <p>Tomorrow, I'll show you how to turn one-time festival customers into loyal followers who seek you out at every event.</p>
+                
+                <p>Growing your average order,<br>
+                <strong>The Seamless Team</strong></p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+
+            
+            <p><strong>Seamless</strong> - Coast to Coast Onsite Mobile Ordering<br>
+            Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">View in Browser</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

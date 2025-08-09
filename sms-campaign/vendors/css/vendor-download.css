@@ -1,0 +1,325 @@
+/* Vendor Download CSS for SMS Campaign */
+
+/* Mobile-first responsive design */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    overflow: hidden;
+    animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content {
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.form-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #8B4513;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.form-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.download-button {
+    background: linear-gradient(135deg, #8B4513, #D2691E);
+    color: white;
+    border: none;
+    padding: 18px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.download-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(139, 69, 19, 0.3);
+}
+
+.download-button:active {
+    transform: translateY(0);
+}
+
+.download-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.download-button:hover::before {
+    left: 100%;
+}
+
+/* Signup Popup Styles */
+.signup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 20px;
+}
+
+.signup-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.signup-popup {
+    background: white;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.signup-overlay.active .signup-popup {
+    transform: scale(1);
+}
+
+.popup-content {
+    padding: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+.popup-header h2 {
+    color: #8B4513;
+    font-size: 24px;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.popup-header p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.signup-btn {
+    background: linear-gradient(135deg, #8B4513, #D2691E);
+    color: white;
+    border: none;
+    padding: 16px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.signup-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+}
+
+.benefits {
+    text-align: left;
+    color: #666;
+    font-size: 14px;
+}
+
+.benefits div {
+    margin-bottom: 8px;
+    padding-left: 5px;
+}
+
+/* Loading states */
+.download-button.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.download-button.success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .content {
+        padding: 30px 20px;
+    }
+    
+    .form-title {
+        font-size: 24px;
+    }
+    
+    .download-button {
+        padding: 16px 30px;
+        font-size: 16px;
+    }
+    
+    .popup-content {
+        padding: 25px 20px;
+    }
+    
+    .popup-header h2 {
+        font-size: 22px;
+    }
+    
+    .signup-btn {
+        padding: 14px 25px;
+        font-size: 15px;
+    }
+}
+
+/* Extra small screens (phones in portrait) */
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 22px;
+    }
+    
+    .form-subtitle {
+        font-size: 15px;
+    }
+    
+    .download-button {
+        padding: 14px 25px;
+        font-size: 15px;
+    }
+    
+    .popup-header h2 {
+        font-size: 20px;
+    }
+    
+    .popup-header p {
+        font-size: 15px;
+    }
+}
+
+/* Accessibility improvements */
+.download-button:focus,
+.signup-btn:focus,
+.close-btn:focus {
+    outline: 3px solid rgba(139, 69, 19, 0.3);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .container {
+        border: 2px solid #000;
+    }
+    
+    .download-button,
+    .signup-btn {
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .container,
+    .download-button,
+    .signup-btn,
+    .signup-overlay,
+    .signup-popup {
+        animation: none;
+        transition: none;
+    }
+    
+    .download-button::before {
+        display: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .signup-overlay {
+        display: none !important;
+    }
+}

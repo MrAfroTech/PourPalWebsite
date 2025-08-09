@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn Every Round of Drinks Into a Bigger Night Out</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #0A0A0A;
+        }
+        
+        .email-container {
+            background-color: #1A1A1A;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #1A1A1A 50%, #333333 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+            color: #CCCCCC;
+        }
+        
+        .content {
+            padding: 40px 30px;
+            background-color: #1A1A1A;
+            color: #CCCCCC;
+        }
+        
+        .subject-preview {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #FF6B35;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+        }
+        
+        .spending-comparison {
+            display: flex;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .comparison-box {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .before-box {
+            background-color: #2A1A1A;
+            border: 2px solid #FF4444;
+        }
+        
+        .after-box {
+            background-color: #1A2A1A;
+            border: 2px solid #00FF88;
+        }
+        
+        .comparison-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .amount {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .before-amount { color: #FF4444; }
+        .after-amount { color: #00FF88; }
+        
+        .group-strategy {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .strategy-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #333333;
+            border-radius: 6px;
+            border-left: 4px solid #FF6B35;
+        }
+        
+        .strategy-icon {
+            background-color: #FF6B35;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        
+        .efficiency-highlight {
+            background-color: #2A1A2A;
+            border-left: 4px solid #9966CC;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .efficiency-highlight h3 {
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #000000;
+            color: #FF6B35;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid #FF6B35;
+        }
+        
+        .cta-button:hover {
+            background-color: #FF6B35;
+            color: #000000;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #000000;
+            color: #000000;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #000000;
+            color: #FF6B35;
+        }
+        
+        .stats-highlight {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border: 2px solid #FF6B35;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FF6B35;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #CCCCCC;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: #000000;
+            color: #CCCCCC;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 3px solid #FF6B35;
+        }
+        
+        .footer a {
+            color: #FF6B35;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .spending-comparison {
+                flex-direction: column;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .strategy-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .strategy-icon {
+                margin: 0 auto 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Nightlife Solutions</h1>
+            <div class="tagline">Filling Seats, Amplifying Energy</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>Turn Every Round of Drinks Into a Bigger Night Out</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>The Group Order Advantage</h1>
+                
+                <p>Yesterday we covered how to get more groups discovering and choosing your venue. Today, let's talk about maximizing revenue from every group that's already decided to party at your place.</p>
+
+                <div class="spending-comparison">
+                    <div class="comparison-box before-box">
+                        <div class="comparison-title">Typical Group Spend</div>
+                        <div class="amount before-amount">$120</div>
+                        <div>Basic drinks only</div>
+                    </div>
+                    <div class="comparison-box after-box">
+                        <div class="comparison-title">With Smart Group Ordering</div>
+                        <div class="amount after-amount">$185</div>
+                        <div>Drinks + Appetizers + Upgrades</div>
+                    </div>
+                </div>
+
+                <div class="stats-highlight">
+                    <span class="stats-number">55%</span>
+                    <div class="stats-label">average increase in group spending with digital ordering and upselling</div>
+                </div>
+
+                <p>The beauty of group-focused digital ordering is that it streamlines busy nights while automatically suggesting upgrades when groups are already committed to partying at your venue.</p>
+
+                <div class="group-strategy">
+                    <h3 style="text-align: center; color: #FF6B35; margin-bottom: 20px;">Group Upselling That Works in Nightlife</h3>
+                    
+                    <div class="strategy-item">
+                        <div class="strategy-icon">🍕</div>
+                        <div>
+                            <strong>Late Night Food Pairings:</strong> "Perfect for your group: Loaded nachos for sharing - $18"<br>
+                            <em>Suggest shareable appetizers when groups are settling in</em>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <div class="strategy-icon">🥃</div>
+                        <div>
+                            <strong>Premium Upgrades:</strong> "Upgrade to premium spirits for your group round - $6 per drink"<br>
+                            <em>Offer top-shelf options when groups are ordering rounds</em>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <div class="strategy-icon">🎉</div>
+                        <div>
+                            <strong>Event Add-Ons:</strong> "Make it VIP: Reserved table area for your group - $50"<br>
+                            <em>Present VIP experiences for special occasions</em>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <div class="strategy-icon">📱</div>
+                        <div>
+                            <strong>Group Round Ordering:</strong> "Order the next round for your table from your phone"<br>
+                            <em>Enable easy reordering to keep the night flowing</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="efficiency-highlight">
+                    <h3>⚡ Streamline Your Busy Nights</h3>
+                    <p>Your bartenders stay focused on creating great drinks and maintaining the energy while the system automatically handles group orders, suggests upgrades, and processes payments. No interrupting the flow, no training needed – just smart suggestions at exactly the right moment when groups are ready to spend.</p>
+                </div>
+
+                <p><strong>The result?</strong> Every group naturally considers adding items that enhance their night out, leading to higher satisfaction and significantly higher per-group spending.</p>
+
+                <p>While your competition relies on busy bartenders to remember upselling during rush periods, your groups are automatically presented with appealing options that make their night even better.</p>
+
+                <p><strong>Tomorrow, I'll show you how to turn these satisfied party-goers into VIP regulars who choose your venue every weekend.</strong></p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Streamline Your Busy Nights</div>
+                <div class="cta-subtitle">Let intelligent group ordering boost your revenue from day one</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Get 2 FREE Months Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

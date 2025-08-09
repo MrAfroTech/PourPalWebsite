@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Season: Be the Vendor Everyone's Talking About</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #121212 0%, #2a2a2a 100%);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15), transparent 40%);
+        }
+        
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-text {
+            color: #ffffff;
+            font-size: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background: #f8f9fa;
+            border-left: 4px solid #d4af37;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .subject-preview h2 {
+            color: #d4af37;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .subject-preview p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .main-content h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .season-vision {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            text-align: center;
+        }
+        
+        .vision-title {
+            color: #d4af37;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .vision-scenario {
+            font-size: 16px;
+            color: #333;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .timeline-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .timeline-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid;
+        }
+        
+        .timeline-card.current {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .timeline-card.future {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.05);
+        }
+        
+        .timeline-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        
+        .timeline-title.current {
+            color: #d4af37;
+            border-bottom-color: #d4af37;
+        }
+        
+        .timeline-title.future {
+            color: #28a745;
+            border-bottom-color: #28a745;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: #ffffff;
+            border-radius: 6px;
+        }
+        
+        .timeline-icon {
+            font-size: 16px;
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .timeline-text {
+            flex-grow: 1;
+            font-size: 14px;
+        }
+        
+        .early-adopter-benefits {
+            background: #121212;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .benefits-title {
+            color: #d4af37;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #d4af37;
+        }
+        
+        .benefit-number {
+            background: #d4af37;
+            color: #121212;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .benefit-content {
+            flex-grow: 1;
+        }
+        
+        .benefit-title {
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 5px;
+        }
+        
+        .benefit-desc {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .urgency-section {
+            background: rgba(220, 53, 69, 0.1);
+            border: 2px solid #dc3545;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .urgency-title {
+            color: #dc3545;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .urgency-text {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .urgency-highlight {
+            background: #dc3545;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .success-metrics {
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .metrics-title {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .metric-card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border-left: 4px solid #d4af37;
+        }
+        
+        .metric-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d4af37;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .final-cta {
+            background: linear-gradient(135deg, #d4af37 0%, #f5d76e 50%, #d4af37 100%);
+            color: #121212;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+        
+        .final-cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .final-cta-text {
+            font-size: 16px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #121212;
+            color: #d4af37;
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+            border: 2px solid #121212;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        
+        .pricing-reminder {
+            background: #121212;
+            color: #ffffff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .pricing-reminder .free-plan {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-reminder .trial-offer {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+        
+
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .main-content h1 {
+                font-size: 24px;
+            }
+            
+            .timeline-comparison {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .final-cta {
+                padding: 25px 20px;
+            }
+            
+            .final-cta-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Seamless</div>
+            <div class="header-text">Coast to Coast Onsite Mobile Ordering</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                
+                <p>Next Season: Be the Vendor Everyone's Talking About</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Your Festival Season Advantage</h1>
+                
+                <p>Over the past week, we've covered everything: discovery problems, customer retention, digital upselling, visibility, and relationship building.</p>
+                
+                <p><strong>Now it's time to talk about the big picture:</strong> Your position for next season.</p>
+                
+                <div class="season-vision">
+                    <div class="vision-title">🎪 Picture Next Festival Season</div>
+                    <div class="vision-scenario">
+                        While other vendors are still figuring out cash registers and hoping for foot traffic, you're the vendor everyone's talking about. Your customers are already planning to visit you. Event organizers are asking you to come back. You're not just surviving the festival circuit – you're dominating it.
+                    </div>
+                </div>
+                
+                <div class="timeline-comparison">
+                    <div class="timeline-card current">
+                        <div class="timeline-title current">Starting Today</div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">🆓</div>
+                            <div class="timeline-text">Join free, no risk</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">📱</div>
+                            <div class="timeline-text">Build digital presence</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">👥</div>
+                            <div class="timeline-text">Start collecting customers</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">📈</div>
+                            <div class="timeline-text">Test upselling features</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-card future">
+                        <div class="timeline-title future">Next Season</div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">🎯</div>
+                            <div class="timeline-text">Customers seek you out</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">💰</div>
+                            <div class="timeline-text">Higher average orders</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">⭐</div>
+                            <div class="timeline-text">Premium event bookings</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">🏆</div>
+                            <div class="timeline-text">Industry recognition</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="early-adopter-benefits">
+                    <div class="benefits-title">🚀 Early Adopter Advantages</div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-number">1</div>
+                        <div class="benefit-content">
+                            <div class="benefit-title">First-Mover Advantage</div>
+                            <div class="benefit-desc">Build your digital following before competitors even know this exists</div>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-number">2</div>
+                        <div class="benefit-content">
+                            <div class="benefit-title">Better Event Bookings</div>
+                            <div class="benefit-desc">Event organizers prefer vendors with proven digital capabilities</div>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-number">3</div>
+                        <div class="benefit-content">
+                            <div class="benefit-title">Customer Database Head Start</div>
+                            <div class="benefit-desc">Build relationships now that compound over time</div>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-number">4</div>
+                        <div class="benefit-content">
+                            <div class="benefit-title">Technology Learning Curve</div>
+                            <div class="benefit-desc">Master the platform during slow season, dominate during peak</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="urgency-section">
+                    <div class="urgency-title">⚡ Limited Time Opportunity</div>
+                    <div class="urgency-text">
+                        This 2-month free trial won't last forever. We're offering it now to help vendors prepare for the upcoming season.
+                    </div>
+                    <div class="urgency-highlight">
+                        Don't let your competitors get ahead while you're still thinking about it
+                    </div>
+                </div>
+                
+                <div class="success-metrics">
+                    <div class="metrics-title">What Success Looks Like</div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <span class="metric-number">3x</span>
+                            <span class="metric-label">Customer Discovery</span>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <span class="metric-number">$4.50</span>
+                            <span class="metric-label">Avg Upsell Value</span>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <span class="metric-number">85%</span>
+                            <span class="metric-label">Customer Retention</span>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <span class="metric-number">65%</span>
+                            <span class="metric-label">Revenue Increase</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <p><strong>Here's the truth:</strong> The vendors who adopt digital ordering now will be the leaders next season. The ones who wait will be playing catch-up.</p>
+                
+                <p>You can either be ahead of the curve or behind it. But you can't be on it – because by the time everyone else catches on, the advantage is gone.</p>
+                
+                <div class="final-cta">
+                    <div class="final-cta-title">🎯 Secure Your Festival Advantage</div>
+                    <div class="final-cta-text">
+                        Start building your digital presence today. Be the vendor customers seek out, not stumble upon.
+                    </div>
+                    <a href="https://ezdrink.us/signup" class="cta-button">Claim My Advantage NOW</a>
+                    
+                    <div class="pricing-reminder">
+                        <div class="free-plan">Join FREE Forever</div>
+                        <div class="trial-offer">Or claim your 2 free months on Pro/Ultimate plans</div>
+                    </div>
+                </div>
+                
+                <p>This is your moment. Next season, when customers are lining up at your booth because they found you on the app, when your average order is $4.50 higher because of automatic upselling, when event organizers are calling YOU – you'll remember this email.</p>
+                
+                <p><strong>The question is: Will you remember it as the moment you took action, or the opportunity you let slip by?</strong></p>
+                
+                <p>Ready to dominate next season,<br>
+                <strong>The Seamless Team</strong></p>
+                
+                <p style="margin-top: 30px; font-size: 14px; color: #666; text-align: center;">
+                    <em>P.S. This offer is limited to the first 500 vendors who sign up. After that, pricing returns to normal. Don't wait.</em>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+
+            
+            <p><strong>Seamless</strong> - Coast to Coast Onsite Mobile Ordering<br>
+            Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">View in Browser</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

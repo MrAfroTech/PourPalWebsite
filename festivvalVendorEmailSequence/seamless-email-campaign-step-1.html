@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden in Row 12, Booth 47... How Do Customers Actually Find You?</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #121212 0%, #2a2a2a 100%);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15), transparent 40%);
+        }
+        
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-text {
+            color: #ffffff;
+            font-size: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background: #f8f9fa;
+            border-left: 4px solid #d4af37;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .subject-preview h2 {
+            color: #d4af37;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .subject-preview p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .main-content h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .pain-point {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .pain-point h3 {
+            color: #dc3545;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .pain-point p {
+            color: #333;
+            font-style: italic;
+        }
+        
+        .solution-tease {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #d4af37;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .solution-tease h3 {
+            color: #d4af37;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4af37 0%, #f5d76e 100%);
+            color: #121212;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: transform 0.2s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .pricing-highlight {
+            background: #121212;
+            color: #ffffff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .pricing-highlight .free-plan {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-highlight .trial-offer {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+        
+
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .main-content h1 {
+                font-size: 24px;
+            }
+            
+            .cta-button {
+                display: block;
+                margin: 0 auto;
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Seamless</div>
+            <div class="header-text">Coast to Coast Onsite Mobile Ordering</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                
+                <p>Hidden in Row 12, Booth 47... How Do Customers Actually Find You?</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Picture This Festival Scenario...</h1>
+                
+                <p>It's Saturday afternoon at the county fair. Your booth is tucked away in Row 12, Booth 47. You're making the most incredible gourmet tacos in the entire event, but there's just one problem...</p>
+                
+                <div class="pain-point">
+                    <h3>🔍 The Discovery Problem</h3>
+                    <p>"Half the festival doesn't even know you exist. They're wandering around looking for 'that taco truck they heard about' while you're losing sales every minute."</p>
+                </div>
+                
+                <p>Sound familiar? You've experienced this frustration:</p>
+                
+                <ul style="margin: 20px 0; padding-left: 20px;">
+                    <li><strong>Lost customers:</strong> People give up looking and buy from whoever they find first</li>
+                    <li><strong>Word-of-mouth delays:</strong> By the time someone finds you and tells their friends, the event's half over</li>
+                    <li><strong>Location lottery:</strong> Your success depends more on booth placement than food quality</li>
+                    <li><strong>Invisible specialties:</strong> Your signature dishes remain unknown to most attendees</li>
+                </ul>
+                
+                <p>You make amazing food. Your regulars love you. But at every new event, you're starting from zero visibility.</p>
+                
+                <div class="solution-tease">
+                    <h3>💡 What If Customers Could Find You Before They Even See Your Booth?</h3>
+                    <p>Imagine if every festival attendee had your menu, location, and specialties right on their phone. No more hoping they'll stumble upon you. No more losing customers to discovery problems.</p>
+                </div>
+                
+                <p><strong>That's exactly what Seamless does.</strong> We put you on every attendee's phone, helping them find and order from you no matter where your booth is located.</p>
+                
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <h3 style="margin-bottom: 15px; color: #333;">Get Discovered Today</h3>
+                    <a href="https://ezdrink.us/signup" class="cta-button">Start Getting Found</a>
+                    
+                    <div class="pricing-highlight">
+                        <div class="free-plan">Forever Free Plan Available</div>
+                    </div>
+                </div>
+                
+                <p>Tomorrow, I'll show you the bigger problem: what happens when you move to the next festival and have to start building your customer base all over again.</p>
+                
+                <p>Talk soon,<br>
+                <strong>The Seamless Team</strong></p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+
+            
+            <p><strong>Seamless</strong> - Coast to Coast Onsite Mobile Ordering<br>
+            Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">View in Browser</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Truck Revenue Calculator - See Your Hidden Profit Potential</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 15px 0;
+            font-size: 38px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .header .subhead {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .calculator-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 3px solid #FF6B35;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .calc-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF6B35;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group:focus-within {
+            border-color: #FF6B35;
+        }
+        
+        .input-label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .input-help {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .calc-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .calc-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .results-section {
+            background: linear-gradient(135deg, #e8f5e8, #f0fff0);
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .results-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        
+        .result-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 8px;
+        }
+        
+        .result-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .improvement-highlight {
+            background: linear-gradient(135deg, #fff3cd, #fef2c7);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .highlight-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #e67e22;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            background-color: white;
+            color: #FF6B35;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .assumptions {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .assumptions h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>See How Much Money Your Food Truck Is Leaving on the Table</h1>
+            <div class="subhead">Calculate your exact revenue potential with better customer discovery and smart upselling</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Calculator Section -->
+            <div class="calculator-section">
+                <div class="calc-title">🚚 Food Truck Revenue Calculator</div>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label class="input-label">Festival Days Per Month</label>
+                        <div class="input-help">Average number of festivals/events you attend monthly</div>
+                        <input type="number" class="calc-input" id="festivalDays" value="8" min="1" max="31">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Current Average Order ($)</label>
+                        <div class="input-help">What customers typically spend per order</div>
+                        <input type="number" class="calc-input" id="avgOrder" value="8.50" min="1" step="0.50">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Customers Per Festival Day</label>
+                        <div class="input-help">Average number of customers you serve per event</div>
+                        <input type="number" class="calc-input" id="customersPerDay" value="85" min="1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Current Discovery Rate (%)</label>
+                        <div class="input-help">What % of festival-goers currently find your truck</div>
+                        <input type="number" class="calc-input" id="discoveryRate" value="12" min="1" max="100">
+                    </div>
+                </div>
+                
+                <button class="calculate-btn" onclick="calculateRevenue()">📊 Calculate My Revenue Potential</button>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results-section" id="results">
+                <div class="results-title">🎯 Your Revenue Transformation Potential</div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-number" id="currentMonthly">$0</div>
+                        <div class="result-label">Current Monthly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="improvedMonthly">$0</div>
+                        <div class="result-label">Potential Monthly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="yearlyIncrease">$0</div>
+                        <div class="result-label">Additional Yearly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="percentIncrease">0%</div>
+                        <div class="result-label">Revenue Increase</div>
+                    </div>
+                </div>
+                
+                <div class="improvement-highlight">
+                    <div class="highlight-number" id="weeklyBoost">$0</div>
+                    <div>Additional weekly revenue with better discovery and upselling</div>
+                </div>
+                
+                <!-- CTA in Results -->
+                <div style="background-color: white; padding: 30px; border-radius: 10px; margin-top: 20px;">
+                    <h3 style="color: #FF6B35; margin-bottom: 15px;">Ready to Turn This Potential Into Reality?</h3>
+                    <p style="margin-bottom: 20px; color: #666;">Get our complete Food Truck Success System and start implementing these revenue-boosting strategies today.</p>
+                    <a href="#" class="cta-button">🚀 Get The Complete System Free</a>
+                </div>
+            </div>
+            
+            <!-- Main CTA Section -->
+            <div class="cta-section">
+                <div class="cta-title">Turn These Numbers Into Your Reality</div>
+                <div class="cta-subtitle">Get the exact strategies that helped 200+ food trucks increase their revenue by 200-400%</div>
+                <a href="/sms-campaign/food-trucks/truck-guide.html" class="cta-button">📈 Show Me How to Get These Results</a>
+            </div>
+            
+            <!-- Assumptions -->
+            <div class="assumptions">
+                <h4>Calculation Methodology:</h4>
+                <ul>
+                    <li><strong>Discovery Improvement:</strong> Based on digital marketing, improved discovery rate increases to 25-35%</li>
+                    <li><strong>Upselling Impact:</strong> Smart menu design and ordering increases average order by 40-60%</li>
+                    <li><strong>Customer Retention:</strong> Following system creates 20% repeat customers across events</li>
+                    <li><strong>Industry Benchmarks:</strong> Data from 200+ food trucks using our system over 18 months</li>
+                    <li><strong>Conservative Estimates:</strong> Results show minimum improvements; many trucks exceed these numbers</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+        </div>
+    </div>
+    
+    <script>
+        function calculateRevenue() {
+            // Get input values
+            const festivalDays = parseFloat(document.getElementById('festivalDays').value);
+            const avgOrder = parseFloat(document.getElementById('avgOrder').value);
+            const customersPerDay = parseFloat(document.getElementById('customersPerDay').value);
+            const discoveryRate = parseFloat(document.getElementById('discoveryRate').value);
+            
+            // Current revenue calculation
+            const currentMonthly = festivalDays * avgOrder * customersPerDay;
+            
+            // Improved metrics based on our system
+            const improvedDiscoveryRate = Math.min(discoveryRate * 2.5, 35); // Up to 35% discovery
+            const improvedAvgOrder = avgOrder * 1.5; // 50% order increase through upselling
+            const repeatCustomerBonus = 1.2; // 20% bonus from repeat customers
+            
+            // Calculate improved revenue
+            const discoveryCutomers = customersPerDay * (improvedDiscoveryRate / discoveryRate);
+            const improvedMonthly = festivalDays * improvedAvgOrder * discoveryCutomers * repeatCustomerBonus;
+            
+            // Calculate increases
+            const monthlyIncrease = improvedMonthly - currentMonthly;
+            const yearlyIncrease = monthlyIncrease * 12;
+            const percentIncrease = ((improvedMonthly - currentMonthly) / currentMonthly) * 100;
+            const weeklyBoost = monthlyIncrease / 4;
+            
+            // Display results
+            document.getElementById('currentMonthly').textContent = '$' + currentMonthly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('improvedMonthly').textContent = '$' + improvedMonthly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('yearlyIncrease').textContent = '$' + yearlyIncrease.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('percentIncrease').textContent = percentIncrease.toFixed(0) + '%';
+            document.getElementById('weeklyBoost').textContent = '$' + weeklyBoost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            
+            // Show results section
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Track calculation event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'calculator_used', {
+                    event_category: 'Lead Generation',
+                    event_label: 'Food Truck Calculator',
+                    custom_parameters: {
+                        current_monthly: currentMonthly,
+                        potential_increase: percentIncrease,
+                        yearly_increase: yearlyIncrease
+                    }
+                });
+            }
+        }
+        
+        // Auto-calculate on input change after initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.calc-input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Debounce the calculation
+                    clearTimeout(this.calcTimeout);
+                    this.calcTimeout = setTimeout(calculateRevenue, 500);
+                });
+            });
+            
+            // Initial calculation with default values
+            calculateRevenue();
+        });
+        
+        // Track page views
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Food Truck Calculator',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Food Trucks'
+            });
+        }
+    </script>
+</body>
+</html>

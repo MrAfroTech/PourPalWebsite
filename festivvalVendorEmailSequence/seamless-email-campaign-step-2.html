@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Festival, New Crowd, Same Old Problem: Starting From Zero</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #121212 0%, #2a2a2a 100%);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15), transparent 40%);
+        }
+        
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-text {
+            color: #ffffff;
+            font-size: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background: #f8f9fa;
+            border-left: 4px solid #d4af37;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .subject-preview h2 {
+            color: #d4af37;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .subject-preview p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .main-content h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .festival-timeline {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .festival-event {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 6px;
+            border-left: 4px solid #e9ecef;
+        }
+        
+        .festival-event.current {
+            border-left-color: #d4af37;
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .festival-date {
+            font-weight: bold;
+            color: #d4af37;
+            min-width: 100px;
+        }
+        
+        .festival-name {
+            flex-grow: 1;
+            margin: 0 15px;
+        }
+        
+        .customer-count {
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .customer-count.reset {
+            background: #6c757d;
+        }
+        
+        .pain-point {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .pain-point h3 {
+            color: #dc3545;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .solution-tease {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #d4af37;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .solution-tease h3 {
+            color: #d4af37;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4af37 0%, #f5d76e 100%);
+            color: #121212;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: transform 0.2s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .pricing-highlight {
+            background: #121212;
+            color: #ffffff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .pricing-highlight .free-plan {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-highlight .trial-offer {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+        
+
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .main-content h1 {
+                font-size: 24px;
+            }
+            
+            .festival-event {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            
+            .festival-date {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+            
+            .customer-count {
+                margin-top: 5px;
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Seamless</div>
+            <div class="header-text">Coast to Coast Onsite Mobile Ordering</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                
+                <p>New Festival, New Crowd, Same Old Problem: Starting From Zero</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Your Festival Season Reality Check</h1>
+                
+                <p>Yesterday we talked about the discovery problem at individual events. Today, let's address the bigger challenge that keeps you up at night...</p>
+                
+                <p><strong>Every new festival means starting over.</strong></p>
+                
+                <div class="festival-timeline">
+                    <h3 style="margin-bottom: 20px; color: #333; text-align: center;">Your Typical Festival Circuit</h3>
+                    
+                    <div class="festival-event">
+                        <div class="festival-date">May 15</div>
+                        <div class="festival-name">Spring County Fair</div>
+                        <div class="customer-count">47 regulars</div>
+                    </div>
+                    
+                    <div class="festival-event current">
+                        <div class="festival-date">June 3</div>
+                        <div class="festival-name">Downtown Music Festival</div>
+                        <div class="customer-count reset">0 known customers</div>
+                    </div>
+                    
+                    <div class="festival-event">
+                        <div class="festival-date">June 20</div>
+                        <div class="festival-name">Arts & Crafts Expo</div>
+                        <div class="customer-count reset">0 known customers</div>
+                    </div>
+                    
+                    <div class="festival-event">
+                        <div class="festival-date">July 4</div>
+                        <div class="festival-name">Independence Day Celebration</div>
+                        <div class="customer-count reset">0 known customers</div>
+                    </div>
+                </div>
+                
+                <div class="pain-point">
+                    <h3>🔄 The Festival Shuffle Problem</h3>
+                    <p>"Your regulars from the county fair won't find you at the music festival. You're invisible again, rebuilding from zero at every single event."</p>
+                </div>
+                
+                <p>This is the vendor reality nobody talks about:</p>
+                
+                <ul style="margin: 20px 0; padding-left: 20px;">
+                    <li><strong>No customer recognition:</strong> Your loyal followers don't know where you'll be next</li>
+                    <li><strong>Lost ordering history:</strong> Customers can't remember what they loved from last time</li>
+                    <li><strong>Zero anticipation:</strong> No way to build excitement before you arrive at new events</li>
+                    <li><strong>Constant restart:</strong> Every festival feels like your very first day in business</li>
+                </ul>
+                
+                <p>Meanwhile, successful restaurants build customer relationships that follow them everywhere. Their customers know exactly what to expect and how to find them.</p>
+                
+                <div class="solution-tease">
+                    <h3>💡 What If Your Customer Relationships Traveled With You?</h3>
+                    <p>Imagine building a following that follows you from festival to festival. Customers who get notified when you're coming to their area. People who already know your specialties before you even set up your booth.</p>
+                </div>
+                
+                <p><strong>That's the power of having your own digital presence.</strong> With Seamless, you're not starting from zero anymore – you're building a business that travels with you.</p>
+                
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <h3 style="margin-bottom: 15px; color: #333;">Stop Starting Over</h3>
+                    <a href="https://ezdrink.us/signup" class="cta-button">Build Your Following</a>
+                    
+                    <div class="pricing-highlight">
+                        <div class="free-plan">Forever Free Plan Available</div>
+                        <div class="trial-offer">Or try Pro/Ultimate with 2 months FREE</div>
+                    </div>
+                </div>
+                
+                <p>Tomorrow, I'll show you exactly how Seamless turns every festival attendee's phone into your personal marketing tool.</p>
+                
+                <p>Building something bigger,<br>
+                <strong>The Seamless Team</strong></p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+
+            
+            <p><strong>Seamless</strong> - Coast to Coast Onsite Mobile Ordering<br>
+            Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">View in Browser</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

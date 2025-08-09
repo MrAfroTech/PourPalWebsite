@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pack Your Bar Every Night: The Nightlife Playbook</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #CCCCCC;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #000000 0%, #1A1A1A 100%);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #1A1A1A;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000, #1A1A1A);
+            border-bottom: 3px solid #FF6B35;
+            color: white;
+            padding: 60px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 20px 0;
+            font-size: 42px;
+            font-weight: bold;
+            line-height: 1.2;
+            color: #FF6B35;
+        }
+        
+        .header .subhead {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .header .highlight {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .content {
+            padding: 50px 30px;
+            background-color: #1A1A1A;
+        }
+        
+        .lead-form {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border: 3px solid #FF6B35;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        
+        .form-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 20px;
+        }
+        
+        .form-subtitle {
+            font-size: 16px;
+            color: #CCCCCC;
+            margin-bottom: 30px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #444;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #333;
+            color: white;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #999;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .benefits-section {
+            margin: 50px 0;
+        }
+        
+        .benefits-title {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #FF6B35;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 25px 0;
+            padding: 25px;
+            background-color: #2A2A2A;
+            border-radius: 12px;
+            border-left: 5px solid #FF6B35;
+        }
+        
+        .benefit-icon {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .benefit-content h3 {
+            margin: 0 0 10px 0;
+            color: #FF6B35;
+            font-size: 20px;
+        }
+        
+        .benefit-content p {
+            margin: 0;
+            color: #CCCCCC;
+            line-height: 1.6;
+        }
+        
+        .social-proof {
+            background: linear-gradient(135deg, #2A1A2A, #1A1A1A);
+            border-left: 5px solid #9966CC;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .testimonial {
+            font-size: 18px;
+            font-style: italic;
+            color: #CCCCCC;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: #9966CC;
+            font-size: 16px;
+        }
+        
+        .guide-preview {
+            background-color: #2A2A2A;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border: 2px solid #FF6B35;
+        }
+        
+        .preview-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .preview-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .preview-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #444;
+            position: relative;
+            padding-left: 30px;
+            color: #CCCCCC;
+        }
+        
+        .preview-list li:before {
+            content: "✓";
+            color: #FF6B35;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .stats-highlight {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border: 3px solid #00FF88;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00FF88;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #CCCCCC;
+            font-size: 16px;
+        }
+        
+        .urgency-box {
+            background: linear-gradient(135deg, #2A1A1A, #1A1A1A);
+            border: 2px solid #FF6B35;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .urgency-title {
+            color: #FF6B35;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: #000000;
+            color: #CCCCCC;
+            padding: 30px;
+            text-align: center;
+            border-top: 3px solid #FF6B35;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .header .subhead {
+                font-size: 18px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .benefit-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .benefit-icon {
+                margin: 0 auto 15px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Why Some Bars Stay Packed 7 Days a Week While Others Struggle to Fill Weekends</h1>
+            <div class="subhead">Download the strategy guide that transforms empty weeknight bars into the hottest tickets in town</div>
+            <div class="highlight">FREE Download - No Credit Card Required</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Lead Capture Form -->
+            <div class="lead-form">
+                <div class="form-title">Get Your FREE Nightlife Playbook</div>
+                <div class="form-subtitle">Enter your details below and we'll send the complete strategy guide to your inbox instantly</div>
+                
+                <form id="leadForm" action="#" method="POST">
+                    <div class="form-row">
+                        <input type="text" class="form-input" placeholder="Your Name" name="name" required>
+                        <input type="email" class="form-input" placeholder="Your Email" name="email" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" class="form-input" placeholder="Bar/Club Name" name="business_name">
+                        <input type="tel" class="form-input" placeholder="Phone Number" name="phone">
+                    </div>
+                    <button type="submit" class="cta-button">📧 Send Me The Free Playbook Now!</button>
+                </form>
+                
+                <p style="margin-top: 15px; font-size: 12px; color: #999;">
+                    We respect your privacy. Unsubscribe at any time.
+                </p>
+            </div>
+            
+            <!-- Stats Highlight -->
+            <div class="stats-highlight">
+                <div class="stat-number">81%</div>
+                <div class="stat-label">of people check online before choosing where to party</div>
+            </div>
+            
+            <!-- Benefits Section -->
+            <div class="benefits-section">
+                <h2 class="benefits-title">What You'll Discover Inside This Playbook:</h2>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">📱</div>
+                    <div class="benefit-content">
+                        <h3>The "Planning Phase" where 80% of nightlife decisions are made</h3>
+                        <p>Learn exactly when and how groups choose their night out destination, and how to position your venue to win during this critical 2-minute decision window.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🎉</div>
+                    <div class="benefit-content">
+                        <h3>Why great drinks and music aren't enough anymore</h3>
+                        <p>Discover the hidden factors that influence party decisions and why atmosphere alone won't fill your venue during slow nights.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">👥</div>
+                    <div class="benefit-content">
+                        <h3>The group psychology that fills tables and increases per-customer spending</h3>
+                        <p>Understanding how groups make decisions, spend money, and influence each other can double your per-table revenue without raising prices.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🔥</div>
+                    <div class="benefit-content">
+                        <h3>How to build a VIP following that brings friends every weekend</h3>
+                        <p>The step-by-step system for creating loyal customers who not only return regularly but actively recruit new groups to your venue.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">📈</div>
+                    <div class="benefit-content">
+                        <h3>The social proof system that makes your venue the "must visit" spot</h3>
+                        <p>How to create the perception of exclusivity and excitement that makes people choose your venue over all others in your area.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Proof -->
+            <div class="social-proof">
+                <div class="testimonial">
+                    "This playbook turned our struggling Wednesday nights into our most profitable evenings. We went from 20% capacity to completely packed in just 8 weeks!"
+                </div>
+                <div class="testimonial-author">- Sarah Martinez, The Underground</div>
+            </div>
+            
+            <!-- Guide Preview -->
+            <div class="guide-preview">
+                <div class="preview-title">Complete Playbook Contents (26 Pages):</div>
+                <ul class="preview-list">
+                    <li><strong>The Nightlife Numbers</strong> - Industry insights on customer behavior and spending patterns</li>
+                    <li><strong>The Decision-Making Reality</strong> - How groups actually choose venues in the digital age</li>
+                    <li><strong>Strategy #1: Pre-Party Marketing</strong> - Capturing groups during the planning phase</li>
+                    <li><strong>Strategy #2: Event Promotion</strong> - Building anticipation and FOMO for your events</li>
+                    <li><strong>Strategy #3: Group Experience Design</strong> - Maximizing per-table revenue and satisfaction</li>
+                    <li><strong>Strategy #4: VIP Relationship Building</strong> - Creating regulars who recruit others</li>
+                    <li><strong>The Weekly Action Plan</strong> - Day-by-day implementation guide for immediate results</li>
+                    <li><strong>Bonus: Nightlife Math</strong> - Revenue optimization formulas and profit tracking tools</li>
+                </ul>
+            </div>
+            
+            <!-- Second CTA -->
+            <div class="lead-form">
+                <div class="form-title">Ready to Pack Your Venue Every Night?</div>
+                <form action="#" method="POST">
+                    <div class="form-row">
+                        <input type="email" class="form-input" placeholder="Enter Your Email" name="email" required>
+                    </div>
+                    <button type="submit" class="cta-button">🚀 Get Instant Access Now!</button>
+                </form>
+            </div>
+            
+            <!-- Urgency -->
+            <div class="urgency-box">
+                <div class="urgency-title">⚡ Limited Time Bonus</div>
+                <p>Download today and also receive our exclusive "Nightlife Revenue Calculator" spreadsheet (valued at $47) - completely free!</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            <p style="margin-top: 10px; font-size: 12px; opacity: 0.8;">
+                <a href="#" style="color: #FF6B35;">Privacy Policy</a> | 
+                <a href="#" style="color: #FF6B35;">Terms of Service</a> | 
+                <a href="#" style="color: #FF6B35;">Unsubscribe</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Form submission handling
+        document.getElementById('leadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Add UTM parameters and source tracking
+            data.source = 'sms_campaign';
+            data.campaign = 'bar_guide';
+            data.medium = 'sms';
+            
+            // Submit to Klaviyo or your CRM
+            console.log('Lead captured:', data);
+            
+            // Show success message
+            alert('Success! Check your email for the free playbook.');
+            
+            // Optional: Redirect to thank you page
+            // window.location.href = '/thank-you';
+        });
+        
+        // Track page views
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Bar Guide Landing Page',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Bars & Clubs'
+            });
+        }
+    </script>
+</body>
+</html>

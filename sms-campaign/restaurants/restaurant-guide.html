@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill Empty Tables: The Local Discovery Secret</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 60px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 20px 0;
+            font-size: 42px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .header .subhead {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .header .highlight {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 50px 30px;
+        }
+        
+        .lead-form {
+            background: linear-gradient(135deg, #FFF8DC, #F5F5DC);
+            border: 3px solid #CD853F;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        
+        .form-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 20px;
+        }
+        
+        .form-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #CD853F;
+            box-shadow: 0 0 0 3px rgba(205, 133, 63, 0.1);
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .benefits-section {
+            margin: 50px 0;
+        }
+        
+        .benefits-title {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 25px 0;
+            padding: 25px;
+            background-color: #FFF8DC;
+            border-radius: 12px;
+            border-left: 5px solid #CD853F;
+        }
+        
+        .benefit-icon {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .benefit-content h3 {
+            margin: 0 0 10px 0;
+            color: #8B4513;
+            font-size: 20px;
+        }
+        
+        .benefit-content p {
+            margin: 0;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .social-proof {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-left: 5px solid #2196F3;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .testimonial {
+            font-size: 18px;
+            font-style: italic;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: #2196F3;
+            font-size: 16px;
+        }
+        
+        .guide-preview {
+            background-color: #FFF8DC;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border: 2px solid #CD853F;
+        }
+        
+        .preview-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .preview-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .preview-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .preview-list li:before {
+            content: "✓";
+            color: #CD853F;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .stats-highlight {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 3px solid #28a745;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .urgency-box {
+            background: linear-gradient(135deg, #ffebee, #fce4ec);
+            border: 2px solid #e91e63;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .urgency-title {
+            color: #e91e63;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: #8B4513;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .header .subhead {
+                font-size: 18px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .benefit-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .benefit-icon {
+                margin: 0 auto 15px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>The Real Reason 73% of Great Restaurants Struggle During Slow Periods</h1>
+            <div class="subhead">Get the free playbook that turns empty Tuesday nights into your most profitable evenings</div>
+            <div class="highlight">FREE Download - No Credit Card Required</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Lead Capture Form -->
+            <div class="lead-form">
+                <div class="form-title">Get Your FREE Restaurant Discovery Guide</div>
+                <div class="form-subtitle">Enter your details below and we'll send the complete playbook to your inbox instantly</div>
+                
+                <form id="leadForm" action="#" method="POST">
+                    <div class="form-row">
+                        <input type="text" class="form-input" placeholder="Your Name" name="name" required>
+                        <input type="email" class="form-input" placeholder="Your Email" name="email" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" class="form-input" placeholder="Restaurant Name" name="business_name">
+                        <input type="tel" class="form-input" placeholder="Phone Number" name="phone">
+                    </div>
+                    <button type="submit" class="cta-button">📧 Send Me The Free Guide Now!</button>
+                </form>
+                
+                <p style="margin-top: 15px; font-size: 12px; color: #666;">
+                    We respect your privacy. Unsubscribe at any time.
+                </p>
+            </div>
+            
+            <!-- Stats Highlight -->
+            <div class="stats-highlight">
+                <div class="stat-number">73%</div>
+                <div class="stat-label">of diners check online before choosing where to eat</div>
+            </div>
+            
+            <!-- Benefits Section -->
+            <div class="benefits-section">
+                <h2 class="benefits-title">What You'll Discover Inside This Playbook:</h2>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🔍</div>
+                    <div class="benefit-content">
+                        <h3>Why amazing food isn't enough anymore (and what actually drives reservations)</h3>
+                        <p>Discover the hidden factors that influence dining decisions and why technical excellence alone won't fill your tables during slow periods.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">📱</div>
+                    <div class="benefit-content">
+                        <h3>The "Local Discovery Gap" that's costing you 40+ customers per week</h3>
+                        <p>Learn about the critical 30-second window when potential diners make their choice, and how to ensure you're visible during this decision-making process.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">❤️</div>
+                    <div class="benefit-content">
+                        <h3>How to turn one-time diners into weekly regulars (without loyalty cards)</h3>
+                        <p>The psychology-based system that creates emotional connections with customers, making them choose your restaurant over competitors again and again.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">⏰</div>
+                    <div class="benefit-content">
+                        <h3>The timing strategy that fills seats during your slowest hours</h3>
+                        <p>Strategic promotion and targeting techniques that turn Tuesday nights and off-peak periods into profitable service times.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🚀</div>
+                    <div class="benefit-content">
+                        <h3>Why your competition is about to copy this system (get ahead now)</h3>
+                        <p>The early-adopter advantage that's helping smart restaurant owners dominate their local markets before competitors catch on.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Proof -->
+            <div class="social-proof">
+                <div class="testimonial">
+                    "We went from 30% capacity on weeknights to fully booked in 6 weeks. This playbook completely changed how we think about customer acquisition and retention."
+                </div>
+                <div class="testimonial-author">- James Chen, Riverside Bistro</div>
+            </div>
+            
+            <!-- Guide Preview -->
+            <div class="guide-preview">
+                <div class="preview-title">Complete Playbook Contents (28 Pages):</div>
+                <ul class="preview-list">
+                    <li><strong>The Empty Table Problem</strong> - Industry data on restaurant utilization rates and customer behavior</li>
+                    <li><strong>The Discovery Reality</strong> - How diners actually choose restaurants in the digital age</li>
+                    <li><strong>Strategy #1: Local SEO Dominance</strong> - Showing up when customers search for dining options</li>
+                    <li><strong>Strategy #2: Menu Psychology</strong> - Making dishes irresistible through digital presentation</li>
+                    <li><strong>Strategy #3: Timing & Promotions</strong> - Strategic offers that fill slow periods without devaluing your brand</li>
+                    <li><strong>Strategy #4: The Loyalty Loop</strong> - Converting first-time diners into regulars who recommend you</li>
+                    <li><strong>Implementation Checklist</strong> - 30-day action plan with specific tasks and timelines</li>
+                    <li><strong>Bonus: Restaurant Math</strong> - Revenue optimization formulas and capacity planning tools</li>
+                </ul>
+            </div>
+            
+            <!-- Second CTA -->
+            <div class="lead-form">
+                <div class="form-title">Ready to Fill Those Empty Tables?</div>
+                <form action="#" method="POST">
+                    <div class="form-row">
+                        <input type="email" class="form-input" placeholder="Enter Your Email" name="email" required>
+                    </div>
+                    <button type="submit" class="cta-button">🚀 Get Instant Access Now!</button>
+                </form>
+            </div>
+            
+            <!-- Urgency -->
+            <div class="urgency-box">
+                <div class="urgency-title">⚡ Limited Time Bonus</div>
+                <p>Download today and also receive our exclusive "Restaurant Revenue Calculator" spreadsheet (valued at $47) - completely free!</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            <p style="margin-top: 10px; font-size: 12px; opacity: 0.8;">
+                <a href="#" style="color: #CD853F;">Privacy Policy</a> | 
+                <a href="#" style="color: #CD853F;">Terms of Service</a> | 
+                <a href="#" style="color: #CD853F;">Unsubscribe</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Form submission handling
+        document.getElementById('leadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Add UTM parameters and source tracking
+            data.source = 'sms_campaign';
+            data.campaign = 'restaurant_guide';
+            data.medium = 'sms';
+            
+            // Submit to Klaviyo or your CRM
+            console.log('Lead captured:', data);
+            
+            // Show success message
+            alert('Success! Check your email for the free playbook.');
+            
+            // Optional: Redirect to thank you page
+            // window.location.href = '/thank-you';
+        });
+        
+        // Track page views
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Restaurant Guide Landing Page',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Restaurants'
+            });
+        }
+    </script>
+</body>
+</html>

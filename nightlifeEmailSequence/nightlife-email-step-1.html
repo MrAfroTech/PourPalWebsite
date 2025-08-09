@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wednesday Night: Why Is Your Bar Half Empty When Others Are Packed?</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #0A0A0A;
+        }
+        
+        .email-container {
+            background-color: #1A1A1A;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #1A1A1A 50%, #333333 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+            color: #CCCCCC;
+        }
+        
+        .content {
+            padding: 40px 30px;
+            background-color: #1A1A1A;
+            color: #CCCCCC;
+        }
+        
+        .subject-preview {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #FF6B35;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+        }
+        
+        .scenario-box {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #FF6B35;
+        }
+        
+        .pain-point {
+            background-color: #2A1A1A;
+            border-left: 4px solid #FF4444;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .pain-point h3 {
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+        
+        .solution-preview {
+            background-color: #1A2A1A;
+            border-left: 4px solid #00FF88;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .solution-preview h3 {
+            color: #00FF88;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #000000;
+            color: #FF6B35;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid #FF6B35;
+        }
+        
+        .cta-button:hover {
+            background-color: #FF6B35;
+            color: #000000;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #000000;
+            color: #000000;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #000000;
+            color: #FF6B35;
+        }
+        
+        .stats-highlight {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border: 2px solid #FF6B35;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FF6B35;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #CCCCCC;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: #000000;
+            color: #CCCCCC;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 3px solid #FF6B35;
+        }
+        
+        .footer a {
+            color: #FF6B35;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Nightlife Solutions</h1>
+            <div class="tagline">Filling Seats, Amplifying Energy</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>Wednesday Night: Why Is Your Bar Half Empty When Others Are Packed?</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>The Slow Night Struggle Every Bar Owner Knows</h1>
+                
+                <div class="scenario-box">
+                    <p><strong>Picture this all-too-familiar scene:</strong></p>
+                    <p>It's Wednesday night at 9PM. Your bar is perfectly set up, the music is on point, your bartenders are ready to create amazing experiences... but you're looking at scattered groups and empty stools. Again.</p>
+                    <p>Meanwhile, potential party-goers are at home scrolling through their phones, asking "where should we go tonight?" – completely unaware that you have exactly the vibe they're looking for just minutes away.</p>
+                </div>
+
+                <div class="pain-point">
+                    <h3>🍺 The Inconsistent Crowd Challenge</h3>
+                    <p>Every bar and club faces the same struggle: amazing atmosphere, great drinks, perfect energy – but people simply don't know what's happening at your venue when they're deciding where to party. You're not just competing with other bars – you're competing with staying home.</p>
+                </div>
+
+                <div class="stats-highlight">
+                    <span class="stats-number">81%</span>
+                    <div class="stats-label">of people check online before choosing where to party</div>
+                </div>
+
+                <p>You have incredible drinks, perfect ambiance, and the energy to create unforgettable nights, but if party-goers can't easily discover what's happening at your venue when they're making plans, those empty seats stay empty.</p>
+
+                <p><strong>The real question isn't whether your venue is good enough – it's whether people planning their night out know you exist and what you're offering tonight.</strong></p>
+
+                <div class="solution-preview">
+                    <h3>🚀 What if customers knew about your events before they choose where to go?</h3>
+                    <p>Imagine if every group within 5 miles planning their evening could immediately see your venue, your current events, your drink specials, and your vibe – turning those slow Wednesday nights into energized, profitable evenings.</p>
+                </div>
+
+                <p>Tomorrow, I'll show you exactly how party-goers actually decide where to spend their night out, and why they're not finding your venue during that critical decision-making process.</p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Ready to Fill More Seats?</div>
+                <div class="cta-subtitle">Start reaching party-goers in your area today</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Get 2 FREE Months Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

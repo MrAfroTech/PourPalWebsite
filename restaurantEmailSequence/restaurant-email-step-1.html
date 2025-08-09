@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuesday at 7PM: Why Are Half Your Tables Still Empty?</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        
+        .email-container {
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background-color: #FFF8DC;
+            border-left: 4px solid #CD853F;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #8B4513;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #CD853F;
+            padding-bottom: 10px;
+        }
+        
+        .scenario-box {
+            background-color: #FFF8DC;
+            border: 1px solid #DDD;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #CD853F;
+        }
+        
+        .pain-point {
+            background-color: #FFE4E1;
+            border-left: 4px solid #CD5C5C;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .pain-point h3 {
+            color: #8B0000;
+            margin-bottom: 10px;
+        }
+        
+        .solution-preview {
+            background-color: #F0FFF0;
+            border-left: 4px solid #32CD32;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .solution-preview h3 {
+            color: #006400;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #CD853F;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #DAA520;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #CD853F;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #CD853F;
+        }
+        
+        .stats-highlight {
+            background-color: #F5F5DC;
+            border: 2px solid #CD853F;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #8B4513;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: #8B4513;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .footer a {
+            color: #CD853F;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Restaurant Solutions</h1>
+            <div class="tagline">Filling Tables, Growing Revenue</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>Tuesday at 7PM: Why Are Half Your Tables Still Empty?</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>The Empty Table Problem Every Restaurant Owner Knows</h1>
+                
+                <div class="scenario-box">
+                    <p><strong>Picture this familiar scene:</strong></p>
+                    <p>It's Tuesday evening at 7PM. Your kitchen is prepped, your staff is ready, your food is amazing... but you're looking at half-empty dining room. Again.</p>
+                    <p>Meanwhile, potential customers are at home scrolling through their phones, wondering "what should we have for dinner?" – completely unaware that you have exactly what they're craving just minutes away.</p>
+                </div>
+
+                <div class="pain-point">
+                    <h3>🍽️ The Off-Peak Challenge</h3>
+                    <p>Every restaurant faces the same struggle: amazing food, great atmosphere, but customers simply don't know you're available when they need you most. You're not just competing with other restaurants – you're competing with the convenience of staying home.</p>
+                </div>
+
+                <div class="stats-highlight">
+                    <span class="stats-number">73%</span>
+                    <div class="stats-label">of diners check online before choosing where to eat</div>
+                </div>
+
+                <p>You have incredible food and perfect ambiance, but if hungry customers can't easily discover you when they're making dinner decisions, those empty tables stay empty.</p>
+
+                <p><strong>The real question isn't whether your food is good enough – it's whether hungry people know you exist when they're deciding where to dine.</strong></p>
+
+                <div class="solution-preview">
+                    <h3>🚀 What if customers could discover you instantly?</h3>
+                    <p>Imagine if every person within 5 miles searching for "dinner tonight" or "restaurants near me" could immediately see your menu, your availability, and place an order – turning those slow Tuesday nights into profitable evenings.</p>
+                </div>
+
+                <p>Tomorrow, I'll show you exactly how successful restaurants are solving the discovery problem and filling more tables during their slowest periods.</p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Ready to Fill More Tables?</div>
+                <div class="cta-subtitle">Start reaching hungry customers in your area today</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Get 2 FREE Months Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

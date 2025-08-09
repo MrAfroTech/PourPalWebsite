@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Your FREE EzDrink Account + 2 Month Premium Trial</title>
+    <link rel="stylesheet" href="css/signup.css">
+</head>
+<body>
+    <div class="signup-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚀 Transform Your Vendor Business Today</h1>
+            <div class="subhead">Choose Your Plan + Start FREE with 2 Month Trial</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Benefits Overview -->
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-title">🔧 Easy Integration</div>
+                    <ul class="benefit-list">
+                        <li>Works with existing POS</li>
+                        <li>Setup in under 4 hours</li>
+                        <li>No new equipment needed</li>
+                        <li>Print QR codes and go</li>
+                    </ul>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-title">📈 Proven Results</div>
+                    <ul class="benefit-list">
+                        <li>$200-400 daily increases</li>
+                        <li>40% more customers served</li>
+                        <li>Faster service times</li>
+                        <li>Build customer following</li>
+                    </ul>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-title">🛡️ Risk-Free Trial</div>
+                    <ul class="benefit-list">
+                        <li>Start completely FREE</li>
+                        <li>2 month premium trial</li>
+                        <li>Cancel anytime</li>
+                        <li>Keep free features forever</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Plan Selection -->
+            <div class="plan-section">
+                <div class="plan-section-title">Choose Your Perfect Plan</div>
+                <div class="plans-grid">
+                    <!-- Starter Plan -->
+                    <div class="plan-card" data-plan="starter">
+                        <div class="plan-header">
+                            <div class="plan-name">Starter</div>
+                            <div class="plan-price">$29<span class="period">/month</span></div>
+                        </div>
+                        <div class="plan-description">Perfect for new vendors testing mobile ordering</div>
+                        <ul class="plan-features">
+                            <li>QR Code Ordering System</li>
+                            <li>Basic POS Integration</li>
+                            <li>Up to 50 orders/month</li>
+                            <li>Email Support</li>
+                            <li>Basic Analytics</li>
+                        </ul>
+                        <button class="get-info-btn" data-plan="starter">📋 Get Full Details</button>
+                        <button class="select-plan-btn">Select This Plan</button>
+                    </div>
+
+                    <!-- Growth Plan (Popular) -->
+                    <div class="plan-card popular" data-plan="growth">
+                        <div class="plan-header">
+                            <div class="plan-name">Growth</div>
+                            <div class="plan-price">$79<span class="period">/month</span></div>
+                        </div>
+                        <div class="plan-description">Best for established vendors ready to scale up</div>
+                        <ul class="plan-features">
+                            <li>Everything in Starter</li>
+                            <li class="premium">All POS Integrations</li>
+                            <li class="premium">Unlimited Orders</li>
+                            <li class="premium">Advanced Analytics</li>
+                            <li class="premium">Priority Support</li>
+                            <li class="premium">Customer Database</li>
+                            <li class="premium">SMS Notifications</li>
+                        </ul>
+                        <button class="get-info-btn" data-plan="growth">📋 Get Full Details</button>
+                        <button class="select-plan-btn">Select This Plan</button>
+                    </div>
+
+                    <!-- Pro Plan -->
+                    <div class="plan-card" data-plan="pro">
+                        <div class="plan-header">
+                            <div class="plan-name">Pro</div>
+                            <div class="plan-price">$199<span class="period">/month</span></div>
+                        </div>
+                        <div class="plan-description">Enterprise solution for multiple locations or high-volume</div>
+                        <ul class="plan-features">
+                            <li>Everything in Growth</li>
+                            <li class="premium">White-Label Branding</li>
+                            <li class="premium">Custom Integrations</li>
+                            <li class="premium">Dedicated Account Manager</li>
+                            <li class="premium">Advanced Reporting</li>
+                            <li class="premium">API Access</li>
+                            <li class="premium">Multi-Location Support</li>
+                        </ul>
+                        <button class="get-info-btn" data-plan="pro">📋 Get Full Details</button>
+                        <button class="select-plan-btn">Select This Plan</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Signup Form -->
+            <div class="signup-form">
+                <div class="form-title">Create Your EzDrink Account</div>
+                
+                <form id="signupForm">
+                    <!-- Business Information -->
+                    <div class="form-step">
+                        <label class="step-label">🏪 Vendor Business Information</label>
+                        <div class="form-row">
+                            <input type="text" class="form-input" placeholder="Business/Vendor Name" name="business_name" required>
+                            <input type="text" class="form-input" placeholder="Cuisine Type" name="cuisine_type" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="form-step">
+                        <label class="step-label">👤 Account Owner Details</label>
+                        <div class="form-row">
+                            <input type="text" class="form-input" placeholder="Your Name" name="owner_name" required>
+                            <input type="email" class="form-input" placeholder="Email Address" name="email" required>
+                        </div>
+                        <input type="tel" class="form-input" placeholder="Phone Number" name="phone" required style="margin-top: 15px;">
+                    </div>
+                    
+                    <!-- POS System -->
+                    <div class="form-step">
+                        <label class="step-label">💳 Current POS System</label>
+                        <select class="form-select" name="pos_system" id="pos_system" required>
+                            <option value="">Select your POS system</option>
+                            <option value="clover">Clover (✅ Integrated)</option>
+                            <option value="square">Square (✅ Integrated)</option>
+                            <option value="shopify">Shopify POS (✅ Integrated)</option>
+                            <option value="stripe">Stripe Terminal (✅ Integrated)</option>
+                            <option value="toast">Toast (🔄 Coming Soon)</option>
+                            <option value="aloha">Aloha (🔄 Coming Soon)</option>
+                            <option value="touchbistro">TouchBistro (🔄 Coming Soon)</option>
+                            <option value="other">Other/Manual Entry</option>
+                        </select>
+                        <div id="integrationStatus"></div>
+                    </div>
+                    
+                    <!-- Location -->
+                    <div class="form-step">
+                        <label class="step-label">📍 Primary Operating Area</label>
+                        <div class="form-row">
+                            <input type="text" class="form-input" placeholder="City" name="city" required>
+                            <input type="text" class="form-input" placeholder="State" name="state" required>
+                        </div>
+                    </div>
+
+                    <!-- Hidden plan input -->
+                    <input type="hidden" name="selected_plan" id="selected_plan" value="">
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" class="cta-button" id="submitBtn" disabled>
+                        👆 Select a Plan Above to Continue
+                    </button>
+                    
+                    <!-- Guarantee Text -->
+                    <div class="guarantee-text">
+                        ✅ Start completely FREE - No credit card required<br>
+                        ✅ 2 month premium trial included with any plan<br>
+                        ✅ Cancel anytime, keep free features forever<br>
+                        ✅ 30-day money-back guarantee on paid plans
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Security Badges -->
+            <div class="security-badges">
+                <div class="security-badge">SSL Encrypted</div>
+                <div class="security-badge">GDPR Compliant</div>
+                <div class="security-badge">SOC 2 Certified</div>
+                <div class="security-badge">24/7 Support</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plan Details Modal -->
+    <div id="planModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title">Plan Details</h2>
+            </div>
+            <div id="modalContent">
+                <!-- Plan details will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/signup.js"></script>
+</body>
+</html>

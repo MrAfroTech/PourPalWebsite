@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Venue Industry Secrets - 90 Second Read</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            min-height: 100vh;
+        }
+        
+        .guide-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 15px 0;
+            font-size: 36px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .header .subhead {
+            font-size: 18px;
+            margin-bottom: 20px;
+            opacity: 0.95;
+        }
+        
+        .reading-time {
+            background-color: #FFD700;
+            color: #8B4513;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 25px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #fdf6e3, #f5f0e6);
+            border-radius: 12px;
+            border-left: 5px solid #8B4513;
+            transition: transform 0.3s ease;
+        }
+        
+        .insight-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .insight-number {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: #FFD700;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .insight-content h3 {
+            margin: 0 0 8px 0;
+            color: #8B4513;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .insight-content p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .key-stat {
+            color: #8B4513;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .download-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 3px solid #8B4513;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .download-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 15px;
+        }
+        
+        .download-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .cta-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 15px;
+        }
+        
+        .cta-button {
+            background: #8B4513;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .guide-container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .insight-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .insight-number {
+                margin: 0 auto 15px auto;
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .guide-container {
+                box-shadow: none;
+            }
+            
+            .download-section, .cta-section {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container" id="guideContent">
+        <!-- Header -->
+        <div class="header">
+            <h1>🍸 10 Venue Industry Secrets</h1>
+            <div class="subhead">The insights that separate packed venues from empty bars</div>
+            <div class="reading-time">⏱️ 90 Second Read</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <div class="insight-item">
+                <div class="insight-number">1</div>
+                <div class="insight-content">
+                    <h3>The $25 Billion Line Problem</h3>
+                    <p>Customers abandon venues after just <span class="key-stat">8 minutes</span> of waiting. This industry-wide problem costs <span class="key-stat">$25 billion annually</span> in lost sales. QR code ordering drops wait times under 6 minutes.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">2</div>
+                <div class="insight-content">
+                    <h3>QR Code Ordering Revolution</h3>
+                    <p>Integrated with <span class="key-stat">Clover, Square, Shopify, and Stripe</span> - with Toast, Aloha, and TouchBistro coming soon. Customers scan, order instantly, and skip the line completely. <span class="key-stat">Zero hardware investment</span> required.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">3</div>
+                <div class="insight-content">
+                    <h3>The $350K Revenue Increase Formula</h3>
+                    <p>Average venues implementing seamless ordering see <span class="key-stat">$350,000 annual revenue increase</span>. Step-by-step implementation takes less than 48 hours.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">4</div>
+                <div class="insight-content">
+                    <h3>Coast to Coast Success Stories</h3>
+                    <p>From <span class="key-stat">California to New York, Florida to Maine</span> - bars, clubs, and restaurants are winning with technology. Location becomes irrelevant when customers can find and order from anywhere.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">5</div>
+                <div class="insight-content">
+                    <h3>30% Industry Growth Opportunity</h3>
+                    <p>The <span class="key-stat">$102 billion</span> hospitality industry could grow to <span class="key-stat">$132 billion annually</span> with reduced wait times. Early adopters capture the biggest market share.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">6</div>
+                <div class="insight-content">
+                    <h3>Seamless Customer Experience</h3>
+                    <p>Eliminate frustrated customers waiting at bars and overwhelmed staff during rush periods. <span class="key-stat">AI-powered ordering</span> creates smooth operations.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">7</div>
+                <div class="insight-content">
+                    <h3>21st Century Implementation</h3>
+                    <p>Complete transformation checklist gets you live in <span class="key-stat">under 48 hours</span>. Digital menus, instant notifications, and real-time analytics included.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">8</div>
+                <div class="insight-content">
+                    <h3>ROI Calculator Reveals Potential</h3>
+                    <p>Calculate your potential <span class="key-stat">$350K annual revenue increase</span> based on current volume, average order value, and peak hour improvements.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">9</div>
+                <div class="insight-content">
+                    <h3>Festival Circuit Domination</h3>
+                    <p>Build customer lists that follow you from event to event. <span class="key-stat">Never start from zero</span> customers again at new venues.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-number">10</div>
+                <div class="insight-content">
+                    <h3>Technology Beats Location</h3>
+                    <p>Successful trucks prioritize seamless ordering over prime spots. <span class="key-stat">Customer convenience</span> trumps foot traffic every time.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Download Section -->
+        <div class="download-section">
+            <div class="download-title">📥 Save This Guide</div>
+            <div class="download-subtitle">Download as PDF or PNG to reference anytime</div>
+            <div class="download-buttons">
+                <button class="download-btn" onclick="downloadPDF()">
+                    📄 Download PDF
+                </button>
+                <button class="download-btn" onclick="downloadPNG()">
+                    🖼️ Download PNG
+                </button>
+            </div>
+        </div>
+        
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <div class="cta-title">Ready to Implement These Insights?</div>
+            <a href="../food-trucks/food-truck-signup.html" class="cta-button">🚀 Start Your FREE Account + 2 Month Trial</a>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        // Download as PDF
+        function downloadPDF() {
+            // Track download
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download', {
+                    event_category: 'Guide',
+                    event_label: 'Food Truck Secrets PDF',
+                    content_group1: 'SMS Campaign'
+                });
+            }
+            
+            // Hide download buttons for PDF
+            const downloadSection = document.querySelector('.download-section');
+            const ctaSection = document.querySelector('.cta-section');
+            downloadSection.style.display = 'none';
+            ctaSection.style.display = 'none';
+            
+            // Generate PDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            html2canvas(document.getElementById('guideContent'), {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210;
+                const pageHeight = 295;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+                
+                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                doc.save('10-venue-industry-secrets.pdf');
+                
+                // Show sections again
+                downloadSection.style.display = 'block';
+                ctaSection.style.display = 'block';
+            });
+        }
+        
+        // Download as PNG
+        function downloadPNG() {
+            // Track download
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download', {
+                    event_category: 'Guide',
+                    event_label: 'Food Truck Secrets PNG',
+                    content_group1: 'SMS Campaign'
+                });
+            }
+            
+            // Hide download buttons for clean image
+            const downloadSection = document.querySelector('.download-section');
+            const ctaSection = document.querySelector('.cta-section');
+            downloadSection.style.display = 'none';
+            ctaSection.style.display = 'none';
+            
+            // Generate PNG
+            html2canvas(document.getElementById('guideContent'), {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = '10-venue-industry-secrets.png';
+                link.href = canvas.toDataURL();
+                link.click();
+                
+                // Show sections again
+                downloadSection.style.display = 'block';
+                ctaSection.style.display = 'block';
+            });
+        }
+        
+        // Track page view
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: '10 Venue Industry Secrets',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Quick Guide'
+            });
+        }
+    </script>
+</body>
+</html>

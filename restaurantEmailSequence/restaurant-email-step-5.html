@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn One-Time Diners Into Weekly Regulars</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        
+        .email-container {
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background-color: #FFF8DC;
+            border-left: 4px solid #CD853F;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #8B4513;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #CD853F;
+            padding-bottom: 10px;
+        }
+        
+        .loyalty-journey {
+            background-color: #F5F5DC;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .journey-step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 6px;
+            border-left: 4px solid #CD853F;
+        }
+        
+        .step-number {
+            background-color: #8B4513;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .loyalty-feature {
+            background-color: #F0FFF0;
+            border-left: 4px solid #32CD32;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .loyalty-feature h3 {
+            color: #006400;
+            margin-bottom: 10px;
+        }
+        
+        .personalization-box {
+            background: linear-gradient(135deg, #E6E6FA, #F0F8FF);
+            border: 1px solid #9370DB;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #CD853F;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #DAA520;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #CD853F;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #CD853F;
+        }
+        
+        .stats-highlight {
+            background-color: #F5F5DC;
+            border: 2px solid #CD853F;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #8B4513;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: #8B4513;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .footer a {
+            color: #CD853F;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .journey-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .step-number {
+                margin: 0 0 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Restaurant Solutions</h1>
+            <div class="tagline">Filling Tables, Growing Revenue</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>Turn One-Time Diners Into Weekly Regulars</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Your Customer Loyalty Engine</h1>
+                
+                <p>Yesterday we talked about increasing order values. Today, let's discuss something even more valuable: turning occasional diners into customers who choose your restaurant week after week.</p>
+
+                <div class="stats-highlight">
+                    <span class="stats-number">67%</span>
+                    <div class="stats-label">of restaurant revenue comes from repeat customers</div>
+                </div>
+
+                <p>The difference between thriving restaurants and struggling ones isn't just getting new customers – it's creating loyal regulars who return consistently and recommend you to others.</p>
+
+                <div class="loyalty-journey">
+                    <h3 style="text-align: center; color: #8B4513; margin-bottom: 20px;">From First-Time Visitor to Loyal Regular</h3>
+                    
+                    <div class="journey-step">
+                        <div class="step-number">1</div>
+                        <div>
+                            <strong>First Visit:</strong> Great experience, easy ordering process<br>
+                            <em>Customer data captured automatically</em>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="step-number">2</div>
+                        <div>
+                            <strong>Personalized Follow-up:</strong> "Thanks for trying our Chicken Marsala, Sarah!"<br>
+                            <em>Acknowledge their specific order and experience</em>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="step-number">3</div>
+                        <div>
+                            <strong>Targeted Offers:</strong> "20% off your favorite dish this Tuesday"<br>
+                            <em>Incentivize return visits during slower periods</em>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="step-number">4</div>
+                        <div>
+                            <strong>Loyalty Rewards:</strong> "Your 5th visit earns a free appetizer"<br>
+                            <em>Reward frequency and build anticipation for return</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="personalization-box">
+                    <h3 style="color: #4B0082; margin-bottom: 15px;">🎯 The Power of Personal Connection</h3>
+                    <p><strong>Imagine being able to send this message:</strong></p>
+                    <p style="font-style: italic; background-color: white; padding: 15px; border-radius: 6px;">"Hi Maria! It's been a while since your last visit. Your usual Salmon Special is 25% off this week, and we just added that wine you loved to our dinner specials. Hope to see you soon!"</p>
+                </div>
+
+                <div class="loyalty-feature">
+                    <h3>📊 Smart Customer Data That Builds Relationships</h3>
+                    <ul>
+                        <li><strong>Order History:</strong> Track favorite dishes and dining preferences</li>
+                        <li><strong>Visit Patterns:</strong> Know when customers typically dine with you</li>
+                        <li><strong>Special Occasions:</strong> Remember birthdays and anniversaries</li>
+                        <li><strong>Dietary Preferences:</strong> Note allergies and special requests</li>
+                    </ul>
+                </div>
+
+                <div class="loyalty-feature">
+                    <h3>🎁 Targeted Offers That Fill Slow Periods</h3>
+                    <ul>
+                        <li><strong>Tuesday Night Specials:</strong> Invite regulars during off-peak times</li>
+                        <li><strong>Weather-Based Promotions:</strong> "Rainy day comfort food special"</li>
+                        <li><strong>Loyalty Milestones:</strong> Automatic rewards for frequent diners</li>
+                        <li><strong>Seasonal Favorites:</strong> "Your summer favorite is back on the menu"</li>
+                    </ul>
+                </div>
+
+                <p><strong>The result?</strong> Instead of constantly hunting for new customers, you have a growing base of loyal regulars who:</p>
+                <ul>
+                    <li>Visit more frequently</li>
+                    <li>Spend more per visit</li>
+                    <li>Recommend you to friends</li>
+                    <li>Fill tables during slower periods</li>
+                    <li>Provide predictable revenue</li>
+                </ul>
+
+                <p><strong>Tomorrow, I'll show you how to dominate your local market while your competitors are still hoping for walk-in traffic.</strong></p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Build Lasting Customer Relationships</div>
+                <div class="cta-subtitle">Start creating loyal regulars who choose you every time</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Get 2 FREE Months Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

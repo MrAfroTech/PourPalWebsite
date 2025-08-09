@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Revenue Calculator - Calculate Your Hidden Revenue Potential</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 15px 0;
+            font-size: 38px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .header .subhead {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .calculator-section {
+            background: linear-gradient(135deg, #FFF8DC, #F5F5DC);
+            border: 3px solid #CD853F;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .calc-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #8B4513;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group:focus-within {
+            border-color: #CD853F;
+        }
+        
+        .input-label {
+            display: block;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .input-help {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .calc-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .calc-input:focus {
+            outline: none;
+            border-color: #CD853F;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .results-section {
+            background: linear-gradient(135deg, #e8f5e8, #f0fff0);
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .results-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        
+        .result-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 8px;
+        }
+        
+        .result-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .improvement-highlight {
+            background: linear-gradient(135deg, #fff3cd, #fef2c7);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .highlight-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #e67e22;
+            margin-bottom: 10px;
+        }
+        
+        .scenario-breakdown {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #CD853F;
+        }
+        
+        .scenario-title {
+            color: #8B4513;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .scenario-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            background-color: white;
+            color: #8B4513;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .assumptions {
+            background-color: #FFF8DC;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            font-size: 14px;
+            color: #666;
+            border: 2px solid #CD853F;
+        }
+        
+        .assumptions h4 {
+            color: #8B4513;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: #8B4513;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Calculate Your Hidden Revenue Potential</h1>
+            <div class="subhead">See exactly how much money better customer discovery and dining optimization could add to your bottom line</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Calculator Section -->
+            <div class="calculator-section">
+                <div class="calc-title">🍽️ Restaurant Revenue Calculator</div>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label class="input-label">Weekly Covers (Current)</label>
+                        <div class="input-help">Average number of customers served per week</div>
+                        <input type="number" class="calc-input" id="weeklyCovers" value="420" min="1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Average Check ($)</label>
+                        <div class="input-help">Current average spending per customer</div>
+                        <input type="number" class="calc-input" id="avgCheck" value="28.50" min="1" step="0.50">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Slow Period Capacity (%)</label>
+                        <div class="input-help">How full you are during off-peak times (weeknights, etc.)</div>
+                        <input type="number" class="calc-input" id="slowCapacity" value="35" min="1" max="100">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Peak Capacity (%)</label>
+                        <div class="input-help">How full you are during busy times (weekends, dinner rush)</div>
+                        <input type="number" class="calc-input" id="peakCapacity" value="85" min="1" max="100">
+                    </div>
+                </div>
+                
+                <button class="calculate-btn" onclick="calculateRevenue()">📊 Calculate My Revenue Potential</button>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results-section" id="results">
+                <div class="results-title">🎯 Your Revenue Optimization Potential</div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-number" id="currentWeekly">$0</div>
+                        <div class="result-label">Current Weekly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="potentialWeekly">$0</div>
+                        <div class="result-label">Potential Weekly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="yearlyIncrease">$0</div>
+                        <div class="result-label">Additional Yearly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="percentIncrease">0%</div>
+                        <div class="result-label">Revenue Increase</div>
+                    </div>
+                </div>
+                
+                <div class="improvement-highlight">
+                    <div class="highlight-number" id="monthlyBoost">$0</div>
+                    <div>Additional monthly revenue with better discovery and optimization</div>
+                </div>
+                
+                <!-- Scenario Breakdown -->
+                <div class="scenario-breakdown">
+                    <div class="scenario-title">📈 Revenue Improvement Breakdown:</div>
+                    <div class="scenario-item">
+                        <span>Improved slow-period discovery (+20% covers)</span>
+                        <span id="discoveryRevenue">$0/month</span>
+                    </div>
+                    <div class="scenario-item">
+                        <span>Smart upselling (+15% average check)</span>
+                        <span id="upsellingRevenue">$0/month</span>
+                    </div>
+                    <div class="scenario-item">
+                        <span>Customer retention (+10% repeat visits)</span>
+                        <span id="retentionRevenue">$0/month</span>
+                    </div>
+                    <div class="scenario-item">
+                        <span>Menu optimization (+8% average order)</span>
+                        <span id="menuRevenue">$0/month</span>
+                    </div>
+                </div>
+                
+                <!-- CTA in Results -->
+                <div style="background-color: white; padding: 30px; border-radius: 10px; margin-top: 20px; border: 2px solid #CD853F;">
+                    <h3 style="color: #8B4513; margin-bottom: 15px;">Ready to Turn This Potential Into Reality?</h3>
+                    <p style="margin-bottom: 20px; color: #666;">Get our complete Restaurant Success System and start implementing these revenue-boosting strategies today.</p>
+                    <a href="#" class="cta-button">🚀 Get The Complete System Free</a>
+                </div>
+            </div>
+            
+            <!-- Main CTA Section -->
+            <div class="cta-section">
+                <div class="cta-title">Turn These Numbers Into Your Reality</div>
+                <div class="cta-subtitle">Get the exact strategies that helped 150+ restaurants increase their revenue by 40-60%</div>
+                <a href="/sms-campaign/restaurants/restaurant-guide.html" class="cta-button">📈 Show Me How to Get These Results</a>
+            </div>
+            
+            <!-- Assumptions -->
+            <div class="assumptions">
+                <h4>Calculation Methodology:</h4>
+                <ul>
+                    <li><strong>Discovery Improvement:</strong> Better local SEO and online presence increases slow-period covers by 20%</li>
+                    <li><strong>Upselling Impact:</strong> Menu optimization and server training increases average check by 15%</li>
+                    <li><strong>Customer Retention:</strong> Loyalty systems create 10% increase in repeat visits</li>
+                    <li><strong>Menu Optimization:</strong> Strategic pricing and layout increases order value by 8%</li>
+                    <li><strong>Industry Benchmarks:</strong> Data from 150+ restaurants using our system over 24 months</li>
+                    <li><strong>Conservative Estimates:</strong> Results show minimum improvements; many restaurants exceed these numbers</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+        </div>
+    </div>
+    
+    <script>
+        function calculateRevenue() {
+            // Get input values
+            const weeklyCovers = parseFloat(document.getElementById('weeklyCovers').value);
+            const avgCheck = parseFloat(document.getElementById('avgCheck').value);
+            const slowCapacity = parseFloat(document.getElementById('slowCapacity').value);
+            const peakCapacity = parseFloat(document.getElementById('peakCapacity').value);
+            
+            // Current revenue calculation
+            const currentWeekly = weeklyCovers * avgCheck;
+            
+            // Improvement calculations
+            const discoveryImprovement = weeklyCovers * 0.20; // 20% more covers from better discovery
+            const upsellingImprovement = avgCheck * 0.15; // 15% higher average check
+            const retentionImprovement = weeklyCovers * 0.10; // 10% more repeat customers
+            const menuOptimization = avgCheck * 0.08; // 8% higher orders from menu optimization
+            
+            // Calculate potential weekly revenue
+            const improvedCovers = weeklyCovers + discoveryImprovement + retentionImprovement;
+            const improvedCheck = avgCheck + upsellingImprovement + menuOptimization;
+            const potentialWeekly = improvedCovers * improvedCheck;
+            
+            // Calculate increases
+            const weeklyIncrease = potentialWeekly - currentWeekly;
+            const monthlyIncrease = weeklyIncrease * 4.33; // Average weeks per month
+            const yearlyIncrease = weeklyIncrease * 52;
+            const percentIncrease = ((potentialWeekly - currentWeekly) / currentWeekly) * 100;
+            
+            // Break down revenue sources (monthly)
+            const discoveryRevenue = (discoveryImprovement * avgCheck * 4.33);
+            const upsellingRevenue = (weeklyCovers * upsellingImprovement * 4.33);
+            const retentionRevenue = (retentionImprovement * avgCheck * 4.33);
+            const menuRevenue = (weeklyCovers * menuOptimization * 4.33);
+            
+            // Display results
+            document.getElementById('currentWeekly').textContent = '$' + currentWeekly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('potentialWeekly').textContent = '$' + potentialWeekly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('yearlyIncrease').textContent = '$' + yearlyIncrease.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('percentIncrease').textContent = percentIncrease.toFixed(0) + '%';
+            document.getElementById('monthlyBoost').textContent = '$' + monthlyIncrease.toLocaleString('en-US', {maximumFractionDigits: 0});
+            
+            // Breakdown
+            document.getElementById('discoveryRevenue').textContent = '$' + discoveryRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('upsellingRevenue').textContent = '$' + upsellingRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('retentionRevenue').textContent = '$' + retentionRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('menuRevenue').textContent = '$' + menuRevenue.toLocaleString('en-US', {maximumFractionDigits: 0});
+            
+            // Show results section
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Track calculation event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'calculator_used', {
+                    event_category: 'Lead Generation',
+                    event_label: 'Restaurant Calculator',
+                    custom_parameters: {
+                        current_weekly: currentWeekly,
+                        potential_increase: percentIncrease,
+                        yearly_increase: yearlyIncrease
+                    }
+                });
+            }
+        }
+        
+        // Auto-calculate on input change after initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.calc-input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Debounce the calculation
+                    clearTimeout(this.calcTimeout);
+                    this.calcTimeout = setTimeout(calculateRevenue, 500);
+                });
+            });
+            
+            // Initial calculation with default values
+            calculateRevenue();
+        });
+        
+        // Track page views
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Restaurant Revenue Calculator',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Restaurants'
+            });
+        }
+    </script>
+</body>
+</html>

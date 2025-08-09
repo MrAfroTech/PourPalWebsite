@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn Every $25 Order Into a $35 Order (Without Training Staff)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        
+        .email-container {
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background-color: #FFF8DC;
+            border-left: 4px solid #CD853F;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #8B4513;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #CD853F;
+            padding-bottom: 10px;
+        }
+        
+        .revenue-comparison {
+            display: flex;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .comparison-box {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .before-box {
+            background-color: #FFE4E1;
+            border: 2px solid #CD5C5C;
+        }
+        
+        .after-box {
+            background-color: #F0FFF0;
+            border: 2px solid #32CD32;
+        }
+        
+        .comparison-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .amount {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .before-amount { color: #CD5C5C; }
+        .after-amount { color: #32CD32; }
+        
+        .upselling-strategy {
+            background-color: #F5F5DC;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .strategy-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 6px;
+            border-left: 4px solid #CD853F;
+        }
+        
+        .strategy-icon {
+            background-color: #8B4513;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        
+        .automation-highlight {
+            background-color: #E6E6FA;
+            border-left: 4px solid #9370DB;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .automation-highlight h3 {
+            color: #4B0082;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #CD853F;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #DAA520;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #CD853F;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #CD853F;
+        }
+        
+        .stats-highlight {
+            background-color: #F5F5DC;
+            border: 2px solid #CD853F;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #8B4513;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: #8B4513;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .footer a {
+            color: #CD853F;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .revenue-comparison {
+                flex-direction: column;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .strategy-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .strategy-icon {
+                margin: 0 auto 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Restaurant Solutions</h1>
+            <div class="tagline">Filling Tables, Growing Revenue</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>Turn Every $25 Order Into a $35 Order (Without Training Staff)</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>The Revenue Per Customer Opportunity</h1>
+                
+                <p>Yesterday we covered how to get more customers finding and choosing your restaurant. Today, let's talk about maximizing revenue from every customer who's already decided to order from you.</p>
+
+                <div class="revenue-comparison">
+                    <div class="comparison-box before-box">
+                        <div class="comparison-title">Typical Order</div>
+                        <div class="amount before-amount">$25</div>
+                        <div>Entree only</div>
+                    </div>
+                    <div class="comparison-box after-box">
+                        <div class="comparison-title">With Smart Upselling</div>
+                        <div class="amount after-amount">$35</div>
+                        <div>Entree + Appetizer + Drink</div>
+                    </div>
+                </div>
+
+                <div class="stats-highlight">
+                    <span class="stats-number">40%</span>
+                    <div class="stats-label">average increase in order value with digital upselling</div>
+                </div>
+
+                <p>The beauty of digital upselling is that it happens automatically, at the perfect moment when customers are already committed to ordering from you.</p>
+
+                <div class="upselling-strategy">
+                    <h3 style="text-align: center; color: #8B4513; margin-bottom: 20px;">Smart Upselling That Actually Works</h3>
+                    
+                    <div class="strategy-item">
+                        <div class="strategy-icon">🍷</div>
+                        <div>
+                            <strong>Intelligent Wine Pairings:</strong> "Perfect with your pasta selection: Our house Chianti - $8"<br>
+                            <em>Suggest specific wine pairings based on their entree choice</em>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <div class="strategy-icon">🥗</div>
+                        <div>
+                            <strong>Appetizer Recommendations:</strong> "Start with our customer favorite: Bruschetta - $9"<br>
+                            <em>Highlight popular appetizers that complement their main course</em>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <div class="strategy-icon">🍰</div>
+                        <div>
+                            <strong>Dessert Temptations:</strong> "Complete your meal: Tiramisu (made fresh daily) - $7"<br>
+                            <em>Present desserts as the perfect ending to their dining experience</em>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <div class="strategy-icon">⬆️</div>
+                        <div>
+                            <strong>Size Upgrades:</strong> "Make it a large portion for just $3 more"<br>
+                            <em>Offer value-based upgrades that increase satisfaction</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="automation-highlight">
+                    <h3>🤖 Zero Staff Training Required</h3>
+                    <p>Your servers stay focused on providing excellent table service while the system automatically suggests perfect add-ons based on what customers are already ordering. No awkward upselling pressure, no training needed – just smart suggestions at exactly the right moment.</p>
+                </div>
+
+                <p><strong>The result?</strong> Every customer naturally considers adding items that enhance their meal, leading to higher satisfaction and significantly higher check averages.</p>
+
+                <p>While your competition relies on busy servers to remember upselling techniques, your customers are automatically presented with appealing options that make their meal even better.</p>
+
+                <p><strong>Tomorrow, I'll show you how to turn these satisfied customers into loyal regulars who choose your restaurant again and again.</strong></p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Start Increasing Check Averages Automatically</div>
+                <div class="cta-subtitle">Let intelligent upselling boost your revenue from day one</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Get 2 FREE Months Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

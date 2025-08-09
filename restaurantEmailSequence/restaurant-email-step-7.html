@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Quarter: Be the Restaurant Everyone's Recommending</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        
+        .email-container {
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background-color: #FFF8DC;
+            border-left: 4px solid #CD853F;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #8B4513;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #CD853F;
+            padding-bottom: 10px;
+        }
+        
+        .future-vision {
+            background: linear-gradient(135deg, #F0FFF0, #E6FFE6);
+            border: 1px solid #90EE90;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #F5F5DC;
+            border-radius: 8px;
+            border-left: 4px solid #CD853F;
+        }
+        
+        .timeline-number {
+            background-color: #8B4513;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .success-metrics {
+            background-color: #F0F8FF;
+            border: 2px solid #4169E1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        
+        .metric-label {
+            font-weight: bold;
+            color: #4169E1;
+        }
+        
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .urgency-box {
+            background-color: #FFE4E1;
+            border-left: 4px solid #FF6347;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .urgency-box h3 {
+            color: #FF4500;
+            margin-bottom: 10px;
+        }
+        
+        .final-cta-section {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .final-cta-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .final-cta-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #CD853F;
+            color: white;
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .cta-button:hover {
+            background-color: #DAA520;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 3px solid #CD853F;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #CD853F;
+        }
+        
+        .guarantee-box {
+            background-color: #F0FFF0;
+            border: 2px solid #32CD32;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .footer {
+            background-color: #8B4513;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .footer a {
+            color: #CD853F;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .final-cta-section {
+                padding: 30px 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .timeline-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .timeline-number {
+                margin: 0 auto 15px auto;
+            }
+            
+            .metric-row {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Restaurant Solutions</h1>
+            <div class="tagline">Filling Tables, Growing Revenue</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>Next Quarter: Be the Restaurant Everyone's Recommending</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Your Competitive Edge This Quarter</h1>
+                
+                <p>Over the past week, we've covered the complete transformation: from empty tables to full dining rooms, from hoping for customers to proactively reaching them, from one-time diners to loyal regulars.</p>
+
+                <div class="future-vision">
+                    <h3 style="color: #006400; margin-bottom: 15px;">🎯 Picture Your Restaurant 90 Days From Now</h3>
+                    <p style="font-size: 18px; font-style: italic;">"The restaurant with consistently full tables, loyal customers who return weekly, and a reputation as the place everyone recommends for great food and seamless ordering."</p>
+                </div>
+
+                <p>This isn't wishful thinking – it's the predictable result of building your digital presence while your competitors are still waiting for customers to find them by chance.</p>
+
+                <h3 style="color: #8B4513; margin: 30px 0 20px 0;">Your 90-Day Transformation Timeline</h3>
+
+                <div class="timeline-item">
+                    <div class="timeline-number">30</div>
+                    <div>
+                        <strong>First Month:</strong> Digital presence established, first-time customers discovering your restaurant through online search<br>
+                        <em>Immediate boost in off-peak orders and new customer acquisition</em>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-number">60</div>
+                    <div>
+                        <strong>Second Month:</strong> Repeat customers returning, higher average order values from smart upselling<br>
+                        <em>Customer loyalty building, predictable revenue streams developing</em>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-number">90</div>
+                    <div>
+                        <strong>Third Month:</strong> Local market dominance, loyal customer base, competitors wondering how you did it<br>
+                        <em>Sustainable growth, filled tables, and the restaurant everyone recommends</em>
+                    </div>
+                </div>
+
+                <div class="success-metrics">
+                    <h3 style="text-align: center; color: #4169E1; margin-bottom: 20px;">Expected Results by Month 3</h3>
+                    
+                    <div class="metric-row">
+                        <span class="metric-label">Off-Peak Orders</span>
+                        <span class="metric-value">+200-300%</span>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-label">Average Order Value</span>
+                        <span class="metric-value">+35-50%</span>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-label">Repeat Customers</span>
+                        <span class="metric-value">+150%</span>
+                    </div>
+                    
+                    <div class="metric-row">
+                        <span class="metric-label">Overall Revenue</span>
+                        <span class="metric-value">+40-60%</span>
+                    </div>
+                </div>
+
+                <div class="urgency-box">
+                    <h3>⏰ The Early Adopter Window Is Closing</h3>
+                    <p>Right now, you have a massive advantage: most restaurants in your area haven't made the digital transition yet. But this window won't stay open forever.</p>
+                    <p><strong>Every month you wait, more competitors adopt digital strategies and your first-mover advantage diminishes.</strong></p>
+                </div>
+
+                <p><strong>The question isn't whether digital ordering will become standard – it already is.</strong> The question is whether you'll lead the transformation in your market or scramble to catch up later.</p>
+
+                <div class="guarantee-box">
+                    <h3 style="color: #006400;">🛡️ Risk-Free Trial</h3>
+                    <p><strong>Forever Free Plan:</strong> Start building your digital presence at no cost</p>
+                    <p><strong>Pro/Ultimate Plans:</strong> Get 2 full months free to see the transformation</p>
+                    <p><em>No contracts, no hidden fees, cancel anytime</em></p>
+                </div>
+
+                <p>Your amazing food deserves to be discovered by every hungry person in your area. Your dedication to great service deserves loyal customers who return again and again. Your business deserves to thrive, not just survive.</p>
+
+                <p><strong>The restaurants that act now will own their local markets. The ones that wait will spend years trying to catch up.</strong></p>
+            </div>
+
+            <!-- Final Call to Action -->
+            <div class="final-cta-section">
+                <div class="final-cta-title">Secure Your Restaurant's Future</div>
+                <div class="final-cta-subtitle">Join thousands of successful restaurants using Seamless to fill more tables and grow revenue</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Claim 2 FREE Months Pro/Ultimate</a>
+                </div>
+                <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">Start building your customer base today, while your competition is still waiting for walk-ins</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

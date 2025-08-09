@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner to Image Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #8B4513;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .instructions {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #8B4513;
+        }
+        
+        .step {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .step-number {
+            font-weight: bold;
+            color: #8B4513;
+            margin-right: 10px;
+        }
+        
+        .banner-preview {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f8f8;
+            border-radius: 8px;
+        }
+        
+        .banner-frame {
+            display: inline-block;
+            width: 335px;
+            height: 800px;
+            border: 2px solid #8B4513;
+            border-radius: 8px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #8B4513 100%);
+            position: relative;
+        }
+        
+        .banner-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .banner-logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .banner-tagline {
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .banner-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .stat {
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        .stat-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: #FFD700;
+            display: block;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        .specs {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .specs h3 {
+            color: #8B4513;
+            margin-bottom: 15px;
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .spec-label {
+            font-weight: bold;
+        }
+        
+        .spec-value {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EzDrink Retractable Banner Generator</h1>
+        
+        <div class="instructions">
+            <h3>How to Convert to High-Resolution Image</h3>
+            
+            <div class="step">
+                <span class="step-number">1.</span>
+                Open the banner HTML file in a web browser
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2.</span>
+                Right-click on the banner and select "Inspect Element"
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3.</span>
+                In the developer tools, find the banner element and right-click → "Capture node screenshot"
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4.</span>
+                For higher resolution, use browser zoom (Ctrl/Cmd + Plus) to 200-300% before capturing
+            </div>
+            
+            <div class="step">
+                <span class="step-number">5.</span>
+                Save the screenshot as PNG or JPEG for printing
+            </div>
+        </div>
+        
+        <div class="banner-preview">
+            <h3>Banner Preview (Scaled Down)</h3>
+            <div class="banner-frame">
+                <div class="banner-content">
+                    <div class="banner-logo">EzDrink</div>
+                    <div class="banner-tagline">AI Ordering Assistant</div>
+                    
+                    <div class="banner-stats">
+                        <div class="stat">
+                            <span class="stat-number">$25B</span>
+                            <span>Revenue Loss</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">30%</span>
+                            <span>Growth</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">6min</span>
+                            <span>Wait Time</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">$350K</span>
+                            <span>Revenue</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; font-size: 10px;">
+                        Scan QR Code to Order<br>
+                        Skip the line completely
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <button class="download-btn" onclick="openBanner()">Open Full Banner Design</button>
+        </div>
+        
+        <div class="specs">
+            <h3>Printing Specifications</h3>
+            
+            <div class="spec-item">
+                <span class="spec-label">Dimensions:</span>
+                <span class="spec-value">33.5" x 80" (85cm x 203cm)</span>
+            </div>
+            
+            <div class="spec-item">
+                <span class="spec-label">Resolution:</span>
+                <span class="spec-value">300 DPI minimum (10,050 x 24,000 pixels)</span>
+            </div>
+            
+            <div class="spec-item">
+                <span class="spec-label">Format:</span>
+                <span class="spec-value">PNG or JPEG</span>
+            </div>
+            
+            <div class="spec-item">
+                <span class="spec-label">Color Profile:</span>
+                <span class="spec-value">CMYK for printing</span>
+            </div>
+            
+            <div class="spec-item">
+                <span class="spec-label">Brand Colors:</span>
+                <span class="spec-value">Primary: #8B4513, Secondary: #D2691E, Accent: #FFD700</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openBanner() {
+            window.open('ezdrink-retractable-banner.html', '_blank');
+        }
+    </script>
+</body>
+</html> 

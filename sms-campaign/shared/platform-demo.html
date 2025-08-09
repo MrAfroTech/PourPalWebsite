@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>See Seamless in Action - Live Demo</title>
+    <style>
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #8B4513;
+            --accent-color: #00FF88;
+            --dark-bg: #1A1A1A;
+            --darker-bg: #000000;
+            --text-light: #CCCCCC;
+            --text-white: #FFFFFF;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--dark-bg);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--text-white);
+            padding: 50px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 20px 0;
+            font-size: 42px;
+            font-weight: bold;
+            line-height: 1.2;
+            color: var(--primary-color);
+        }
+        
+        .header .subhead {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+        
+        .industry-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .industry-btn {
+            background: linear-gradient(135deg, var(--primary-color), #FF8C42);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .industry-btn:hover,
+        .industry-btn.active {
+            background: linear-gradient(135deg, #FF8C42, var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .demo-section {
+            background: linear-gradient(135deg, #2A2A2A, var(--dark-bg));
+            border: 3px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .demo-feature {
+            background-color: #333333;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .demo-feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .feature-icon {
+            background: linear-gradient(135deg, var(--primary-color), #FF8C42);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .feature-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .feature-description {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .demo-screenshot {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+        }
+        
+        .try-button {
+            background: linear-gradient(135deg, var(--accent-color), #00CC66);
+            color: var(--darker-bg);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .try-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        .benefits-section {
+            background: linear-gradient(135deg, #1A2A1A, #0A1A0A);
+            border: 3px solid var(--accent-color);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+        
+        .benefits-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .benefit-item {
+            background-color: #333333;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #444;
+        }
+        
+        .benefit-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+        
+        .benefit-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color), #FF8C42);
+            color: white;
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .cta-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .footer {
+            background-color: var(--darker-bg);
+            color: var(--text-light);
+            padding: 30px;
+            text-align: center;
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .industry-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>See Seamless in Action</h1>
+            <div class="subhead">Experience how our platform transforms your business with real-time customer discovery and ordering</div>
+            
+            <!-- Industry Selector -->
+            <div class="industry-selector">
+                <button class="industry-btn active" onclick="setIndustry('foodtruck')">🚚 Food Trucks</button>
+                <button class="industry-btn" onclick="setIndustry('restaurant')">🍽️ Restaurants</button>
+                <button class="industry-btn" onclick="setIndustry('bar')">🍻 Bars & Clubs</button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Demo Section -->
+            <div class="demo-section">
+                <div class="demo-title" id="demoTitle">🚚 Food Truck Discovery & Ordering Demo</div>
+                
+                <div class="demo-grid">
+                    <div class="demo-feature">
+                        <div class="feature-header">
+                            <div class="feature-icon">📍</div>
+                            <h3 class="feature-title" id="feature1Title">Festival Discovery</h3>
+                        </div>
+                        <p class="feature-description" id="feature1Desc">Watch how customers find your food truck instantly when searching for "food near me" at festivals and events.</p>
+                        <div class="demo-screenshot" id="demo1">Interactive Map Demo Loading...</div>
+                        <button class="try-button" onclick="runDemo(1)">Try Live Demo</button>
+                    </div>
+                    
+                    <div class="demo-feature">
+                        <div class="feature-header">
+                            <div class="feature-icon">📱</div>
+                            <h3 class="feature-title" id="feature2Title">Mobile Ordering</h3>
+                        </div>
+                        <p class="feature-description" id="feature2Desc">Experience the seamless ordering process that increases your average order value by 40-60%.</p>
+                        <div class="demo-screenshot" id="demo2">Mobile Order Flow Demo Loading...</div>
+                        <button class="try-button" onclick="runDemo(2)">Try Live Demo</button>
+                    </div>
+                    
+                    <div class="demo-feature">
+                        <div class="feature-header">
+                            <div class="feature-icon">📊</div>
+                            <h3 class="feature-title" id="feature3Title">Analytics Dashboard</h3>
+                        </div>
+                        <p class="feature-description" id="feature3Desc">See real-time insights into customer behavior, popular items, and revenue optimization opportunities.</p>
+                        <div class="demo-screenshot" id="demo3">Analytics Demo Loading...</div>
+                        <button class="try-button" onclick="runDemo(3)">Try Live Demo</button>
+                    </div>
+                    
+                    <div class="demo-feature">
+                        <div class="feature-header">
+                            <div class="feature-icon">🎯</div>
+                            <h3 class="feature-title" id="feature4Title">Customer Following</h3>
+                        </div>
+                        <p class="feature-description" id="feature4Desc">Build a loyal customer base that follows you from event to event, ensuring consistent sales.</p>
+                        <div class="demo-screenshot" id="demo4">Customer Loyalty Demo Loading...</div>
+                        <button class="try-button" onclick="runDemo(4)">Try Live Demo</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Benefits Section -->
+            <div class="benefits-section">
+                <div class="benefits-title" id="benefitsTitle">🚀 Results Our Food Truck Customers See</div>
+                
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-number" id="benefit1Number">340%</div>
+                        <div class="benefit-label" id="benefit1Label">Increase in festival sales</div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-number" id="benefit2Number">$12K</div>
+                        <div class="benefit-label" id="benefit2Label">Average monthly revenue boost</div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-number" id="benefit3Number">2,500</div>
+                        <div class="benefit-label" id="benefit3Label">New customers per month</div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-number" id="benefit4Number">85%</div>
+                        <div class="benefit-label" id="benefit4Label">Customer retention rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-title" id="ctaTitle">Ready to Transform Your Food Truck Business?</div>
+                <div class="cta-subtitle" id="ctaSubtitle">Join 200+ successful food truck owners who've revolutionized their festival sales</div>
+                <a href="#" class="cta-button" id="ctaFree">🚀 Start FREE Forever</a>
+                <a href="#" class="cta-button" id="ctaPaid">💎 Get 2 FREE Months Pro</a>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+        </div>
+    </div>
+    
+    <script>
+        const industryData = {
+            foodtruck: {
+                demoTitle: "🚚 Food Truck Discovery & Ordering Demo",
+                features: [
+                    {
+                        title: "Festival Discovery",
+                        icon: "📍",
+                        description: "Watch how customers find your food truck instantly when searching for 'food near me' at festivals and events."
+                    },
+                    {
+                        title: "Mobile Ordering",
+                        icon: "📱", 
+                        description: "Experience the seamless ordering process that increases your average order value by 40-60%."
+                    },
+                    {
+                        title: "Analytics Dashboard",
+                        icon: "📊",
+                        description: "See real-time insights into customer behavior, popular items, and revenue optimization opportunities."
+                    },
+                    {
+                        title: "Customer Following",
+                        icon: "🎯",
+                        description: "Build a loyal customer base that follows you from event to event, ensuring consistent sales."
+                    }
+                ],
+                benefitsTitle: "🚀 Results Our Food Truck Customers See",
+                benefits: [
+                    { number: "340%", label: "Increase in festival sales" },
+                    { number: "$12K", label: "Average monthly revenue boost" },
+                    { number: "2,500", label: "New customers per month" },
+                    { number: "85%", label: "Customer retention rate" }
+                ],
+                ctaTitle: "Ready to Transform Your Food Truck Business?",
+                ctaSubtitle: "Join 200+ successful food truck owners who've revolutionized their festival sales"
+            },
+            restaurant: {
+                demoTitle: "🍽️ Restaurant Discovery & Table Management Demo",
+                features: [
+                    {
+                        title: "Local Search Dominance",
+                        icon: "🔍",
+                        description: "See how your restaurant appears first when locals search for 'restaurants near me' or cuisine-specific queries."
+                    },
+                    {
+                        title: "Table Reservations",
+                        icon: "🪑",
+                        description: "Experience seamless table booking and waitlist management that fills slow periods."
+                    },
+                    {
+                        title: "Menu Optimization",
+                        icon: "📋",
+                        description: "Watch how smart menu presentation and upselling increases average check by 35%."
+                    },
+                    {
+                        title: "Customer Loyalty",
+                        icon: "❤️",
+                        description: "Build a database of regular diners who return weekly and recommend you to friends."
+                    }
+                ],
+                benefitsTitle: "🍽️ Results Our Restaurant Customers See",
+                benefits: [
+                    { number: "200%", label: "Increase in off-peak bookings" },
+                    { number: "$8K", label: "Average monthly revenue boost" },
+                    { number: "1,800", label: "New diners per month" },
+                    { number: "92%", label: "Customer satisfaction rate" }
+                ],
+                ctaTitle: "Ready to Fill Every Table?",
+                ctaSubtitle: "Join 150+ restaurants that turned empty tables into profitable evenings"
+            },
+            bar: {
+                demoTitle: "🍻 Nightlife Discovery & VIP Experience Demo",
+                features: [
+                    {
+                        title: "Event Promotion",
+                        icon: "🎉",
+                        description: "See how party-goers discover your events and make plans to visit your venue before competitors."
+                    },
+                    {
+                        title: "Group Ordering",
+                        icon: "🍸",
+                        description: "Experience streamlined group ordering that increases per-customer spend by 55%."
+                    },
+                    {
+                        title: "VIP Management",
+                        icon: "👑",
+                        description: "Watch how VIP customer tracking creates loyal regulars who bring friends every weekend."
+                    },
+                    {
+                        title: "Event Analytics",
+                        icon: "📈",
+                        description: "Real-time insights into which events pack your venue and maximize weekend revenue."
+                    }
+                ],
+                benefitsTitle: "🍻 Results Our Bar & Club Customers See",
+                benefits: [
+                    { number: "280%", label: "Increase in weeknight attendance" },
+                    { number: "$15K", label: "Average monthly revenue boost" },
+                    { number: "3,200", label: "New party-goers per month" },
+                    { number: "78%", label: "VIP customer retention" }
+                ],
+                ctaTitle: "Ready to Pack Your Venue Every Night?",
+                ctaSubtitle: "Join 100+ bars and clubs that own their local nightlife scene"
+            }
+        };
+        
+        function setIndustry(industry) {
+            // Update active button
+            document.querySelectorAll('.industry-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const data = industryData[industry];
+            
+            // Update demo title
+            document.getElementById('demoTitle').textContent = data.demoTitle;
+            
+            // Update features
+            data.features.forEach((feature, index) => {
+                document.getElementById(`feature${index + 1}Title`).textContent = feature.title;
+                document.getElementById(`feature${index + 1}Desc`).textContent = feature.description;
+            });
+            
+            // Update benefits
+            document.getElementById('benefitsTitle').textContent = data.benefitsTitle;
+            data.benefits.forEach((benefit, index) => {
+                document.getElementById(`benefit${index + 1}Number`).textContent = benefit.number;
+                document.getElementById(`benefit${index + 1}Label`).textContent = benefit.label;
+            });
+            
+            // Update CTA
+            document.getElementById('ctaTitle').textContent = data.ctaTitle;
+            document.getElementById('ctaSubtitle').textContent = data.ctaSubtitle;
+            
+            // Track industry selection
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'industry_selected', {
+                    event_category: 'Demo Interaction',
+                    event_label: industry
+                });
+            }
+        }
+        
+        function runDemo(demoNumber) {
+            const demoElement = document.getElementById(`demo${demoNumber}`);
+            
+            // Simulate demo loading
+            demoElement.style.background = 'linear-gradient(135deg, var(--primary-color), #FF8C42)';
+            demoElement.style.color = 'white';
+            demoElement.textContent = 'Demo Running...';
+            
+            setTimeout(() => {
+                demoElement.style.background = 'linear-gradient(135deg, var(--accent-color), #00CC66)';
+                demoElement.textContent = '✅ Demo Complete - See Results Above!';
+            }, 2000);
+            
+            setTimeout(() => {
+                demoElement.style.background = 'linear-gradient(135deg, #f8f9fa, #e9ecef)';
+                demoElement.style.color = '#666';
+                demoElement.textContent = 'Click "Try Live Demo" to run again';
+            }, 5000);
+            
+            // Track demo interaction
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'demo_run', {
+                    event_category: 'Demo Interaction',
+                    event_label: `Demo ${demoNumber}`
+                });
+            }
+        }
+        
+        // Track page views
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Platform Demo',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Demo'
+            });
+        }
+    </script>
+</body>
+</html>

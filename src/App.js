@@ -24,6 +24,7 @@ import KidsExpoMap from './components/KidsExpoMap';
 import EzDrinkSignup from './components/EzDrinkSignup';
 import SignupSuccess from './components/SignupSuccess';
 import EzFestSignup from './components/EzFestSignup';
+import VendorDownload from './components/VendorDownload';
 
 
 // QR Tracker component
@@ -192,6 +193,7 @@ const hideNavbar = isDownloadPage || isCashFinderPage || isWineWalkPage || isKid
         <Route path="/kids-expo" element={<KidsExpoMap />} />
         <Route path="/signup" element={<EzDrinkSignup />} />
         <Route path="/signup-success" element={<SignupSuccess />} />
+        <Route path="/vendor-download" element={<VendorDownload />} />
         <Route path="/ezfest" element={<EzFestSignup />} />
 
 

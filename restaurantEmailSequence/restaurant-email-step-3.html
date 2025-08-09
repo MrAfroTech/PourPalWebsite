@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What If Every Hungry Person in Your Area Knew Your Menu?</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        
+        .email-container {
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background-color: #FFF8DC;
+            border-left: 4px solid #CD853F;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #8B4513;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #CD853F;
+            padding-bottom: 10px;
+        }
+        
+        .solution-box {
+            background: linear-gradient(135deg, #F0FFF0, #E6FFE6);
+            border: 1px solid #90EE90;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #32CD32;
+        }
+        
+        .feature-list {
+            background-color: #F5F5DC;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 6px;
+            border-left: 4px solid #CD853F;
+        }
+        
+        .feature-icon {
+            background-color: #8B4513;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        
+        .transformation {
+            background-color: #E6E6FA;
+            border-left: 4px solid #9370DB;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .transformation h3 {
+            color: #4B0082;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #CD853F;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #DAA520;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #CD853F;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #CD853F;
+        }
+        
+        .stats-highlight {
+            background-color: #F5F5DC;
+            border: 2px solid #CD853F;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #8B4513;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: #8B4513;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .footer a {
+            color: #CD853F;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .feature-icon {
+                margin: 0 auto 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Restaurant Solutions</h1>
+            <div class="tagline">Filling Tables, Growing Revenue</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>What If Every Hungry Person in Your Area Knew Your Menu?</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Your Restaurant in Every Customer's Pocket</h1>
+                
+                <p>For the past two days, we've talked about the problem: amazing restaurants struggling with empty tables because hungry customers simply can't find them when they're making dining decisions.</p>
+
+                <p>Today, let me show you the solution that's helping restaurants like yours turn invisible availability into visible opportunity.</p>
+
+                <div class="solution-box">
+                    <h3 style="color: #006400; margin-bottom: 15px;">💡 The Seamless Visibility Solution</h3>
+                    <p><strong>What if every person within 5 miles searching for dinner could instantly see your restaurant, browse your full menu with photos, and place an order – all before they even consider your competition?</strong></p>
+                </div>
+
+                <div class="feature-list">
+                    <h3 style="text-align: center; color: #8B4513; margin-bottom: 20px;">How Seamless Puts You on Every Local Diner's Phone</h3>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">🔍</div>
+                        <div>
+                            <strong>Instant Discovery:</strong> Show up immediately when customers search "restaurants near me" or "Italian food tonight"<br>
+                            <em>Be the first option they see, not the one they never find</em>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <div>
+                            <strong>Full Menu Visibility:</strong> Customers browse your complete menu with photos before deciding<br>
+                            <em>Let your food sell itself with appetizing visuals</em>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <div>
+                            <strong>Direct Ordering:</strong> Skip commission-heavy platforms – customers order directly from you<br>
+                            <em>Keep more of your revenue while serving more customers</em>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">🎯</div>
+                        <div>
+                            <strong>Local Targeting:</strong> Reach customers in your exact delivery area when they're hungry<br>
+                            <em>No wasted marketing spend on people too far away</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-highlight">
+                    <span class="stats-number">340%</span>
+                    <div class="stats-label">average increase in off-peak orders for restaurants using our platform</div>
+                </div>
+
+                <div class="transformation">
+                    <h3>🚀 The Tuesday Night Transformation</h3>
+                    <p>Remember that empty Tuesday dining room? With Seamless, when customers search for dinner options Tuesday night, they see your restaurant with your delicious menu photos, current availability, and can order immediately.</p>
+                    <p><strong>Those empty tables become filled tables – not just on weekends, but every night of the week.</strong></p>
+                </div>
+
+                <p>Instead of hoping customers will somehow find you, you're proactively showing up where they're already looking – on their phones, when they're hungry, ready to order.</p>
+
+                <p><strong>Tomorrow, I'll show you how to turn those newfound customers into bigger orders with our proven upselling strategies.</strong></p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Create Your Digital Presence Today</div>
+                <div class="cta-subtitle">Start reaching hungry customers in your area right now</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Get 2 FREE Months Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

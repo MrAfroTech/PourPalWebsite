@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Subscription</title>
+    <style>
+        /* Reset styles for email clients */
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+        }
+        
+        /* Responsive design */
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+                padding: 20px !important;
+            }
+            .header {
+                padding: 20px 0 !important;
+            }
+            .content {
+                padding: 30px 20px !important;
+            }
+            .button {
+                width: 100% !important;
+                padding: 15px 20px !important;
+                font-size: 16px !important;
+            }
+            .footer {
+                padding: 20px !important;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: 'Arial', sans-serif;">
+    
+    <!-- Brand Customization Variables (Replace with your brand values) -->
+    <!-- 
+    BRAND_PRIMARY_COLOR = #8B4513 (Brown - matches EzDrink branding)
+    BRAND_SECONDARY_COLOR = #D2691E (Saddle Brown)
+    BRAND_ACCENT_COLOR = #FFD700 (Gold)
+    BRAND_LOGO_URL = https://your-domain.com/logo.png
+    BRAND_NAME = EzDrink
+    BRAND_WEBSITE = https://ezdrink.com
+    BRAND_EMAIL = hello@ezdrink.com
+    -->
+    
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f4f4f4;">
+        <tr>
+            <td align="center" style="padding: 40px 0;">
+                
+                <!-- Main Container -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" class="container" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    
+                    <!-- Header Section -->
+                    <tr>
+                        <td class="header" style="padding: 40px 40px 20px 40px; text-align: center; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); border-radius: 8px 8px 0 0;">
+                            <!-- Brand Logo -->
+                            <img src="https://via.placeholder.com/200x60/8B4513/FFFFFF?text=EzDrink+Logo" alt="EzDrink Logo" style="max-width: 200px; height: auto; margin-bottom: 20px;">
+                            
+                            <!-- Header Text -->
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">
+                                Welcome to EzDrink!
+                            </h1>
+                            <p style="margin: 10px 0 0 0; color: #FFD700; font-size: 16px; font-weight: 300;">
+                                AI Ordering Assistant for Bars
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Main Content Section -->
+                    <tr>
+                        <td class="content" style="padding: 40px; text-align: center;">
+                            
+                            <!-- Confirmation Message -->
+                            <h2 style="margin: 0 0 20px 0; color: #333333; font-size: 24px; font-weight: 600;">
+                                Confirm Your Subscription
+                            </h2>
+                            
+                            <p style="margin: 0 0 25px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                                Thank you for subscribing to EzDrink! We're excited to keep you updated with the latest news, 
+                                tips, and exclusive offers for bar owners and managers.
+                            </p>
+                            
+                            <p style="margin: 0 0 35px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                                Please confirm your subscription by clicking the button below:
+                            </p>
+                            
+                            <!-- CTA Button -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="border-radius: 6px; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);">
+                                        <a href="{{ confirmation_url }}" class="button" style="display: inline-block; padding: 16px 32px; color: #ffffff; text-decoration: none; font-size: 18px; font-weight: 600; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);">
+                                            Yes, I want to subscribe
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Additional Info -->
+                            <p style="margin: 35px 0 0 0; color: #999999; font-size: 14px; line-height: 1.5;">
+                                If you didn't sign up for this newsletter, you can safely ignore this email. 
+                                This link will expire in 24 hours for security purposes.
+                            </p>
+                            
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer Section -->
+                    <tr>
+                        <td class="footer" style="padding: 30px 40px; background-color: #f8f8f8; border-radius: 0 0 8px 8px; text-align: center;">
+                            
+                            <!-- Social Links -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto 20px auto;">
+                                <tr>
+                                    <td style="padding: 0 10px;">
+                                        <a href="#" style="display: inline-block; width: 40px; height: 40px; background-color: #8B4513; border-radius: 50%; text-decoration: none; text-align: center; line-height: 40px;">
+                                            <span style="color: #ffffff; font-size: 16px;">f</span>
+                                        </a>
+                                    </td>
+                                    <td style="padding: 0 10px;">
+                                        <a href="#" style="display: inline-block; width: 40px; height: 40px; background-color: #8B4513; border-radius: 50%; text-decoration: none; text-align: center; line-height: 40px;">
+                                            <span style="color: #ffffff; font-size: 16px;">t</span>
+                                        </a>
+                                    </td>
+                                    <td style="padding: 0 10px;">
+                                        <a href="#" style="display: inline-block; width: 40px; height: 40px; background-color: #8B4513; border-radius: 50%; text-decoration: none; text-align: center; line-height: 40px;">
+                                            <span style="color: #ffffff; font-size: 16px;">in</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Footer Text -->
+                            <p style="margin: 0 0 10px 0; color: #666666; font-size: 14px;">
+                                <strong>EzDrink</strong> - AI Ordering Assistant for Bars
+                            </p>
+                            
+                            <p style="margin: 0 0 15px 0; color: #999999; font-size: 12px; line-height: 1.4;">
+                                Questions? Contact us at <a href="mailto:hello@ezdrink.com" style="color: #8B4513; text-decoration: none;">hello@ezdrink.com</a><br>
+                                Visit us at <a href="https://ezdrink.com" style="color: #8B4513; text-decoration: none;">ezdrink.com</a>
+                            </p>
+                            
+                            <!-- Legal Links -->
+                            <p style="margin: 0; color: #999999; font-size: 11px; line-height: 1.4;">
+                                <a href="#" style="color: #8B4513; text-decoration: none;">Privacy Policy</a> | 
+                                <a href="#" style="color: #8B4513; text-decoration: none;">Terms of Service</a> | 
+                                <a href="#" style="color: #8B4513; text-decoration: none;">Unsubscribe</a>
+                            </p>
+                            
+                        </td>
+                    </tr>
+                    
+                </table>
+                
+            </td>
+        </tr>
+    </table>
+    
+</body>
+</html> 

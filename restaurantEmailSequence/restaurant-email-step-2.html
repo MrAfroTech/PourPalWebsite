@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden Gem or Just... Hidden? How Hungry Customers Actually Find Restaurants</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        
+        .email-container {
+            background-color: white;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background-color: #FFF8DC;
+            border-left: 4px solid #CD853F;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #8B4513;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #CD853F;
+            padding-bottom: 10px;
+        }
+        
+        .customer-journey {
+            background-color: #F5F5DC;
+            border: 1px solid #DDD;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .journey-step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 6px;
+            border-left: 4px solid #CD853F;
+        }
+        
+        .step-number {
+            background-color: #8B4513;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .reality-check {
+            background-color: #FFE4E1;
+            border-left: 4px solid #CD5C5C;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .reality-check h3 {
+            color: #8B0000;
+            margin-bottom: 10px;
+        }
+        
+        .visibility-gap {
+            background-color: #FFF0F5;
+            border: 2px solid #DB7093;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #CD853F;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #DAA520;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #CD853F;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #CD853F;
+        }
+        
+        .stats-highlight {
+            background-color: #F5F5DC;
+            border: 2px solid #CD853F;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #8B4513;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: #8B4513;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .footer a {
+            color: #CD853F;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .journey-step {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .step-number {
+                margin: 0 0 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Restaurant Solutions</h1>
+            <div class="tagline">Filling Tables, Growing Revenue</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>Hidden Gem or Just... Hidden? How Hungry Customers Actually Find Restaurants</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>The Discovery Gap That's Costing You Customers</h1>
+                
+                <p>Yesterday we talked about those empty tables during off-peak hours. Today, let's follow the actual journey your potential customers take when deciding where to eat – and why they're not finding you.</p>
+
+                <div class="customer-journey">
+                    <h3 style="text-align: center; color: #8B4513; margin-bottom: 20px;">The Modern Diner's Decision Process</h3>
+                    
+                    <div class="journey-step">
+                        <div class="step-number">1</div>
+                        <div>
+                            <strong>The Hunger Moment:</strong> "What should we have for dinner?"<br>
+                            <em>First instinct: Grab phone and start browsing</em>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="step-number">2</div>
+                        <div>
+                            <strong>The Search:</strong> "Restaurants near me" or "Italian food delivery"<br>
+                            <em>Scrolling through 10-20 options in 30 seconds</em>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="step-number">3</div>
+                        <div>
+                            <strong>The Quick Filter:</strong> Photos, reviews, menu preview<br>
+                            <em>Eliminating options that don't immediately grab attention</em>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="step-number">4</div>
+                        <div>
+                            <strong>The Decision:</strong> "This one looks good, let's order"<br>
+                            <em>Order placed in under 3 minutes total</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reality-check">
+                    <h3>📱 The Brutal Reality</h3>
+                    <p>If you're not visible during that 30-second browsing window in step 2, you simply don't exist to that customer. They're not walking around looking for restaurants – they're scrolling past them on their phone.</p>
+                </div>
+
+                <div class="stats-highlight">
+                    <span class="stats-number">89%</span>
+                    <div class="stats-label">of restaurant discovery now happens on mobile devices</div>
+                </div>
+
+                <div class="visibility-gap">
+                    <h3 style="color: #8B4513;">The Visibility Gap</h3>
+                    <p><strong>You could have the best food in town, but if you're not where customers are looking when they're deciding what to eat, you're essentially invisible.</strong></p>
+                </div>
+
+                <p>Think about it: When was the last time you drove around looking for a restaurant? Exactly. Your customers aren't doing that either.</p>
+
+                <p>They're browsing options from their couch, comparing menus while watching TV, and making decisions based on what they can see and order right now.</p>
+
+                <div class="reality-check">
+                    <h3>🎯 Great Food Isn't Enough</h3>
+                    <p>Having amazing food is the baseline – every restaurant thinks their food is great. What matters is being discoverable when hungry customers are actively looking for their next meal.</p>
+                </div>
+
+                <p><strong>Tomorrow, I'll show you exactly how to put your restaurant in front of every potential customer in your area when they're making their dining decision.</strong></p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Stop Being Invisible to Hungry Customers</div>
+                <div class="cta-subtitle">Get discovered by more diners starting today</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Get 2 FREE Months Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Ways to Stand Out at Any Festival (And Triple Your Sales)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            padding: 60px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 20px 0;
+            font-size: 42px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .header .subhead {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .header .highlight {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 50px 30px;
+        }
+        
+        .lead-form {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 3px solid #8B4513;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        
+        .form-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 20px;
+        }
+        
+        .form-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .benefits-section {
+            margin: 50px 0;
+        }
+        
+        .benefits-title {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 25px 0;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            border-left: 5px solid #8B4513;
+        }
+        
+        .benefit-icon {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: #FFD700;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .benefit-content h3 {
+            margin: 0 0 10px 0;
+            color: #8B4513;
+            font-size: 20px;
+        }
+        
+        .benefit-content p {
+            margin: 0;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .social-proof {
+            background: linear-gradient(135deg, #fdf6e3, #f5f0e6);
+            border-left: 5px solid #8B4513;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .testimonial {
+            font-size: 18px;
+            font-style: italic;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: #8B4513;
+            font-size: 16px;
+        }
+        
+        .guide-preview {
+            background-color: #f8f9fa;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+        
+        .preview-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .preview-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .preview-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .preview-list li:before {
+            content: "✓";
+            color: #8B4513;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .urgency-box {
+            background: linear-gradient(135deg, #fff9c4, #ffeaa7);
+            border: 2px solid #FFD700;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .urgency-title {
+            color: #8B4513;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .header .subhead {
+                font-size: 18px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .benefit-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .benefit-icon {
+                margin: 0 auto 15px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>The $25 Billion Problem Killing Food Truck Profits</h1>
+            <div class="subhead">Customers abandon lines after just 8 minutes. Download the insider guide that shows you how to skip the line problem and triple your sales at every festival.</div>
+            <div class="highlight">FREE Download - No Credit Card Required</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Guide Download Section -->
+            <div class="lead-form">
+                <div class="form-title">🎉 Your FREE Food Truck Money Secrets are Ready!</div>
+                <div class="form-subtitle">10 simple tips that can add $200-400 to your daily sales - no complicated industry jargon</div>
+                
+                <a href="#" class="cta-button" onclick="downloadGuide();">📧 Download Your Free Guide Now!</a>
+                
+                <p style="margin-top: 20px; font-size: 14px; color: #666; font-weight: bold;">
+                    ⚡ Plus: Ready to implement these strategies? Get started with our FREE platform below!
+                </p>
+            </div>
+            
+            <!-- Benefits Section -->
+            <div class="benefits-section">
+                <h2 class="benefits-title">What You'll Discover Inside This Guide:</h2>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">⏰</div>
+                    <div class="benefit-content">
+                        <h3>The 8-Minute Rule: Why Customers Are Walking Away From Your Truck</h3>
+                        <p>Industry data shows customers abandon food truck lines after just 8 minutes of waiting. Learn the QR code ordering system that drops wait times under 6 minutes and keeps customers engaged.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">📱</div>
+                    <div class="benefit-content">
+                        <h3>From $25 Billion Problem to $350K Solution Per Food Truck</h3>
+                        <p>Discover how AI-powered ordering systems integrate with any POS to create seamless customer experiences. Average food trucks see $350,000 annual revenue increase with this technology.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">💰</div>
+                    <div class="benefit-content">
+                        <h3>Why Your Location Matters Less Than Your Technology</h3>
+                        <p>From California to New York, Florida to Maine - successful food trucks are winning with universal POS integration and instant QR code ordering. Location becomes irrelevant when customers can find and order from you anywhere.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🚀</div>
+                    <div class="benefit-content">
+                        <h3>The 30% Industry Growth Opportunity You're Missing</h3>
+                        <p>The $102 billion food industry could grow to $132 billion annually with reduced wait times. Position your food truck ahead of the curve with the technology that's bringing the hospitality industry into the 21st century.</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">⚡</div>
+                    <div class="benefit-content">
+                        <h3>Stop Losing Customers to "Hot Sun" and Long Waits</h3>
+                        <p>You know the scene: families at festivals getting tired and sweating after hours in the hot sun. By the time they reach your truck, they're frustrated and staff is overwhelmed. Learn the instant ordering solution that eliminates this $25 billion industry-wide problem.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Proof -->
+            <div class="social-proof">
+                <div class="testimonial">
+                    "We implemented the QR code ordering system and saw immediate results. No more angry customers in long lines, no more overwhelmed staff during rush periods. Our revenue increased by $28,000 in the first month alone. This technology is bringing the food truck industry into the 21st century."
+                </div>
+                <div class="testimonial-author">- Maria Santos, Taco Dreams Food Truck</div>
+            </div>
+            
+            <!-- Guide Preview -->
+            <div class="guide-preview">
+                <div class="preview-title">Complete Guide Contents (22 Pages):</div>
+                <ul class="preview-list">
+                    <li><strong>The $25 Billion Line Problem</strong> - Why customers abandon food trucks after 8 minutes and how to fix it</li>
+                    <li><strong>QR Code Ordering Revolution</strong> - Universal POS integration that works with any existing system</li>
+                    <li><strong>The $350K Revenue Increase Formula</strong> - Step-by-step implementation for massive profit growth</li>
+                    <li><strong>From Coast to Coast Success</strong> - California to New York case studies of food trucks winning with technology</li>
+                    <li><strong>The 30% Industry Growth Opportunity</strong> - Position yourself ahead of the $132 billion market expansion</li>
+                    <li><strong>Seamless Customer Experience</strong> - Eliminate frustrated customers and overwhelmed staff</li>
+                    <li><strong>21st Century Implementation</strong> - Complete transformation checklist and timeline</li>
+                    <li><strong>Bonus: ROI Calculator</strong> - Calculate your potential $350K annual revenue increase</li>
+                </ul>
+            </div>
+            
+            <!-- Service Signup CTA -->
+            <div class="lead-form">
+                <div class="form-title">Ready to Implement These Strategies?</div>
+                <div class="form-subtitle">Start with our FREE platform + get 2 months of premium features at no cost</div>
+                
+                <a href="./food-truck-signup.html" class="cta-button">🚀 Start Your FREE Account + 2 Month Trial</a>
+                
+                <p style="margin-top: 15px; font-size: 12px; color: #666;">
+                    ✅ No credit card required for free tier<br>
+                    ✅ 2 month premium trial included<br>
+                    ✅ Cancel anytime
+                </p>
+            </div>
+            
+            <!-- Urgency -->
+            <div class="urgency-box">
+                <div class="urgency-title">⚡ Industry Transformation Happening NOW</div>
+                <p>The $102 billion food industry is rapidly adopting seamless ordering technology. Early adopters are seeing $350K revenue increases while others fall behind. Don't wait - position your food truck ahead of the curve today!</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            <p style="margin-top: 10px; font-size: 12px; opacity: 0.8;">
+                <a href="#" style="color: #ccc;">Privacy Policy</a> | 
+                <a href="#" style="color: #ccc;">Terms of Service</a> | 
+                <a href="#" style="color: #ccc;">Unsubscribe</a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Guide download handling
+        function downloadGuide() {
+            // Track download event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'guide_access', {
+                    event_category: 'Guide',
+                    event_label: 'Food Truck Money Secrets',
+                    content_group1: 'SMS Campaign',
+                    content_group2: 'Food Trucks'
+                });
+            }
+            
+            // Open the food truck simple guide in new tab
+            window.open('../downloads/food-truck-simple-guide.html', '_blank');
+            
+            // Show follow-up message
+            setTimeout(() => {
+                if (confirm('Ready to implement these insights with our FREE platform + 2 month trial?')) {
+                    window.location.href = './food-truck-signup.html';
+                }
+            }, 2000);
+        }
+        
+        // Track page views
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Food Truck Guide Landing Page',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Food Trucks'
+            });
+        }
+    </script>
+</body>
+</html>

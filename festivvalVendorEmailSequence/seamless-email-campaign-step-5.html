@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Your Customer Relationships From Fair to Fair to Festival</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #121212 0%, #2a2a2a 100%);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.15), transparent 40%);
+        }
+        
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-text {
+            color: #ffffff;
+            font-size: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .subject-preview {
+            background: #f8f9fa;
+            border-left: 4px solid #d4af37;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .subject-preview h2 {
+            color: #d4af37;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .subject-preview p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .main-content h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .customer-journey {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .journey-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .journey-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 50px;
+            width: 2px;
+            height: 30px;
+            background: #d4af37;
+        }
+        
+        .journey-icon {
+            width: 40px;
+            height: 40px;
+            background: #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .journey-content {
+            flex-grow: 1;
+        }
+        
+        .journey-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .journey-desc {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .comparison-card {
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .comparison-card.old-way {
+            background: rgba(220, 53, 69, 0.05);
+            border-color: #dc3545;
+        }
+        
+        .comparison-card.new-way {
+            background: rgba(212, 175, 55, 0.05);
+            border-color: #d4af37;
+        }
+        
+        .comparison-title {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid currentColor;
+        }
+        
+        .comparison-title.old {
+            color: #dc3545;
+        }
+        
+        .comparison-title.new {
+            color: #d4af37;
+        }
+        
+        .comparison-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .comparison-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .comparison-list li::before {
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .old-way .comparison-list li::before {
+            content: '✗';
+            color: #dc3545;
+        }
+        
+        .new-way .comparison-list li::before {
+            content: '✓';
+            color: #d4af37;
+        }
+        
+        .database-visual {
+            background: #121212;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .database-title {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .customer-cards {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .customer-card {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 150px;
+            text-align: left;
+        }
+        
+        .customer-name {
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 5px;
+        }
+        
+        .customer-history {
+            font-size: 12px;
+            color: #ffffff;
+            margin-bottom: 3px;
+        }
+        
+        .loyalty-features {
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            border-left: 4px solid #d4af37;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+        
+        .feature-text {
+            flex-grow: 1;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4af37 0%, #f5d76e 100%);
+            color: #121212;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: transform 0.2s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .pricing-highlight {
+            background: #121212;
+            color: #ffffff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .pricing-highlight .free-plan {
+            color: #d4af37;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-highlight .trial-offer {
+            color: #ffffff;
+            font-size: 14px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+        
+
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .main-content h1 {
+                font-size: 24px;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .customer-cards {
+                justify-content: center;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Seamless</div>
+            <div class="header-text">Coast to Coast Onsite Mobile Ordering</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                
+                <p>Take Your Customer Relationships From Fair to Fair to Festival</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Your Portable Customer Database</h1>
+                
+                <p>We've covered discovery, upselling, and digital presence. Now let's talk about the game-changer: <strong>building relationships that follow you everywhere.</strong></p>
+                
+                <p>Imagine Sarah orders your signature fish tacos at the county fair in May. She loves them. But when you show up at the music festival in June, she doesn't even know you're there.</p>
+                
+                <p><strong>That's about to change.</strong></p>
+                
+                <div class="customer-journey">
+                    <h3 style="color: #d4af37; text-align: center; margin-bottom: 25px;">The New Customer Journey</h3>
+                    
+                    <div class="journey-step">
+                        <div class="journey-icon">1</div>
+                        <div class="journey-content">
+                            <div class="journey-title">Sarah orders at County Fair</div>
+                            <div class="journey-desc">Fish tacos become her favorite, order history saved</div>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="journey-icon">2</div>
+                        <div class="journey-content">
+                            <div class="journey-title">You register for Music Festival</div>
+                            <div class="journey-desc">System automatically notifies your past customers</div>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="journey-icon">3</div>
+                        <div class="journey-content">
+                            <div class="journey-title">Sarah gets notification</div>
+                            <div class="journey-desc">"Your favorite taco vendor is at the Music Festival!"</div>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step">
+                        <div class="journey-icon">4</div>
+                        <div class="journey-content">
+                            <div class="journey-title">Instant recognition & reorder</div>
+                            <div class="journey-desc">She can reorder her favorites with one tap</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card old-way">
+                        <div class="comparison-title old">The Old Way</div>
+                        <ul class="comparison-list">
+                            <li>Start from zero at every event</li>
+                            <li>Hope customers remember you</li>
+                            <li>No way to reach past customers</li>
+                            <li>Lost sales from missed connections</li>
+                            <li>Rebuilding relationships constantly</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="comparison-card new-way">
+                        <div class="comparison-title new">The Seamless Way</div>
+                        <ul class="comparison-list">
+                            <li>Build on existing relationships</li>
+                            <li>Automatic customer notifications</li>
+                            <li>Order history follows you</li>
+                            <li>Increased repeat business</li>
+                            <li>Growing loyal customer base</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="database-visual">
+                    <div class="database-title">Your Growing Customer Database</div>
+                    
+                    <div class="customer-cards">
+                        <div class="customer-card">
+                            <div class="customer-name">Sarah M.</div>
+                            <div class="customer-history">Fish Tacos x3</div>
+                            <div class="customer-history">County Fair, Music Fest</div>
+                            <div class="customer-history">Avg Order: $12.50</div>
+                        </div>
+                        
+                        <div class="customer-card">
+                            <div class="customer-name">Mike R.</div>
+                            <div class="customer-history">Carnitas Combo x5</div>
+                            <div class="customer-history">Art Fair, Food Truck Rally</div>
+                            <div class="customer-history">Avg Order: $15.25</div>
+                        </div>
+                        
+                        <div class="customer-card">
+                            <div class="customer-name">Jennifer K.</div>
+                            <div class="customer-history">Vegan Bowl x2</div>
+                            <div class="customer-history">Music Fest</div>
+                            <div class="customer-history">Avg Order: $9.75</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p><strong>This is what restaurants do,</strong> and now you can too. Every customer becomes part of your growing database, not just a one-time transaction.</p>
+                
+                <div class="loyalty-features">
+                    <h3 style="color: #d4af37; text-align: center; margin-bottom: 25px;">Relationship-Building Features</h3>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon">📱</div>
+                            <div class="feature-text">
+                                <div class="feature-title">Event Notifications</div>
+                                <div class="feature-desc">Automatically notify customers when you're coming to their area</div>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">📋</div>
+                            <div class="feature-text">
+                                <div class="feature-title">Order History</div>
+                                <div class="feature-desc">Customers can reorder their favorites with one tap</div>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">💖</div>
+                            <div class="feature-text">
+                                <div class="feature-title">Personalization</div>
+                                <div class="feature-desc">Suggest items based on their previous orders and preferences</div>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-text">
+                                <div class="feature-title">Targeted Offers</div>
+                                <div class="feature-desc">Send special deals to your most loyal customers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p><strong>Turn one-time festival customers into loyal followers</strong> who seek you out at every event. Build a business that grows stronger with each festival, not one that starts over.</p>
+                
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <h3 style="margin-bottom: 15px; color: #333;">Build Your Customer Database Now</h3>
+                    <a href="https://ezdrink.us/signup" class="cta-button">Start Building Loyalty</a>
+                    
+                    <div class="pricing-highlight">
+                        <div class="free-plan">Free Plan Available</div>
+                        <div class="trial-offer">Advanced customer features free for 2 months</div>
+                    </div>
+                </div>
+                
+                <p>Tomorrow, I'll show you how to stand out from every other vendor while they're still hoping customers walk by.</p>
+                
+                <p>Building lasting relationships,<br>
+                <strong>The Seamless Team</strong></p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+
+            
+            <p><strong>Seamless</strong> - Coast to Coast Onsite Mobile Ordering<br>
+            Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">View in Browser</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

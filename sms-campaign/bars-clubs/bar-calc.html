@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Revenue Calculator - See Your Bar's Real Profit Potential</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #CCCCCC;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #000000 0%, #1A1A1A 100%);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #1A1A1A;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000, #1A1A1A);
+            border-bottom: 3px solid #FF6B35;
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 15px 0;
+            font-size: 38px;
+            font-weight: bold;
+            line-height: 1.2;
+            color: #FF6B35;
+        }
+        
+        .header .subhead {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+            background-color: #1A1A1A;
+        }
+        
+        .calculator-section {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border: 3px solid #FF6B35;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .calc-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF6B35;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            background-color: #333333;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #444;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group:focus-within {
+            border-color: #FF6B35;
+        }
+        
+        .input-label {
+            display: block;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .input-help {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .calc-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #222;
+            color: white;
+            transition: border-color 0.3s ease;
+        }
+        
+        .calc-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+        
+        .calc-input::placeholder {
+            color: #888;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .results-section {
+            background: linear-gradient(135deg, #1A2A1A, #0A1A0A);
+            border: 3px solid #00FF88;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .results-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00FF88;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background-color: #333333;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #444;
+        }
+        
+        .result-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00FF88;
+            margin-bottom: 8px;
+        }
+        
+        .result-label {
+            font-size: 14px;
+            color: #CCCCCC;
+            font-weight: bold;
+        }
+        
+        .improvement-highlight {
+            background: linear-gradient(135deg, #2A2A1A, #1A1A0A);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .highlight-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .scenario-breakdown {
+            background-color: #333333;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #FF6B35;
+        }
+        
+        .scenario-title {
+            color: #FF6B35;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .scenario-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+            color: #CCCCCC;
+        }
+        
+        .scenario-value {
+            color: #00FF88;
+            font-weight: bold;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            background-color: #000000;
+            color: #FF6B35;
+            border: 2px solid #FF6B35;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            background-color: #FF6B35;
+            color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .assumptions {
+            background-color: #2A2A2A;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            font-size: 14px;
+            color: #CCCCCC;
+            border: 2px solid #FF6B35;
+        }
+        
+        .assumptions h4 {
+            color: #FF6B35;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: #000000;
+            color: #CCCCCC;
+            padding: 30px;
+            text-align: center;
+            border-top: 3px solid #FF6B35;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>See Your Bar's Real Profit Potential</h1>
+            <div class="subhead">Calculate exactly how much revenue consistent crowds and group ordering could add to your nightlife business</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Calculator Section -->
+            <div class="calculator-section">
+                <div class="calc-title">🍻 Bar Revenue Calculator</div>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label class="input-label">Weekend Capacity (%)</label>
+                        <div class="input-help">How full you are Friday-Sunday nights</div>
+                        <input type="number" class="calc-input" id="weekendCapacity" value="75" min="1" max="100">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Weeknight Capacity (%)</label>
+                        <div class="input-help">How full you are Monday-Thursday nights</div>
+                        <input type="number" class="calc-input" id="weeknightCapacity" value="25" min="1" max="100">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Average Per-Customer Spend ($)</label>
+                        <div class="input-help">What customers typically spend per visit</div>
+                        <input type="number" class="calc-input" id="avgSpend" value="32.00" min="1" step="0.50">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Total Venue Capacity</label>
+                        <div class="input-help">Maximum number of customers your venue can hold</div>
+                        <input type="number" class="calc-input" id="maxCapacity" value="120" min="1">
+                    </div>
+                </div>
+                
+                <button class="calculate-btn" onclick="calculateRevenue()">📊 Calculate My Revenue Potential</button>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results-section" id="results">
+                <div class="results-title">🎯 Your Nightlife Revenue Transformation</div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-number" id="currentWeekly">$0</div>
+                        <div class="result-label">Current Weekly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="potentialWeekly">$0</div>
+                        <div class="result-label">Potential Weekly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="yearlyIncrease">$0</div>
+                        <div class="result-label">Additional Yearly Revenue</div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <div class="result-number" id="percentIncrease">0%</div>
+                        <div class="result-label">Revenue Increase</div>
+                    </div>
+                </div>
+                
+                <div class="improvement-highlight">
+                    <div class="highlight-number" id="weekendBoost">$0</div>
+                    <div>Additional weekend revenue with VIP loyalty and group ordering</div>
+                </div>
+                
+                <!-- Scenario Breakdown -->
+                <div class="scenario-breakdown">
+                    <div class="scenario-title">📈 Revenue Improvement Breakdown:</div>
+                    <div class="scenario-item">
+                        <span>Packed weeknights (40% capacity target)</span>
+                        <span class="scenario-value" id="weeknightRevenue">$0/month</span>
+                    </div>
+                    <div class="scenario-item">
+                        <span>Group ordering (+25% per-customer spend)</span>
+                        <span class="scenario-value" id="groupRevenue">$0/month</span>
+                    </div>
+                    <div class="scenario-item">
+                        <span>VIP regulars (+15% weekend customers)</span>
+                        <span class="scenario-value" id="vipRevenue">$0/month</span>
+                    </div>
+                    <div class="scenario-item">
+                        <span>Premium upselling (+$8 per customer)</span>
+                        <span class="scenario-value" id="upsellingRevenue">$0/month</span>
+                    </div>
+                </div>
+                
+                <!-- CTA in Results -->
+                <div style="background-color: #333333; padding: 30px; border-radius: 10px; margin-top: 20px; border: 2px solid #FF6B35;">
+                    <h3 style="color: #FF6B35; margin-bottom: 15px;">Ready to Turn This Potential Into Reality?</h3>
+                    <p style="margin-bottom: 20px; color: #CCCCCC;">Get our complete Nightlife Success System and start packing your venue every night of the week.</p>
+                    <a href="#" class="cta-button">🚀 Get The Complete System Free</a>
+                </div>
+            </div>
+            
+            <!-- Main CTA Section -->
+            <div class="cta-section">
+                <div class="cta-title">Turn These Numbers Into Your Reality</div>
+                <div class="cta-subtitle">Get the exact strategies that helped 100+ bars and clubs increase their revenue by 50-80%</div>
+                <a href="/sms-campaign/bars-clubs/bar-guide.html" class="cta-button">📈 Show Me How to Get These Results</a>
+            </div>
+            
+            <!-- Assumptions -->
+            <div class="assumptions">
+                <h4>Calculation Methodology:</h4>
+                <ul>
+                    <li><strong>Weeknight Improvement:</strong> Digital marketing and event promotion increases weeknight capacity to 40%</li>
+                    <li><strong>Group Ordering Impact:</strong> Streamlined ordering and upselling increases per-customer spend by 25%</li>
+                    <li><strong>VIP Loyalty:</strong> Regular customer programs create 15% increase in weekend attendance</li>
+                    <li><strong>Premium Upselling:</strong> Smart suggestions and bottle service increase average spend by $8</li>
+                    <li><strong>Industry Benchmarks:</strong> Data from 100+ bars and clubs using our system over 20 months</li>
+                    <li><strong>Conservative Estimates:</strong> Results show minimum improvements; many venues exceed these numbers</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+        </div>
+    </div>
+    
+    <script>
+        function calculateRevenue() {
+            // Get input values
+            const weekendCapacity = parseFloat(document.getElementById('weekendCapacity').value);
+            const weeknightCapacity = parseFloat(document.getElementById('weeknightCapacity').value);
+            const avgSpend = parseFloat(document.getElementById('avgSpend').value);
+            const maxCapacity = parseFloat(document.getElementById('maxCapacity').value);
+            
+            // Current revenue calculation (3 weekend nights + 4 weeknights)
+            const weekendCustomers = (maxCapacity * weekendCapacity / 100) * 3; // Fri, Sat, Sun
+            const weeknightCustomers = (maxCapacity * weeknightCapacity / 100) * 4; // Mon-Thu
+            const currentWeekly = (weekendCustomers + weeknightCustomers) * avgSpend;
+            
+            // Improved scenarios
+            const improvedWeeknight = Math.min(40, weeknightCapacity * 1.6); // Target 40% weeknight capacity
+            const improvedWeekendCustomers = weekendCustomers * 1.15; // 15% more VIP customers
+            const improvedWeeknightCustomers = (maxCapacity * improvedWeeknight / 100) * 4;
+            const improvedSpend = avgSpend * 1.25 + 8; // 25% increase + $8 upselling
+            
+            // Calculate potential weekly revenue
+            const potentialWeekly = (improvedWeekendCustomers + improvedWeeknightCustomers) * improvedSpend;
+            
+            // Calculate increases
+            const weeklyIncrease = potentialWeekly - currentWeekly;
+            const monthlyIncrease = weeklyIncrease * 4.33; // Average weeks per month
+            const yearlyIncrease = weeklyIncrease * 52;
+            const percentIncrease = ((potentialWeekly - currentWeekly) / currentWeekly) * 100;
+            const weekendBoost = (improvedWeekendCustomers - weekendCustomers) * improvedSpend;
+            
+            // Break down revenue sources (monthly)
+            const weeknightImprovement = (improvedWeeknightCustomers - weeknightCustomers) * avgSpend * 4.33;
+            const groupOrderingBonus = (weekendCustomers + weeknightCustomers) * (avgSpend * 0.25) * 4.33;
+            const vipBonus = (weekendCustomers * 0.15) * avgSpend * 4.33;
+            const upsellingBonus = (weekendCustomers + weeknightCustomers) * 8 * 4.33;
+            
+            // Display results
+            document.getElementById('currentWeekly').textContent = '$' + currentWeekly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('potentialWeekly').textContent = '$' + potentialWeekly.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('yearlyIncrease').textContent = '$' + yearlyIncrease.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('percentIncrease').textContent = percentIncrease.toFixed(0) + '%';
+            document.getElementById('weekendBoost').textContent = '$' + weekendBoost.toLocaleString('en-US', {maximumFractionDigits: 0});
+            
+            // Breakdown
+            document.getElementById('weeknightRevenue').textContent = '$' + weeknightImprovement.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('groupRevenue').textContent = '$' + groupOrderingBonus.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('vipRevenue').textContent = '$' + vipBonus.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('upsellingRevenue').textContent = '$' + upsellingBonus.toLocaleString('en-US', {maximumFractionDigits: 0});
+            
+            // Show results section
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Track calculation event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'calculator_used', {
+                    event_category: 'Lead Generation',
+                    event_label: 'Bar Calculator',
+                    custom_parameters: {
+                        current_weekly: currentWeekly,
+                        potential_increase: percentIncrease,
+                        yearly_increase: yearlyIncrease
+                    }
+                });
+            }
+        }
+        
+        // Auto-calculate on input change after initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.calc-input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Debounce the calculation
+                    clearTimeout(this.calcTimeout);
+                    this.calcTimeout = setTimeout(calculateRevenue, 500);
+                });
+            });
+            
+            // Initial calculation with default values
+            calculateRevenue();
+        });
+        
+        // Track page views
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Bar Revenue Calculator',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Bars & Clubs'
+            });
+        }
+    </script>
+</body>
+</html>

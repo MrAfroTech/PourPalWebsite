@@ -1,0 +1,31 @@
+{
+  "name": "seamless-pos-integration-demo",
+  "version": "1.0.0",
+  "description": "Demo mode for NCR Aloha and TouchBistro POS integrations",
+  "main": "demo-server.js",
+  "scripts": {
+    "demo": "node demo-server.js",
+    "test": "node scripts/demo-tests.js",
+    "start": "node demo-server.js",
+    "dev": "nodemon demo-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "pos",
+    "integration", 
+    "ncr-aloha",
+    "touchbistro",
+    "demo",
+    "restaurant",
+    "orders"
+  ],
+  "author": "Seamless Team",
+  "license": "MIT"
+}

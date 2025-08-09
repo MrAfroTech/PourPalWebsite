@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Your FREE Vendor Account</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .content {
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .form-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 20px;
+        }
+        
+        .form-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .signup-button {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+            text-decoration: none;
+            display: inline-block;
+            box-sizing: border-box;
+        }
+        
+        .signup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .benefits {
+            font-size: 14px;
+            color: #666;
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        .benefits div {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .form-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="form-title">Ready to Implement These Strategies?</div>
+            <div class="form-subtitle">Start with our FREE platform + get 2 months of premium features at no cost</div>
+            
+            <a href="./vendor-signup.html" class="signup-button">🚀 Start Your FREE Account + 2 Month Trial</a>
+            
+            <div class="benefits">
+                <div>✅ No credit card required for free tier</div>
+                <div>✅ 2 month premium trial included</div>
+                <div>✅ Cancel anytime</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Track page view
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'Vendor Signup Offer',
+                page_location: window.location.href,
+                content_group1: 'SMS Campaign',
+                content_group2: 'Signup Offer'
+            });
+        }
+        
+        // Track signup clicks
+        document.querySelector('.signup-button').addEventListener('click', function() {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'signup_intent', {
+                    event_category: 'Signup',
+                    event_label: 'Vendor Free Trial',
+                    content_group1: 'SMS Campaign',
+                    content_group2: 'Signup'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

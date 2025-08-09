@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What If Every Group Looking for Fun Knew About Your Events?</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #0A0A0A;
+        }
+        
+        .email-container {
+            background-color: #1A1A1A;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #1A1A1A 50%, #333333 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+        
+        .header .tagline {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+            color: #CCCCCC;
+        }
+        
+        .content {
+            padding: 40px 30px;
+            background-color: #1A1A1A;
+            color: #CCCCCC;
+        }
+        
+        .subject-preview {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .subject-preview p {
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            margin-bottom: 40px;
+        }
+        
+        .main-content h1 {
+            color: #FF6B35;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+        }
+        
+        .solution-box {
+            background: linear-gradient(135deg, #1A2A1A, #0A1A0A);
+            border: 1px solid #00AA44;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #00FF88;
+        }
+        
+        .feature-list {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #333333;
+            border-radius: 6px;
+            border-left: 4px solid #FF6B35;
+        }
+        
+        .feature-icon {
+            background-color: #FF6B35;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        
+        .transformation {
+            background-color: #2A1A2A;
+            border-left: 4px solid #9966CC;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .transformation h3 {
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .cta-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #000000;
+            color: #FF6B35;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid #FF6B35;
+        }
+        
+        .cta-button:hover {
+            background-color: #FF6B35;
+            color: #000000;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #000000;
+            color: #000000;
+        }
+        
+        .cta-button.secondary:hover {
+            background-color: #000000;
+            color: #FF6B35;
+        }
+        
+        .stats-highlight {
+            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+            border: 2px solid #FF6B35;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FF6B35;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #CCCCCC;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            background-color: #000000;
+            color: #CCCCCC;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 3px solid #FF6B35;
+        }
+        
+        .footer a {
+            color: #FF6B35;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .feature-icon {
+                margin: 0 auto 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Seamless Nightlife Solutions</h1>
+            <div class="tagline">Filling Seats, Amplifying Energy</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Subject Line Preview -->
+            <div class="subject-preview">
+                <p>What If Every Group Looking for Fun Knew About Your Events?</p>
+            </div>
+            
+            <div class="main-content">
+                <h1>Your Venue in Every Party Planner's Phone</h1>
+                
+                <p>For the past two days, we've talked about the problem: amazing bars and clubs struggling with inconsistent crowds because party-goers simply can't find them when they're planning their night out.</p>
+
+                <p>Today, let me show you the solution that's helping venues like yours turn invisible availability into visible party destinations.</p>
+
+                <div class="solution-box">
+                    <h3 style="color: #00FF88; margin-bottom: 15px;">💡 The Seamless Nightlife Discovery Solution</h3>
+                    <p><strong>What if every group within 5 miles planning their evening could instantly see your venue, browse your current events, check out your vibe, and get excited about partying at your place – all before they even consider the competition?</strong></p>
+                </div>
+
+                <div class="feature-list">
+                    <h3 style="text-align: center; color: #FF6B35; margin-bottom: 20px;">How Seamless Puts You in Every Party Planning Conversation</h3>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">🔍</div>
+                        <div>
+                            <strong>Event Discovery:</strong> Show up immediately when groups search "bars with live music" or "fun places tonight"<br>
+                            <em>Be the first venue they see, not the one they never find</em>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">📅</div>
+                        <div>
+                            <strong>What's Happening Tonight:</strong> Display current events, specials, and atmosphere in real-time<br>
+                            <em>Let party-goers see exactly what energy awaits them</em>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">🍸</div>
+                        <div>
+                            <strong>Drink Menu Preview:</strong> Showcase signature cocktails and current specials<br>
+                            <em>Get groups excited about your drinks before they arrive</em>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">🎉</div>
+                        <div>
+                            <strong>Direct Event Promotion:</strong> Reach local party-seekers with targeted event announcements<br>
+                            <em>Fill events before party-goers make other plans</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-highlight">
+                    <span class="stats-number">280%</span>
+                    <div class="stats-label">average increase in weeknight attendance for venues using our platform</div>
+                </div>
+
+                <div class="transformation">
+                    <h3>🚀 The Wednesday Night Transformation</h3>
+                    <p>Remember those scattered groups and empty stools? With Seamless, when groups search for "where to go tonight" on Wednesday, they see your venue with your current events, your drink specials, and your energy level.</p>
+                    <p><strong>Those empty seats become filled with excited groups – not just on weekends, but every night of the week.</strong></p>
+                </div>
+
+                <p>Instead of hoping groups will somehow discover you, you're proactively showing up where they're already looking – on their phones, when they're planning their night, ready to party.</p>
+
+                <p><strong>Tomorrow, I'll show you how to turn those party-goers into bigger spenders with our proven group ordering and upselling strategies.</strong></p>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Become the Go-To Venue</div>
+                <div class="cta-subtitle">Start reaching party-planners in your area right now</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start FREE Forever Plan</a>
+                    <a href="#" class="cta-button secondary">Get 2 FREE Months Pro</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Seamless</strong> - Bringing The Hospitality Industry Into The 21st Century</p>
+            
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="#">Update Preferences</a> |
+                <a href="#">Unsubscribe</a> |
+                <a href="#">Forward to a Friend</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

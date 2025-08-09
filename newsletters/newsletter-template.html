@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Truck Success Weekly - Newsletter Template</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        /* Newsletter Container */
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Header Styles */
+        .newsletter-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #10b981 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .masthead {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .issue-info {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .newsletter-nav {
+            background-color: #f8fafc;
+            padding: 15px 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .nav-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .nav-items {
+            list-style: none;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .nav-items li {
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .nav-items li::before {
+            content: "▶";
+            color: #f97316;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Content Styles */
+        .newsletter-content {
+            padding: 30px 20px;
+        }
+
+        .intro-section {
+            background-color: #fef3e2;
+            border-left: 4px solid #f97316;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .intro-title {
+            font-size: 22px;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .intro-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #374151;
+        }
+
+        /* Feature Article Styles */
+        .feature-article {
+            margin-bottom: 40px;
+        }
+
+        .feature-title {
+            font-size: 26px;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #f97316;
+        }
+
+        /* Strategy/Content List Styles */
+        .strategy-list {
+            margin-bottom: 30px;
+        }
+
+        .strategy-item {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .strategy-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .strategy-number {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 14px;
+        }
+
+        .strategy-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .strategy-content {
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .strategy-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .strategy-content li {
+            margin-bottom: 5px;
+        }
+
+        .savings-highlight {
+            background-color: #dcfce7;
+            color: #166534;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* CTA Styles */
+        .cta-section {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .cta-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .cta-text {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: #f97316;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(249, 115, 22, 0.3);
+        }
+
+        .cta-button:hover {
+            background-color: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(249, 115, 22, 0.4);
+        }
+
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid #f97316;
+            color: #f97316;
+        }
+
+        .cta-button.secondary:hover {
+            background-color: #f97316;
+            color: white;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-title::before {
+            content: "💡";
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .sidebar-content {
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Social Proof */
+        .testimonial {
+            background-color: #fef3e2;
+            border-left: 4px solid #f97316;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        .testimonial-text {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #374151;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: #1e3a8a;
+            font-style: normal;
+        }
+
+        /* Footer Styles */
+        .newsletter-footer {
+            background-color: #1f2937;
+            color: #d1d5db;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            margin-bottom: 20px;
+        }
+
+        .footer-logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .footer-tagline {
+            font-size: 14px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-links a {
+            color: #f97316;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-social {
+            margin: 20px 0;
+        }
+
+        .social-link {
+            display: inline-block;
+            color: #d1d5db;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #f97316;
+        }
+
+        .footer-legal {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #374151;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            .newsletter-container {
+                margin: 0;
+                box-shadow: none;
+            }
+
+            .newsletter-header {
+                padding: 20px 15px;
+            }
+
+            .masthead {
+                font-size: 24px;
+            }
+
+            .newsletter-content {
+                padding: 20px 15px;
+            }
+
+            .feature-title {
+                font-size: 22px;
+            }
+
+            .strategy-item {
+                padding: 15px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+            }
+
+            .footer-links a {
+                display: block;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="newsletter-container">
+        <!-- Newsletter Header -->
+        <div class="newsletter-header">
+            <div class="masthead">Food Truck Success Weekly</div>
+            <div class="issue-info">Issue #[ISSUE_NUMBER] • [DATE] • [READ_TIME] min read</div>
+            <div class="tagline">Strategies, Insights & Profits for Mobile Food Entrepreneurs</div>
+        </div>
+
+        <!-- Navigation/Table of Contents -->
+        <div class="newsletter-nav">
+            <div class="nav-title">In This Issue</div>
+            <ul class="nav-items">
+                <li>[NAV_ITEM_1]</li>
+                <li>[NAV_ITEM_2]</li>
+                <li>[NAV_ITEM_3]</li>
+                <li>[NAV_ITEM_4]</li>
+            </ul>
+        </div>
+
+        <!-- Newsletter Content -->
+        <div class="newsletter-content">
+            <!-- Introduction Section -->
+            <div class="intro-section">
+                <div class="intro-title">From the Editor</div>
+                <div class="intro-text">
+                    [INTRO_CONTENT]
+                </div>
+            </div>
+
+            <!-- Feature Article -->
+            <div class="feature-article">
+                <h1 class="feature-title">[ARTICLE_TITLE]</h1>
+                
+                <!-- Article Content Goes Here -->
+                [ARTICLE_CONTENT]
+            </div>
+
+            <!-- Industry Stats Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-title">Industry Insight</div>
+                <div class="sidebar-content">
+                    [SIDEBAR_CONTENT]
+                </div>
+            </div>
+
+            <!-- Social Proof -->
+            <div class="testimonial">
+                <div class="testimonial-text">[TESTIMONIAL_TEXT]</div>
+                <div class="testimonial-author">— [TESTIMONIAL_AUTHOR]</div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <div class="cta-title">Ready to Transform Your Food Truck Business?</div>
+                <div class="cta-text">Join thousands of successful food truck operators using Seamless to increase profits and streamline operations.</div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button">Start Your Free Trial</a>
+                    <a href="#" class="cta-button secondary">Download Resource</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter Footer -->
+        <div class="newsletter-footer">
+            <div class="footer-content">
+                <div class="footer-logo">Seamless</div>
+                <div class="footer-tagline">Bringing The Hospitality Industry Into The 21st Century</div>
+                
+                <div class="footer-links">
+                    <a href="#">Unsubscribe</a>
+                    <a href="#">Update Preferences</a>
+                    <a href="#">Forward to Friend</a>
+                    <a href="#">View Online</a>
+                </div>
+            </div>
+            
+            <div class="footer-legal">
+                © 2024 Seamless. All rights reserved.<br>
+                You received this email because you subscribed to Food Truck Success Weekly.<br>
+                Our mailing address: Coast to Coast Onsite Mobile Ordering
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,291 @@
+/* Klaviyo Email Confirmation Template Styles */
+/* This file is for reference only - all styles should be inline in the HTML for email compatibility */
+
+/* ========================================
+   BRAND CUSTOMIZATION VARIABLES
+   ======================================== */
+
+:root {
+    /* Primary Brand Colors */
+    --brand-primary: #8B4513;      /* Brown - matches EzDrink branding */
+    --brand-secondary: #D2691E;     /* Saddle Brown */
+    --brand-accent: #FFD700;        /* Gold */
+    
+    /* Neutral Colors */
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --background-light: #f4f4f4;
+    --background-white: #ffffff;
+    --background-footer: #f8f8f8;
+    
+    /* Typography */
+    --font-family: 'Arial', sans-serif;
+    --font-size-large: 28px;
+    --font-size-medium: 18px;
+    --font-size-small: 14px;
+    --font-size-xs: 12px;
+    
+    /* Spacing */
+    --spacing-xs: 10px;
+    --spacing-sm: 15px;
+    --spacing-md: 20px;
+    --spacing-lg: 30px;
+    --spacing-xl: 40px;
+    
+    /* Border Radius */
+    --border-radius: 6px;
+    --border-radius-lg: 8px;
+}
+
+/* ========================================
+   RESET STYLES FOR EMAIL CLIENTS
+   ======================================== */
+
+body, table, td, p, a, li, blockquote {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+table, td {
+    mso-table-lspace: 0pt;
+    mso-table-rspace: 0pt;
+}
+
+img {
+    -ms-interpolation-mode: bicubic;
+}
+
+/* ========================================
+   LAYOUT STYLES
+   ======================================== */
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-light);
+    font-family: var(--font-family);
+}
+
+.container {
+    background-color: var(--background-white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   HEADER STYLES
+   ======================================== */
+
+.header {
+    padding: var(--spacing-xl);
+    text-align: center;
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.header h1 {
+    margin: 0;
+    color: var(--background-white);
+    font-size: var(--font-size-large);
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header p {
+    margin: var(--spacing-xs) 0 0 0;
+    color: var(--brand-accent);
+    font-size: var(--font-size-small);
+    font-weight: 300;
+}
+
+/* ========================================
+   CONTENT STYLES
+   ======================================== */
+
+.content {
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+.content h2 {
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--text-primary);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.content p {
+    margin: 0 0 var(--spacing-lg) 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+    line-height: 1.6;
+}
+
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+
+.button {
+    display: inline-block;
+    padding: 16px 32px;
+    color: var(--background-white);
+    text-decoration: none;
+    font-size: var(--font-size-medium);
+    font-weight: 600;
+    border-radius: var(--border-radius);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+}
+
+.button:hover {
+    background: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-primary) 100%);
+    box-shadow: 0 6px 12px rgba(139, 69, 19, 0.4);
+}
+
+/* ========================================
+   FOOTER STYLES
+   ======================================== */
+
+.footer {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background-color: var(--background-footer);
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+    text-align: center;
+}
+
+.footer p {
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+}
+
+.footer p:last-child {
+    margin-bottom: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+}
+
+.footer a {
+    color: var(--brand-primary);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* ========================================
+   SOCIAL MEDIA STYLES
+   ======================================== */
+
+.social-link {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: var(--brand-primary);
+    border-radius: 50%;
+    text-decoration: none;
+    text-align: center;
+    line-height: 40px;
+    margin: 0 var(--spacing-xs);
+}
+
+.social-link span {
+    color: var(--background-white);
+    font-size: 16px;
+}
+
+.social-link:hover {
+    background-color: var(--brand-secondary);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media only screen and (max-width: 600px) {
+    .container {
+        width: 100% !important;
+        padding: var(--spacing-md) !important;
+    }
+    
+    .header {
+        padding: var(--spacing-md) 0 !important;
+    }
+    
+    .content {
+        padding: var(--spacing-lg) var(--spacing-md) !important;
+    }
+    
+    .button {
+        width: 100% !important;
+        padding: 15px 20px !important;
+        font-size: 16px !important;
+    }
+    
+    .footer {
+        padding: var(--spacing-md) !important;
+    }
+    
+    .header h1 {
+        font-size: 24px !important;
+    }
+    
+    .content h2 {
+        font-size: 20px !important;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .button {
+        border: 2px solid var(--background-white);
+    }
+    
+    .content p {
+        color: var(--text-primary);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .button {
+        transition: none;
+    }
+}
+
+/* ========================================
+   EMAIL CLIENT SPECIFIC FIXES
+   ======================================== */
+
+/* Outlook specific fixes */
+@media screen and (min-width: 0\0) {
+    .container {
+        width: 600px !important;
+    }
+}
+
+/* Gmail app fixes */
+@media screen and (max-width: 600px) {
+    .container {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+}
+
+/* Apple Mail fixes */
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    .button {
+        -webkit-text-size-adjust: none;
+    }
+} 
