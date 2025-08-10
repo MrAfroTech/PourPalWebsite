@@ -40,7 +40,7 @@ NCR_WEBHOOK_ENDPOINT=https://your-domain.com/webhooks/ncr/order-status
 ```bash
 # NCR Aloha Configuration
 NCR_CLIENT_ID=ncr_app_12345abcdef
-NCR_CLIENT_SECRET=sk_live_abc123def456ghi789jkl012mno345pqr678stu901vwx234yz
+NCR_CLIENT_SECRET=your_ncr_client_secret_here
 NCR_APPLICATION_ID=app_67890fedcba
 NCR_ENVIRONMENT=sandbox
 NCR_API_BASE_URL=https://gateway-staging.ncrcloud.com
