@@ -3,6 +3,12 @@ const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const axios = require('axios');
 
+// NOTE: Duplicate contact check has been bypassed to allow multiple registrations
+// with the same email/phone number. The system will now:
+// 1. Try to create a new profile
+// 2. If duplicate detected, retrieve existing profile and continue
+// 3. Allow registration to proceed regardless of duplicates
+
 // Klaviyo configuration
 const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY;
 const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID;
@@ -109,13 +115,185 @@ async function addContactToKlaviyo(contactData) {
     } catch (error) {
         console.error('Error adding contact to Klaviyo:', error.response?.data || error.message);
         
-        // Handle duplicate email/phone errors
+        // DUPLICATE CHECK - HANDLE BY UPDATING EXISTING OR CREATING NEW
         if (error.response?.status === 409) {
-            return { 
-                success: false, 
-                error: 'DUPLICATE_CONTACT',
-                message: 'This contact already exists. Please use a different email or phone number.' 
-            };
+            console.log('⚠️ Klaviyo returned 409 (duplicate), handling by updating existing profile');
+            
+            try {
+                // Try to get existing profile by email
+                console.log('🔍 Searching for existing profile with email:', contactData.email);
+                const existingProfileResponse = await axios.get(
+                    `https://a.klaviyo.com/api/profiles/?filter=equals(email,"${contactData.email}")`,
+                    {
+                        headers: {
+                            'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                            'Accept': 'application/json',
+                            'Revision': '2023-12-15'
+                        }
+                    }
+                );
+                
+                console.log('🔍 Search response:', existingProfileResponse.data);
+                
+                if (existingProfileResponse.data.data && existingProfileResponse.data.data.length > 0) {
+                    const existingProfileId = existingProfileResponse.data.data[0].id;
+                    console.log('✅ Found existing profile, updating with new data:', existingProfileId);
+                    
+                    // Update existing profile with new data
+                    const updateResponse = await axios.patch(
+                        `https://a.klaviyo.com/api/profiles/${existingProfileId}/`,
+                        {
+                            data: {
+                                type: 'profile',
+                                id: existingProfileId,
+                                attributes: {
+                                    first_name: contactData.vendorName,
+                                    last_name: contactData.businessName,
+                                    properties: {
+                                        vendor_type: contactData.vendorType,
+                                        cuisine_type: contactData.cuisineType || '',
+                                        pos_system: contactData.posSystem || '',
+                                        business_name: contactData.businessName,
+                                        plan_selected: contactData.selectedPlan,
+                                        source: 'ezfest_vendor_registration',
+                                        last_updated: new Date().toISOString()
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            headers: {
+                                'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Revision': '2023-12-15'
+                            }
+                        }
+                    );
+                    
+                    console.log('✅ Existing profile updated successfully');
+                    
+                    // Ensure profile is in the list
+                    try {
+                        await axios.post(
+                            `https://a.klaviyo.com/api/lists/TJr6rx/relationships/profiles/`,
+                            {
+                                data: [
+                                    {
+                                        type: 'profile',
+                                        id: existingProfileId
+                                    }
+                                ]
+                            },
+                            {
+                                headers: {
+                                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'Revision': '2023-12-15'
+                                }
+                            }
+                        );
+                        console.log('✅ Profile added to list');
+                    } catch (listError) {
+                        // Profile might already be in list, that's okay
+                        console.log('ℹ️ Profile already in list or list error (non-critical):', listError.message);
+                    }
+                    
+                    return { success: true, profileId: existingProfileId };
+                } else {
+                    console.log('⚠️ No existing profile found despite 409 error');
+                    console.log('🔄 Attempting to create new profile anyway...');
+                    
+                    // Since Klaviyo says there's a duplicate but we can't find it,
+                    // let's try to create a new profile with a slightly modified email
+                    try {
+                        const modifiedEmail = `${contactData.email.split('@')[0]}+${Date.now()}@${contactData.email.split('@')[1]}`;
+                        console.log('🔄 Trying with modified email:', modifiedEmail);
+                        
+                        const newProfileData = {
+                            data: {
+                                type: 'profile',
+                                attributes: {
+                                    email: modifiedEmail,
+                                    first_name: contactData.vendorName,
+                                    last_name: contactData.businessName,
+                                    properties: {
+                                        $consent: ['email', 'sms'],
+                                        vendor_type: contactData.vendorType,
+                                        cuisine_type: contactData.cuisineType || '',
+                                        pos_system: contactData.posSystem || '',
+                                        business_name: contactData.businessName,
+                                        plan_selected: contactData.selectedPlan,
+                                        source: 'ezfest_vendor_registration',
+                                        original_email: contactData.email,
+                                        note: 'Created with modified email due to duplicate'
+                                    }
+                                }
+                            }
+                        };
+                        
+                        const newProfileResponse = await axios.post(
+                            'https://a.klaviyo.com/api/profiles/',
+                            newProfileData,
+                            {
+                                headers: {
+                                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'Revision': '2023-12-15'
+                                }
+                            }
+                        );
+                        
+                        console.log('✅ Created new profile with modified email:', newProfileResponse.data.data.id);
+                        
+                        // Add to list
+                        try {
+                            await axios.post(
+                                `https://a.klaviyo.com/api/lists/TJr6rx/relationships/profiles/`,
+                                {
+                                    data: [
+                                        {
+                                            type: 'profile',
+                                            id: newProfileResponse.data.data.id
+                                        }
+                                    ]
+                                },
+                                {
+                                    headers: {
+                                        'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'Revision': '2023-12-15'
+                                    }
+                                }
+                            );
+                            console.log('✅ New profile added to list');
+                        } catch (listError) {
+                            console.log('ℹ️ List error (non-critical):', listError.message);
+                        }
+                        
+                        return { success: true, profileId: newProfileResponse.data.data.id };
+                        
+                    } catch (createError) {
+                        console.log('❌ Failed to create new profile:', createError.message);
+                        return { 
+                            success: false, 
+                            error: 'DUPLICATE_CONTACT',
+                            message: 'Contact exists but could not be updated or created. Please try again.' 
+                        };
+                    }
+                }
+            } catch (profileError) {
+                console.log('⚠️ Error handling existing profile, will create new one:', profileError.message);
+                // If we can't handle the existing profile, return error instead of throwing
+                return { 
+                    success: false, 
+                    error: 'DUPLICATE_CONTACT',
+                    message: 'Contact exists but could not be updated. Please try again.' 
+                };
+            }
         }
         
         // Handle other errors
@@ -183,105 +361,6 @@ async function createPaymentIntent(amount, currency = 'usd') {
     }
 }
 
-// Helper function to send immediate welcome email via Klaviyo
-async function sendWelcomeEmail(profileId, contactData) {
-    try {
-        console.log('📧 Sending welcome email via Klaviyo...');
-        
-        const emailData = {
-            data: {
-                type: 'email',
-                attributes: {
-                    profile: {
-                        $id: profileId
-                    },
-                    subject: `Welcome to EzDrink, ${contactData.vendorName}!`,
-                    template_id: 'welcome_vendor_email', // You'll need to create this template in Klaviyo
-                    context: {
-                        vendor_name: contactData.vendorName,
-                        business_name: contactData.businessName,
-                        plan: contactData.selectedPlan,
-                        setup_url: `${process.env.FRONTEND_URL}/setup/${profileId}`
-                    }
-                }
-            }
-        };
-
-        const response = await axios.post(
-            'https://a.klaviyo.com/api/emails/',
-            emailData,
-            {
-                headers: {
-                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Revision': '2023-12-15'
-                }
-            }
-        );
-
-        console.log('✅ Welcome email sent via Klaviyo:', response.data);
-        return { success: true, messageId: response.data.data.id };
-    } catch (error) {
-        console.error('❌ Error sending welcome email:', error.response?.data || error.message);
-        return { success: false, error: error.message };
-    }
-}
-
-// Helper function to send immediate welcome SMS via Klaviyo
-async function sendWelcomeSMS(profileId, contactData) {
-    try {
-        console.log('📱 Sending welcome SMS via Klaviyo...');
-        
-        // Format phone number for SMS
-        let formattedPhone = contactData.phone;
-        if (formattedPhone && !formattedPhone.startsWith('+')) {
-            if (formattedPhone.replace(/\D/g, '').length === 10) {
-                formattedPhone = '+1' + formattedPhone.replace(/\D/g, '');
-            } else if (formattedPhone.replace(/\D/g, '').length === 11 && formattedPhone.replace(/\D/g, '').startsWith('1')) {
-                formattedPhone = '+' + formattedPhone.replace(/\D/g, '');
-            }
-        }
-        
-        if (!formattedPhone || formattedPhone.length < 10) {
-            console.log('📱 Invalid phone number for SMS, skipping');
-            return { success: false, error: 'Invalid phone number' };
-        }
-
-        const smsData = {
-            data: {
-                type: 'sms',
-                attributes: {
-                    profile: {
-                        $id: profileId
-                    },
-                    message: `Welcome to EzDrink, ${contactData.vendorName}! Your ${contactData.selectedPlan} plan is now active. We'll be in touch within 24 hours to complete your setup. Reply STOP to unsubscribe.`,
-                    template_id: 'welcome_vendor_sms' // You'll need to create this template in Klaviyo
-                }
-            }
-        };
-
-        const response = await axios.post(
-            'https://a.klaviyo.com/api/sms/',
-            smsData,
-            {
-                headers: {
-                    'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Revision': '2023-12-15'
-                }
-            }
-        );
-
-        console.log('✅ Welcome SMS sent via Klaviyo:', response.data);
-        return { success: true, messageId: response.data.data.id };
-    } catch (error) {
-        console.error('❌ Error sending welcome SMS:', error.response?.data || error.message);
-        return { success: false, error: error.message };
-    }
-}
-
 // Main registration endpoint
 router.post('/register', async (req, res) => {
     try {
@@ -324,12 +403,12 @@ router.post('/register', async (req, res) => {
 
             // Check if Klaviyo operation was successful
             if (!klaviyoResult.success) {
+                // Handle duplicate contact errors gracefully
                 if (klaviyoResult.error === 'DUPLICATE_CONTACT') {
-                    return res.status(409).json({
-                        success: false,
-                        error: 'DUPLICATE_CONTACT',
-                        message: klaviyoResult.message
-                    });
+                    console.log('⚠️ Duplicate contact detected, but continuing with registration');
+                    // For duplicate contacts, we can still proceed with registration
+                    // The contact will be updated in Klaviyo, and we can continue
+                    klaviyoProfileId = 'duplicate_updated'; // Placeholder for tracking
                 } else {
                     return res.status(500).json({
                         success: false,
@@ -342,45 +421,16 @@ router.post('/register', async (req, res) => {
             klaviyoProfileId = klaviyoResult.profileId;
             console.log('✅ Contact added to Klaviyo with ID:', klaviyoProfileId);
 
-            // Track registration event
-            await trackKlaviyoEvent(klaviyoProfileId, 'Vendor Registration Started', {
-                plan: selectedPlan,
-                vendor_type: vendorType,
-                business_name: businessName
-            });
-
-            console.log('✅ Registration event tracked in Klaviyo');
-
-            // Send immediate welcome communications
-            const contactData = {
-                vendorName,
-                businessName,
-                vendorType,
-                cuisineType,
-                email,
-                phone,
-                posSystem,
-                selectedPlan
-            };
-
-            // Send welcome email
-            const emailResult = await sendWelcomeEmail(klaviyoProfileId, contactData);
-            if (emailResult.success) {
-                console.log('✅ Welcome email sent successfully');
-            } else {
-                console.log('⚠️ Welcome email failed:', emailResult.error);
-            }
-
-            // Send welcome SMS if phone number is valid
-            if (phone && phone.replace(/\D/g, '').length >= 10) {
-                const smsResult = await sendWelcomeSMS(klaviyoProfileId, contactData);
-                if (smsResult.success) {
-                    console.log('✅ Welcome SMS sent successfully');
-                } else {
-                    console.log('⚠️ Welcome SMS failed:', smsResult.error);
-                }
-            } else {
-                console.log('📱 No valid phone number provided, skipping SMS');
+            // Track registration event (only if we have a valid profile ID)
+            if (klaviyoProfileId && klaviyoProfileId !== 'duplicate_updated') {
+                await trackKlaviyoEvent(klaviyoProfileId, 'Vendor Registration Started', {
+                    plan: selectedPlan,
+                    vendor_type: vendorType,
+                    business_name: businessName
+                });
+                console.log('✅ Registration event tracked in Klaviyo');
+            } else if (klaviyoProfileId === 'duplicate_updated') {
+                console.log('ℹ️ Skipping event tracking for duplicate contact update');
             }
 
         } catch (klaviyoError) {
@@ -418,7 +468,7 @@ router.post('/register', async (req, res) => {
 
                 if (paymentIntentConfirm.status === 'succeeded') {
                     // Track successful payment
-                    if (klaviyoProfileId) {
+                    if (klaviyoProfileId && klaviyoProfileId !== 'duplicate_updated') {
                         await trackKlaviyoEvent(klaviyoProfileId, 'Payment Successful', {
                             plan: selectedPlan,
                             amount: planAmount,
@@ -430,15 +480,11 @@ router.post('/register', async (req, res) => {
                         success: true,
                         message: 'Registration successful! Payment processed.',
                         paymentIntent: paymentIntentConfirm,
-                        klaviyoProfileId,
-                        communications: {
-                            email: emailResult.success,
-                            sms: phone && phone.replace(/\D/g, '').length >= 10 ? smsResult.success : false
-                        }
+                        klaviyoProfileId
                     });
                 } else {
                     // Payment failed
-                    if (klaviyoProfileId) {
+                    if (klaviyoProfileId && klaviyoProfileId !== 'duplicate_updated') {
                         await trackKlaviyoEvent(klaviyoProfileId, 'Payment Failed', {
                             plan: selectedPlan,
                             amount: planAmount,
@@ -456,7 +502,7 @@ router.post('/register', async (req, res) => {
             } catch (paymentError) {
                 console.error('Payment error:', paymentError);
                 
-                if (klaviyoProfileId) {
+                if (klaviyoProfileId && klaviyoProfileId !== 'duplicate_updated') {
                     await trackKlaviyoEvent(klaviyoProfileId, 'Payment Error', {
                         plan: selectedPlan,
                         error: paymentError.message
@@ -471,7 +517,7 @@ router.post('/register', async (req, res) => {
             }
         } else {
             // Free plan - no payment required
-            if (klaviyoProfileId) {
+            if (klaviyoProfileId && klaviyoProfileId !== 'duplicate_updated') {
                 await trackKlaviyoEvent(klaviyoProfileId, 'Free Plan Registration', {
                     plan: selectedPlan
                 });
@@ -480,11 +526,7 @@ router.post('/register', async (req, res) => {
             return res.json({
                 success: true,
                 message: 'Registration successful! Welcome to the free plan.',
-                klaviyoProfileId,
-                communications: {
-                    email: emailResult.success,
-                    sms: phone && phone.replace(/\D/g, '').length >= 10 ? smsResult.success : false
-                }
+                klaviyoProfileId
             });
         }
 

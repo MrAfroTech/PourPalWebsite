@@ -1,14 +1,54 @@
 // Vendor Signup JavaScript
 class VendorSignup {
     constructor() {
+        // Prevent multiple initializations
+        if (window.vendorSignupInstance) {
+            console.warn('VendorSignup already initialized, skipping...');
+            return window.vendorSignupInstance;
+        }
+        
         this.selectedPlan = null;
+        this.isSubmitting = false; // Add submission state tracking
+        
+        // Store instance globally to prevent duplicates
+        window.vendorSignupInstance = this;
+        
         this.init();
     }
 
     init() {
+        console.log('🚀 VendorSignup initializing...');
+        
+        // Check for duplicate forms
+        this.checkForDuplicateForms();
+        
         this.bindEvents();
         this.trackPageView();
         this.autoFocusFirstInput();
+    }
+
+    checkForDuplicateForms() {
+        // Check for any forms with similar IDs that might cause conflicts
+        const allForms = document.querySelectorAll('form');
+        const formIds = Array.from(allForms).map(form => form.id).filter(id => id);
+        
+        console.log('📋 Found forms on page:', formIds);
+        
+        // Check for potential conflicts
+        const duplicateIds = formIds.filter((id, index) => formIds.indexOf(id) !== index);
+        if (duplicateIds.length > 0) {
+            console.warn('⚠️ Duplicate form IDs detected:', duplicateIds);
+        }
+        
+        // Check for forms with similar names
+        const similarForms = formIds.filter(id => 
+            id.toLowerCase().includes('signup') || 
+            id.toLowerCase().includes('form')
+        );
+        
+        if (similarForms.length > 1) {
+            console.log('ℹ️ Multiple signup forms detected:', similarForms);
+        }
     }
 
     bindEvents() {
@@ -30,10 +70,15 @@ class VendorSignup {
             });
         });
 
-        // Form submission
-        const form = document.getElementById('signupForm');
+        // Form submission - Remove any existing listeners first
+        const form = document.getElementById('vendorSignupForm');
         if (form) {
+            // Remove any existing submit listeners to prevent duplicates
+            form.removeEventListener('submit', this.handleSubmit);
             form.addEventListener('submit', (e) => this.handleSubmit(e));
+            console.log('✅ Form submit event bound');
+        } else {
+            console.warn('⚠️ Vendor signup form not found');
         }
 
         // Modal close
@@ -248,34 +293,60 @@ class VendorSignup {
 
     handleSubmit(e) {
         e.preventDefault();
+        
+        // Prevent duplicate submissions
+        if (this.isSubmitting) {
+            console.log('⚠️ Form submission already in progress, ignoring duplicate submit');
+            return;
+        }
 
         if (!this.selectedPlan) {
             alert('Please select a plan to continue.');
             return;
         }
 
-        // Collect form data
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData);
+        // Set submission state
+        this.isSubmitting = true;
+        console.log('🚀 Form submission started for plan:', this.selectedPlan);
 
-        // Add tracking data
-        data.source = 'sms_campaign';
-        data.campaign = 'vendor_signup';
-        data.funnel_step = 'signup_form';
-        data.selected_plan = this.selectedPlan;
-        data.signup_timestamp = new Date().toISOString();
+        try {
+            // Collect form data
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
 
-        // Disable submit button
-        const submitBtn = document.getElementById('submitBtn');
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Creating Your Account...';
+            // Add tracking data
+            data.source = 'sms_campaign';
+            data.campaign = 'vendor_signup';
+            data.funnel_step = 'signup_form';
+            data.selected_plan = this.selectedPlan;
+            data.signup_timestamp = new Date().toISOString();
+
+            console.log('📝 Form data collected:', data);
+
+            // Disable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating Your Account...';
+            }
+
+            // Simulate API call (replace with actual endpoint)
+            setTimeout(() => {
+                this.processSignup(data);
+            }, 2000);
+        } catch (error) {
+            console.error('❌ Error during form submission:', error);
+            this.isSubmitting = false;
+            
+            // Re-enable submit button on error
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = `🎉 Start ${this.getPlanDisplayName(this.selectedPlan)} Plan!`;
+            }
+            
+            alert('An error occurred during submission. Please try again.');
         }
-
-        // Simulate API call (replace with actual endpoint)
-        setTimeout(() => {
-            this.processSignup(data);
-        }, 2000);
     }
 
     processSignup(data) {
@@ -297,6 +368,9 @@ class VendorSignup {
 
         // Show success message
         this.showSuccessMessage(data);
+        
+        // Reset submission state
+        this.isSubmitting = false;
     }
 
     showSuccessMessage(data) {
@@ -356,11 +430,51 @@ class VendorSignup {
             }, 500);
         }
     }
+
+    // Cleanup method to remove event listeners
+    cleanup() {
+        console.log('🧹 Cleaning up VendorSignup instance...');
+        
+        // Remove form submit listener
+        const form = document.getElementById('vendorSignupForm');
+        if (form) {
+            form.removeEventListener('submit', this.handleSubmit);
+        }
+        
+        // Remove plan card listeners
+        document.querySelectorAll('.plan-card').forEach(card => {
+            card.removeEventListener('click', this.selectPlan);
+        });
+        
+        // Remove other listeners
+        const posSelect = document.getElementById('pos_system');
+        if (posSelect) {
+            posSelect.removeEventListener('change', this.handlePosSystemChange);
+        }
+        
+        // Clear global instance
+        if (window.vendorSignupInstance === this) {
+            window.vendorSignupInstance = null;
+        }
+    }
 }
 
-// Initialize when DOM is loaded
+// Initialize when DOM is loaded - Ensure only one instance
 document.addEventListener('DOMContentLoaded', () => {
-    new VendorSignup();
+    // Check if already initialized
+    if (!window.vendorSignupInstance) {
+        console.log('🚀 Creating new VendorSignup instance...');
+        new VendorSignup();
+    } else {
+        console.log('✅ VendorSignup already exists, reusing instance');
+    }
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (window.vendorSignupInstance) {
+        window.vendorSignupInstance.cleanup();
+    }
 });
 
 // Keyboard shortcuts

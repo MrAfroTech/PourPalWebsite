@@ -208,33 +208,49 @@ const VendorDownload = () => {
                         <p>Join thousands of vendors already using our platform to increase sales by $50-150 daily</p>
                         
                         <div className="signup-options">
-                            <div className="plan-option featured">
-                                <div className="plan-badge">Most Popular</div>
-                                <h4>🆓 FREE Forever Plan</h4>
+                            <div className="plan-option">
+                                <h4>⭐ Free Plan</h4>
                                 <div className="plan-price">$0/month</div>
+                                <div className="plan-period">Forever Free</div>
                                 <ul>
-                                    <li>✅ QR code ordering system</li>
-                                    <li>✅ Basic analytics</li>
-                                    <li>✅ Up to 50 orders/month</li>
-                                    <li>✅ Works with your POS</li>
+                                    <li>✅ List your menu on festival map</li>
+                                    <li>✅ Basic vendor info showcase</li>
+                                    <li>✅ Event notifications</li>
+                                    <li>✅ Personalized QR code</li>
                                 </ul>
                                 <button className="signup-btn free" onClick={() => handleSignupClick('free')}>
                                     Get Started FREE
                                 </button>
                             </div>
 
-                            <div className="plan-option">
-                                <h4>💎 Growth Plan</h4>
-                                <div className="plan-price">$29/month</div>
+                            <div className="plan-option featured">
+                                <div className="plan-badge">Most Popular</div>
+                                <h4>💼 Pro Plan</h4>
+                                <div className="plan-price">$39.99/month</div>
+                                <div className="plan-period">🎉 2 MONTHS FREE</div>
                                 <ul>
-                                    <li>✅ Everything in FREE</li>
-                                    <li>✅ Unlimited orders</li>
-                                    <li>✅ Advanced analytics</li>
-                                    <li>✅ Customer loyalty program</li>
-                                    <li>✅ Priority support</li>
+                                    <li>✅ All Free features</li>
+                                    <li>✅ Mobile orders & payments</li>
+                                    <li>✅ Real-time tracking</li>
+                                    <li>✅ Sales analytics</li>
                                 </ul>
-                                <button className="signup-btn premium" onClick={() => handleSignupClick('growth')}>
-                                    Start 2-Month FREE Trial
+                                <button className="signup-btn pro" onClick={() => handleSignupClick('pro')}>
+                                    Start FREE Trial
+                                </button>
+                            </div>
+
+                            <div className="plan-option">
+                                <h4>🚀 Ultimate Plan</h4>
+                                <div className="plan-price">$79.99/month</div>
+                                <div className="plan-period">🎉 2 MONTHS FREE</div>
+                                <ul>
+                                    <li>✅ All Pro features</li>
+                                    <li>✅ Priority vendor visibility</li>
+                                    <li>✅ Advanced customization</li>
+                                    <li>✅ Premium support</li>
+                                </ul>
+                                <button className="signup-btn ultimate" onClick={() => handleSignupClick('ultimate')}>
+                                    Start FREE Trial
                                 </button>
                             </div>
                         </div>
